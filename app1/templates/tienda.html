@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tienda | PruebasApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <!-- ...header similar al index... -->
+    <header class="header">
+        <div class="container header-wrapper">
+            <a href="{% url 'index' %}" class="logo"><i class="fas fa-flask-vial me-2"></i>PruebasApp</a>
+            <nav>
+                <ul class="nav-list">
+                    <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="{% url 'tienda' %}" class="active"><i class="fas fa-store"></i> Tienda</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="section" style="padding-top:100px;">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">Tienda</h1>
+                <a href="{% url 'index' %}" class="btn btn-outline-secondary">Volver al inicio</a>
+            </div>
+
+            <!-- Barra de búsqueda y filtros -->
+            <form method="get" class="row g-2 mb-4 align-items-center">
+                <div class="col-md-5">
+                    <input type="text" name="q" class="form-control" placeholder="Buscar por nombre o descripción..." value="{{ q|default:'' }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="categoria" class="form-select">
+                        <option value="">Todas las categorías</option>
+                        {% for cat in categorias %}
+                            <option value="{{ cat.id }}" {% if categoria_id|default:'' == cat.id|stringformat:'s' %}selected{% endif %}>{{ cat.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="agotado" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="1" {% if agotado_filter == '1' %}selected{% endif %}>Agotado</option>
+                        <option value="0" {% if agotado_filter == '0' %}selected{% endif %}>Disponible</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-1"></i> Buscar</button>
+                    <a href="{% url 'tienda' %}" class="btn btn-secondary w-100">Limpiar</a>
+                </div>
+            </form>
+
+            <!-- Productos -->
+            <div class="row">
+                {% for producto in productos %}
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <a href="{% url 'productos' producto.id %}" style="text-decoration:none;color:inherit;">
+                        <div class="card h-100 shadow-sm">
+                            {% if producto.imagen %}
+                                <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="object-fit:cover;max-height:180px;">
+                            {% else %}
+                                <img src="{% static 'images/default_event.jpg' %}" class="card-img-top" alt="Sin imagen" style="object-fit:cover;max-height:180px;">
+                            {% endif %}
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ producto.nombre }}</h5>
+                                <p class="card-text text-muted mb-1" style="font-size:0.95em;">
+                                    {% with producto.categorias.all|first as first_cat %}
+                                        {% if first_cat %}
+                                            <i class="fas fa-tag"></i> {{ first_cat.nombre }}
+                                        {% else %}
+                                            <i class="fas fa-tag"></i> Sin categoría
+                                        {% endif %}
+                                    {% endwith %}
+                                </p>
+                                <p class="card-text text-truncate">{{ producto.descripcion|truncatechars:80 }}</p>
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold text-primary">${{ producto.precio }}</span>
+                                    {% if producto.agotado %}
+                                        <span class="badge bg-danger">Agotado</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info">No hay productos que coincidan.</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer mt-5">
+        <div class="container footer-content text-center">
+            <a href="{% url 'index' %}" class="footer-logo"><i class="fas fa-flask-vial"></i> PruebasApp</a>
+            <p class="mb-0">&copy; {{ now|date:"Y" }} PruebasApp.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
