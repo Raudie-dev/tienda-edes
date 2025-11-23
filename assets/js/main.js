@@ -30,15 +30,36 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
-  // Header scroll effect
+  // Header scroll effect: stay transparent while inside #hero, become solid (footer color) after
   const header = document.querySelector(".header")
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 50) {
-      header.classList.add("scrolled")
+  const hero = document.querySelector("#hero, .hero-section, #heroCarousel")
+
+  function updateHeaderState() {
+    if (!header) return
+    if (hero) {
+      const heroBottom = hero.offsetTop + hero.offsetHeight
+      const threshold = heroBottom - header.offsetHeight - 20
+      if (window.pageYOffset > threshold) {
+        header.classList.add("scrolled")
+        header.classList.remove("overlay")
+        // ensure content is not hidden under fixed header
+        document.body.style.paddingTop = header.offsetHeight + "px"
+      } else {
+        header.classList.remove("scrolled")
+        header.classList.add("overlay")
+        document.body.style.paddingTop = "0px"
+      }
     } else {
-      header.classList.remove("scrolled")
+      // No hero on page: make header solid so it matches footer
+      header.classList.add("scrolled")
+      header.classList.remove("overlay")
+      document.body.style.paddingTop = header.offsetHeight + "px"
     }
-  })
+  }
+
+  window.addEventListener("scroll", updateHeaderState)
+  // initial
+  updateHeaderState()
 
   // Initialize all sliders
   initializeAllSliders()
@@ -117,26 +138,9 @@ document.addEventListener("DOMContentLoaded", () => {
     card.classList.add(`delay-${delay}`)
   })
 
-  const cards = document.querySelectorAll(".card, .event-card, .extension-card")
-  cards.forEach((card) => {
-    card.addEventListener("mousemove", (e) => {
-      const rect = card.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
-
-      const centerX = rect.width / 2
-      const centerY = rect.height / 2
-
-      const rotateX = (y - centerY) / 20
-      const rotateY = (centerX - x) / 20
-
-      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`
-    })
-
-    card.addEventListener("mouseleave", () => {
-      card.style.transform = "perspective(1000px) rotateX(0) rotateY(0) translateY(0)"
-    })
-  })
+  // Removed cursor movement (tilt) animations for cards to improve UX and accessibility.
+  // Previous implementation added mousemove/mouseleave listeners that applied 3D transforms.
+  // Those listeners were removed to disable cursor-based movement effects globally.
 
   // Function to initialize all sliders on the page
   function initializeAllSliders() {
@@ -343,3 +347,60 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 })
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Mobile Menu Toggle
+  const menuToggle = document.querySelector(".menu-toggle")
+  const navList = document.querySelector(".nav-list")
+
+  if (menuToggle && navList) {
+    menuToggle.addEventListener("click", function () {
+      this.classList.toggle("active")
+      navList.classList.toggle("active")
+    })
+  }
+
+  // Header scroll effect (duplicate block): reuse hero-aware logic
+  const headerDup = document.querySelector(".header")
+  const heroDup = document.querySelector("#hero, .hero-section, #heroCarousel")
+  function updateHeaderStateDup() {
+    if (!headerDup) return
+    if (heroDup) {
+      const heroBottom = heroDup.offsetTop + heroDup.offsetHeight
+      const threshold = heroBottom - headerDup.offsetHeight - 20
+      if (window.pageYOffset > threshold) {
+        headerDup.classList.add("scrolled")
+      } else {
+        headerDup.classList.remove("scrolled")
+      }
+    } else {
+      headerDup.classList.add("scrolled")
+    }
+  }
+  window.addEventListener("scroll", updateHeaderStateDup)
+  updateHeaderStateDup()
+
+  // Smooth scrolling for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+      // Only if it's a valid selector
+      const targetId = this.getAttribute("href")
+      if (targetId === "#") return
+
+      const targetElement = document.querySelector(targetId)
+      if (targetElement) {
+        e.preventDefault()
+        const headerHeight = document.querySelector(".header").offsetHeight
+        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight
+
+        window.scrollTo({
+          top: targetPosition,
+          behavior: "smooth",
+        })
+      }
+    })
+  })
+
+  // Removed hover-card tilt/3D effects to disable cursor movement animations globally.
+})
+

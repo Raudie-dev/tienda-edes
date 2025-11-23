@@ -1,61 +1,164 @@
 {% extends 'base_index.html' %}
 {% load static %}
 
-{% block title %}Solicitud de Cotización{% endblock %}
+{% block title %}Solicitud de Cotización | EDES Venezuela{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <h1>Solicitud de Cotización</h1>
-    <p>Revise los productos seleccionados y complete sus datos para que nos contacten.</p>
 
-    {% if items %}
-    <div class="mb-4">
-        <table class="table">
-            <thead>
-                <tr><th>Producto</th><th>Cantidad</th><th>Precio unit.</th><th>Total</th></tr>
-            </thead>
-            <tbody>
-                {% for it in items %}
-                <tr>
-                    <td>{{ it.product.nombre }}</td>
-                    <td>{{ it.cantidad }}</td>
-                    <td>${{ it.product.precio }}</td>
-                    <td>${{ it.total }}</td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <td colspan="3" class="text-end"><strong>Subtotal</strong></td>
-                    <td><strong>${{ subtotal }}</strong></td>
-                </tr>
-            </tbody>
-        </table>
+
+<div class="container py-5">
+    
+    <div class="text-center mb-5">
+        <h1 class="mb-3" style="font-size: 2rem;">Solicitud de Cotización</h1>
+        <p class="text-muted" style="font-size: 0.95rem; max-width: 600px; margin-left: auto; margin-right: auto;">Revise los productos seleccionados y complete sus datos para procesar su solicitud.</p>
     </div>
 
-    <form method="post" class="row g-3">
-        {% csrf_token %}
-        <div class="col-md-4">
-            <label class="form-label">Nombre*</label>
-            <input type="text" name="nombre" class="form-control" required>
+    <div class="cotizacion row g-4">
+        <!-- Order Summary with better card styling and colors -->
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-3 overflow-hidden h-100 no-tilt" style="background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);">
+                <!-- Card header with orange background instead of gradient-primary -->
+                <div class="card-header text-white py-3 px-4 px-md-4" style="background-color: var(--primary-color);">
+                    <h5 class="mb-0 fw-bold" style="font-size: 1.05rem;"><i class="fas fa-list-alt me-2"></i>Productos Seleccionados</h5>
+                </div>
+                
+                <div class="card-body p-0">
+                    {% if items %}
+                    <!-- Improved responsive table with smaller font sizes -->
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="bg-light border-bottom" style="background-color: #f0f0f0 !important;">
+                                <tr>
+                                    <th class="ps-4 py-2 text-secondary fw-bold" style="font-size: 0.85rem;">Producto</th>
+                                    <th class="text-center py-2 text-secondary fw-bold" style="font-size: 0.85rem;">Cantidad</th>
+                                    <th class="text-end py-2 text-secondary fw-bold" style="font-size: 0.85rem;">Precio Unit.</th>
+                                    <th class="text-end pe-4 py-2 text-secondary fw-bold" style="font-size: 0.85rem;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for it in items %}
+                                <tr class="border-bottom" style="transition: background-color 0.3s ease;">
+                                    <td class="ps-4 py-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="bg-light rounded-2 p-2 d-none d-sm-block flex-shrink-0" style="background-color: rgba(140, 198, 63, 0.1) !important;">
+                                                <i class="fas fa-box text-accent" style="color: var(--accent-color);"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="fw-bold text-dark" style="font-size: 0.9rem;">{{ it.product.nombre }}</div>
+                                                <small class="text-muted" style="font-size: 0.8rem;">Ref: #{{ it.product.id }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill px-2 py-1" style="background-color: rgba(140, 198, 63, 0.15); color: var(--secondary-color); border: 1px solid var(--accent-color); font-size: 0.8rem; font-weight: 700;">{{ it.cantidad }}</span>
+                                    </td>
+                                    <td class="text-end text-muted fw-bold" style="font-size: 0.9rem;">${{ it.product.precio }}</td>
+                                    <td class="text-end pe-4 fw-bold" style="color: var(--primary-color); font-size: 0.95rem;">${{ it.total }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <!-- Footer with green background -->
+                            <tfoot style="background: linear-gradient(135deg, rgba(140, 198, 63, 0.08) 0%, rgba(140, 198, 63, 0.05) 100%); border-top: 2px solid var(--accent-color);">
+                                <tr>
+                                    <td colspan="3" class="text-end py-3 px-4 fw-bold text-secondary" style="font-size: 0.9rem; text-transform: uppercase;">Subtotal Estimado:</td>
+                                    <td class="text-end pe-4 py-3 fw-bold" style="color: var(--primary-color); font-size: 1.1rem;">${{ subtotal }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    {% else %}
+                    <!-- Improved empty state with better styling -->
+                    <div class="text-center py-5 px-4">
+                        <div class="mb-3">
+                            <i class="fas fa-shopping-basket fa-4x text-muted" style="opacity: 0.4;"></i>
+                        </div>
+                        <h4 class="text-secondary fw-bold mb-2" style="font-size: 1.1rem;">Su lista de cotización está vacía</h4>
+                        <p class="text-muted mb-4" style="font-size: 0.9rem;">Agregue productos desde nuestro catálogo para generar una cotización.</p>
+                        <a href="{% url 'tienda' %}" class="btn btn-primary rounded-pill px-4" style="font-size: 0.9rem;">
+                            <i class="fas fa-store me-2"></i>Ir a la Tienda
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <div class="col-md-4">
-            <label class="form-label">Correo electrónico*</label>
-            <input type="email" name="correo" class="form-control" required>
+
+        <!-- Contact Form with orange primary color background -->
+        <div class="col-lg-4">
+            {% if items %}
+            <!-- Updated card with primary color and better spacing -->
+            <div class="card shadow-lg border-0 text-white rounded-3 position-relative overflow-hidden h-100 no-tilt" style="background: linear-gradient(135deg, var(--primary-color) 0%, #e85a00 100%);">
+                <!-- Decorative elements with opacity -->
+                <div class="position-absolute top-0 end-0 rounded-circle opacity-10" style="width: 200px; height: 200px; background-color: white; transform: translate(50%, -50%);"></div>
+                <div class="position-absolute bottom-0 start-0 rounded-circle opacity-5" style="width: 150px; height: 150px; background-color: white; transform: translate(-30%, 30%);"></div>
+                
+                <div class="card-body p-4 p-md-4 position-relative z-3">
+                    <h4 class="mb-3 pb-3 fw-bold" style="border-bottom: 2px solid rgba(255,255,255,0.2); font-size: 1.05rem;">
+                        <i class="fas fa-user-edit me-2"></i>Datos de Contacto
+                    </h4>
+                    <form method="post" class="row g-3">
+                        {% csrf_token %}
+                        <!-- Full Name -->
+                        <div class="col-12">
+                            <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Nombre Completo*</label>
+                            <div class="input-group rounded-2 overflow-hidden">
+                                <span class="input-group-text border-0" style="background-color: rgba(255,255,255,0.2); color: white;"><i class="fas fa-user"></i></span>
+                                <input type="text" name="nombre" class="form-control border-0" placeholder="Su nombre completo" required style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;">
+                            </div>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="col-12">
+                            <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Correo Electrónico*</label>
+                            <div class="input-group rounded-2 overflow-hidden">
+                                <span class="input-group-text border-0" style="background-color: rgba(255,255,255,0.2); color: white;"><i class="fas fa-envelope"></i></span>
+                                <input type="email" name="correo" class="form-control border-0" placeholder="ejemplo@correo.com" required style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;">
+                            </div>
+                        </div>
+                        
+                        <!-- Phone -->
+                        <div class="col-12">
+                            <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Teléfono</label>
+                            <div class="input-group rounded-2 overflow-hidden">
+                                <span class="input-group-text border-0" style="background-color: rgba(255,255,255,0.2); color: white;"><i class="fas fa-phone"></i></span>
+                                <input type="text" name="telefono" class="form-control border-0" placeholder="+58 ..." style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;">
+                            </div>
+                        </div>
+                        
+                        <!-- Message -->
+                        <div class="col-12">
+                            <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Mensaje / Detalles</label>
+                            <textarea name="mensaje" class="form-control border-0 rounded-2" rows="3" placeholder="Información adicional..." style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;"></textarea>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-light text-primary w-100 rounded-pill shadow fw-bold" style="font-size: 0.95rem;">
+                                Enviar Solicitud <i class="fas fa-paper-plane ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-3 text-center">
+                <a href="{% url 'tienda' %}" class="text-muted text-decoration-none small" style="font-size: 0.85rem;">
+                    <i class="fas fa-arrow-left me-1"></i> Seguir agregando productos
+                </a>
+            </div>
+            {% endif %}
         </div>
-        <div class="col-md-4">
-            <label class="form-label">Teléfono</label>
-            <input type="text" name="telefono" class="form-control">
-        </div>
-        <div class="col-12">
-            <label class="form-label">Mensaje / Detalles adicionales</label>
-            <textarea name="mensaje" class="form-control" rows="4"></textarea>
-        </div>
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary">Enviar solicitud</button>
-            <a href="{% url 'tienda' %}" class="btn btn-secondary ms-2">Seguir comprando</a>
-        </div>
-    </form>
-    {% else %}
-        <div class="alert alert-info">No hay productos en la solicitud. <a href="{% url 'tienda' %}">Ir a la tienda</a></div>
-    {% endif %}
+    </div>
 </div>
+
+<style>
+    input::placeholder, textarea::placeholder {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+    
+    @media (max-width: 768px) {
+        h1 { font-size: 1.7rem; }
+        table th, table td { font-size: 0.8rem !important; padding: 0.5rem !important; }
+    }
+</style>
 {% endblock %}
+

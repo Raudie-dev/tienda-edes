@@ -119,8 +119,14 @@
   }
   
   .navbar {
-    background-color: #fff;
+    background-color: var(--footer-color, #111);
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .navbar.transparent {
+    background: transparent;
+    box-shadow: none;
   }
   
   .primary-text {

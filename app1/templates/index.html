@@ -1,298 +1,184 @@
 {% extends 'base_index.html' %}
 {% load static %}
 
-{% block title %}Inicio | PruebasApp{% endblock %}
+{% block title %}Inicio | EDES Venezuela{% endblock %}
 
 {% block content %}
 
-<!-- Hero Section -->
-<section class="welcome-area" style="padding-top: 120px;">
-    <div class="container">
-        <div class="welcome-content">
-            <div class="welcome-text">
-                <h1><i class="fas fa-store"></i> Bienvenido a la Tienda</h1>
-                <p>
-                    Explora nuestros productos y filtra por categoría.<br>
-                    ¡Encuentra lo que buscas de forma rápida y visual!
-                </p>
-                <a href="{% url 'tienda' %}" class="btn btn-primary mt-3"><i class="fas fa-shopping-bag me-1"></i> Ir a la Tienda</a>
-            </div>
-            <div class="welcome-image">
-                <img src="{% static 'images/data_hero.png' %}" alt="Tienda" style="max-width:350px;">
-            </div>
+<!-- Hero Carousel -->
+<section class="hero-section">
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
         </div>
-    </div>
-</section>
-
-<!-- NUEVAS SECCIONES: Misión, Visión, Acerca y Experiencia -->
-<section class="section bg-light py-5">
-    <div class="container">
-        <div class="row gy-4">
-            <div class="col-md-6">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <h3 class="card-title">Nuestra Misión</h3>
-                        <p class="card-text">
-                            Proveer repuestos de alta calidad para montacargas, garantizando disponibilidad y soporte técnico
-                            para mantener la operación de nuestros clientes sin paradas. Buscamos soluciones rápidas y confiables.
-                        </p>
+        <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active hero-carousel-item" style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+                <div class="hero-overlay">
+                    <div class="container hero-content" data-aos="fade-up">
+                        <span class="badge bg-accent text-white mb-3 px-3 py-2 rounded-pill animate__animated animate__fadeInDown">LÍDERES EN REPUESTOS</span>
+                        <h1 class="display-2 fw-bold mb-3 text-white">SOLUCIONES EN <br><span class="text-primary">LOGÍSTICA Y ENERGÍA</span></h1>
+                        <p class="lead mb-4 fs-4 text-light">Eficiencia y productividad garantizada para su industria.</p>
+                        <div class="btn-group">
+                            <a href="{% url 'tienda' %}" class="btn btn-primary btn-lg rounded-pill px-5 text-white shadow-lg hover-scale">Ver Catálogo</a>
+                            <a href="#contacto" class="btn btn-outline-light btn-lg rounded-pill px-5 hover-scale">Contáctanos</a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <h3 class="card-title">Nuestra Visión</h3>
-                        <p class="card-text">
-                            Ser el distribuidor líder regional en repuestos para montacargas, reconocido por la calidad, stock
-                            y atención técnica, ayudando a optimizar la productividad de las empresas que confían en nosotros.
-                        </p>
+            <!-- Slide 2 -->
+            <div class="carousel-item hero-carousel-item" style="background-image: url('https://images.unsplash.com/photo-1587293852726-70cdb56c2866?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+                <div class="hero-overlay">
+                    <div class="container hero-content" data-aos="fade-up">
+                        <span class="badge bg-primary text-white mb-3 px-3 py-2 rounded-pill">SOPORTE ROBUSTO</span>
+                        <h1 class="display-2 fw-bold mb-3 text-white">CONTINUIDAD<br>OPERATIVA</h1>
+                        <p class="lead mb-4 fs-4 text-light">Servicio posventa que no se detiene, asegurando su productividad.</p>
+                        <a href="#contacto" class="btn btn-light text-secondary btn-lg rounded-pill px-5 shadow-lg hover-scale">Agendar Servicio</a>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-6">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <h3 class="card-title">Acerca de Nosotros</h3>
-                        <p class="card-text">
-                            Contamos con años de experiencia en repuestos y accesorios para montacargas de distintas marcas.
-                            Nuestro equipo técnico asesora en la elección de piezas originales y alternativas compatibles.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <h3 class="card-title">Nuestra Experiencia</h3>
-                        <p class="card-text">
-                            Atención a flotas industriales, suministro a talleres y mantenimiento preventivo. Más de una década
-                            colaborando con empresas del sector logístico y manufactura, con respuestas rápidas y entrega fiable.
-                        </p>
+            <!-- Slide 3 -->
+            <div class="carousel-item hero-carousel-item" style="background-image: url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+                <div class="hero-overlay">
+                    <div class="container hero-content" data-aos="fade-up">
+                        <span class="badge bg-accent text-white mb-3 px-3 py-2 rounded-pill">EL PODER DE LA EXCELENCIA</span>
+                        <h1 class="display-2 fw-bold mb-3 text-white">CONFIABILIDAD<br>INQUEBRANTABLE</h1>
+                        <p class="lead mb-4 fs-4 text-light">Elevando el estándar de calidad y servicio en cada operación.</p>
+                        <a href="{% url 'tienda' %}" class="btn btn-primary btn-lg rounded-pill px-5 text-white shadow-lg hover-scale">Comprar Ahora</a>
                     </div>
                 </div>
             </div>
         </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
     </div>
 </section>
 
-<!-- SECCIONES ADICIONALES TIPO LANDING -->
-<section class="section py-5">
+<section class="section py-5 position-relative" style="background: linear-gradient(135deg, #f9f9f9 0%, white 100%);">
     <div class="container">
-        <!-- Servicios / Lo que ofrecemos -->
-        <h2 class="mb-4">Servicios</h2>
-        <div class="row gy-4">
+        <div class="row g-4 text-center">
             <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Repuestos Originales</h5>
-                        <p class="card-text">Suministramos piezas originales y compatibles para la mayoría de marcas de montacargas.</p>
+                <div class="feature-card">
+                    <div class="icon-circle">
+                        <i class="fas fa-cogs"></i>
                     </div>
+                    <h4 class="mb-3">Logística Integral</h4>
+                    <p class="text-muted">Soluciones completas en venta y alquiler para optimizar sus operaciones.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Asesoría Técnica</h5>
-                        <p class="card-text">Nuestro equipo técnico ayuda a identificar las piezas correctas y soluciones de mantenimiento.</p>
+                <div class="feature-card">
+                    <div class="icon-circle">
+                        <i class="fas fa-tools"></i>
                     </div>
+                    <h4 class="mb-3">Soporte Posventa</h4>
+                    <p class="text-muted">Servicio robusto y continuo que asegura su continuidad operativa.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Logística Rápida</h5>
-                        <p class="card-text">Entregas ágiles para minimizar tiempos de inactividad en sus operaciones.</p>
+                <div class="feature-card">
+                    <div class="icon-circle">
+                        <i class="fas fa-bolt"></i>
                     </div>
+                    <h4 class="mb-3">Energía Industrial</h4>
+                    <p class="text-muted">Maximice la productividad con nuestras soluciones de energía confiable.</p>
                 </div>
             </div>
         </div>
-
-        <!-- Por qué elegirnos / beneficios -->
-        <div class="row align-items-center mt-5">
-            <div class="col-md-6">
-                <h3>¿Por qué elegirnos?</h3>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Stock amplio y actualizado</li>
-                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Soporte técnico especializado</li>
-                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Asesoría para piezas alternativas</li>
-                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Precios competitivos para flotas</li>
-                </ul>
-            </div>
-            <div class="col-md-6">
-                <img src="{% static 'images/warehouse.jpg' %}" alt="Almacén" class="img-fluid rounded shadow-sm">
-            </div>
-        </div>
-
-        <!-- Testimonios -->
-        <div class="mt-5">
-            <h3 class="mb-4">Testimonios</h3>
-            <div class="row gy-3">
-                <div class="col-md-4">
-                    <blockquote class="blockquote p-3 border rounded">
-                        <p class="mb-1">"Excelente atención y entrega a tiempo. Repuestos de calidad que nos han permitido seguir operando."</p>
-                        <footer class="blockquote-footer">Gerente de mantenimiento, Empresa X</footer>
-                    </blockquote>
-                </div>
-                <div class="col-md-4">
-                    <blockquote class="blockquote p-3 border rounded">
-                        <p class="mb-1">"Asesoría profesional; encontraron la pieza difícil de conseguir en tiempo récord."</p>
-                        <footer class="blockquote-footer">Supervisor de logística, Empresa Y</footer>
-                    </blockquote>
-                </div>
-                <div class="col-md-4">
-                    <blockquote class="blockquote p-3 border rounded">
-                        <p class="mb-1">"Buena relación calidad-precio y atención postventa destacable."</p>
-                        <footer class="blockquote-footer">Técnico, Taller Z</footer>
-                    </blockquote>
-                </div>
-            </div>
-        </div>
-
-        <!-- CTA / Contacto rápido -->
-        <div class="mt-5 p-4 bg-primary text-white rounded d-flex flex-column flex-md-row align-items-center justify-content-between">
-            <div>
-                <h4 class="mb-1">¿Necesita cotización rápida o soporte técnico?</h4>
-                <p class="mb-0">Agregue repuestos a su solicitud de cotización o contáctenos directamente para atención prioritaria.</p>
-            </div>
-            <div class="mt-3 mt-md-0">
-                <a href="{% url 'tienda' %}" class="btn btn-light me-2">Ir a la Tienda</a>
-                <a href="mailto:ventas@tusitio.com" class="btn btn-outline-light">Contáctenos</a>
-            </div>
-        </div>
-
-        <!-- NUEVA SECCIÓN: CONTACTO POR MOTIVO -->
-        <section class="section py-5">
-            <div class="container">
-                <h2 class="mb-4">Contacto</h2>
-                <p class="text-muted mb-4">Seleccione el motivo de su contacto y use la acción rápida para comunicarse con nosotros.</p>
-
-                <div class="row gy-3">
-                    <div class="col-md-3">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title"><i class="fas fa-file-invoice-dollar me-2 text-primary"></i>Solicitar Cotización</h5>
-                                <p class="card-text small text-muted">Agregue productos a su solicitud y envíe una cotización personalizada.</p>
-                                <div class="mt-auto">
-                                    <a href="{% url 'cotizacion' %}" class="btn btn-primary btn-sm">Ir a solicitud</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title"><i class="fas fa-tools me-2 text-primary"></i>Soporte Técnico</h5>
-                                <p class="card-text small text-muted">Asesoría para identificar piezas y resolver fallos en montacargas.</p>
-                                <div class="mt-auto">
-                                    <a href="mailto:soporte@tusitio.com?subject=Soporte%20técnico%20-%20Montacargas" class="btn btn-outline-primary btn-sm">Enviar correo</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title"><i class="fas fa-truck me-2 text-primary"></i>Pedidos y Logística</h5>
-                                <p class="card-text small text-muted">Consultas sobre tiempos de entrega, stock y seguimiento de pedidos.</p>
-                                <div class="mt-auto">
-                                    <a href="tel:+1234567890" class="btn btn-outline-primary btn-sm">Llamar ahora</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title"><i class="fas fa-exclamation-triangle me-2 text-primary"></i>Reclamos y Garantía</h5>
-                                <p class="card-text small text-muted">Reportar piezas defectuosas o gestionar garantías y devoluciones.</p>
-                                <div class="mt-auto">
-                                    <a href="mailto:reclamos@tusitio.com?subject=Reclamo%20/%20Garantía" class="btn btn-outline-primary btn-sm">Enviar reclamo</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Información adicional de contacto -->
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <h6>Teléfono</h6>
-                        <p class="mb-1"><a href="tel:+1234567890" class="text-decoration-none">+1 (234) 567-890</a></p>
-                    </div>
-                    <div class="col-md-6">
-                        <h6>Correo</h6>
-                        <p class="mb-1"><a href="mailto:ventas@tusitio.com" class="text-decoration-none">ventas@tusitio.com</a></p>
-                    </div>
-                </div>
-            </div>
-        </section>
     </div>
 </section>
 
-<!-- Filtros de categoría -->
-<section class="section section-light" style="padding-top: 40px;">
+<!-- About Section -->
+<section class="section py-5 overflow-hidden" style="background-color: #f8f9fa;">
     <div class="container">
-        <div class="row mb-4">
-            <div class="col-md-12">
-                <form method="get" class="d-flex align-items-center gap-2">
-                    <label for="categoria" class="form-label mb-0 me-2"><i class="fas fa-filter"></i> Filtrar por categoría:</label>
-                    <select name="categoria" id="categoria" class="form-select w-auto">
-                        <option value="">Todas</option>
-                        {% for cat in categorias %}
-                            <option value="{{ cat.id }}" {% if categoria_id|default:'' == cat.id|stringformat:'s' %}selected{% endif %}>{{ cat.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                    <button type="submit" class="btn btn-outline-primary ms-2"><i class="fas fa-search"></i> Filtrar</button>
-                    {% if categoria_id %}
-                    <a href="{% url 'index' %}" class="btn btn-secondary ms-2"><i class="fas fa-eraser"></i> Limpiar</a>
-                    {% endif %}
-                </form>
+        <div class="row align-items-center gy-5">
+            <div class="col-lg-6 order-lg-2" data-aos="fade-left">
+                <div class="position-relative ps-lg-5">
+                    <img src="https://plus.unsplash.com/premium_photo-1663100854088-bd8ab87870a7?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bW9udGFjYXJnYXxlbnwwfHwwfHx8MA%3D%3D" alt="Almacén" class="img-fluid rounded-4 shadow-lg" style="border-bottom: 8px solid var(--primary-color);">
+                    <div class="position-absolute bottom-0 start-0 bg-secondary text-white p-4 rounded-3 shadow m-4 d-none d-md-block animate__animated animate__fadeInUp" style="max-width: 220px;">
+                        <h3 class="text-primary display-4 fw-bold mb-0">10+</h3>
+                        <p class="mb-0 fw-bold">Años de Excelencia</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-1" data-aos="fade-right">
+                <span class="text-primary fw-bold text-uppercase letter-spacing-2 d-block mb-2">Sobre EDES</span>
+                <h2 class="section-title text-start mx-0 mb-4 display-4">El Poder De La Excelencia</h2>
+                
+                <div class="mb-4 p-4 bg-white rounded-4 shadow-sm border-start border-4 border-primary">
+                    <h4 class="text-secondary fw-bold mb-2"><i class="fas fa-bullseye me-2 text-primary"></i>Misión</h4>
+                    <p class="text-muted mb-0">Nuestra misión es ayudar a garantizar la eficiencia y maximizar la productividad de nuestros clientes, brindando soluciones integrales en logística y energía industrial (venta, alquiler y servicio), con un soporte posventa robusto que no se detiene y que asegura la continuidad operativa.</p>
+                </div>
+
+                <div class="mb-4 p-4 bg-white rounded-4 shadow-sm border-start border-4 border-secondary">
+                    <h4 class="text-secondary fw-bold mb-2"><i class="fas fa-eye me-2 text-secondary"></i>Visión</h4>
+                    <p class="text-muted mb-0">Ser el referente indiscutible, a nivel nacional e internacional, en soluciones de Logística y Energía Industrial. Nos inspira <strong>El Poder De La Excelencia</strong>, lo cual nos convierte en una marca líder, elegida por la confiabilidad inquebrantable de nuestros productos y servicios, superando consistentemente las expectativas de nuestros clientes.</p>
+                </div>
+
+                <div class="mt-4">
+                    <a href="#contacto" class="btn btn-outline-secondary rounded-pill px-4 hover-scale">Contáctanos</a>
+                </div>
             </div>
         </div>
-
-        <div class="row">
-            {% for producto in productos %}
-            <div class="col-md-4 col-lg-3 mb-4">
-                <a href="{% url 'productos' producto.id %}" style="text-decoration:none;color:inherit;">
-                    <div class="card h-100 shadow-sm">
-                        {% if producto.imagen %}
-                        <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="object-fit:cover;max-height:180px;">
-                        {% else %}
-                        <img src="{% static 'images/default_event.jpg' %}" class="card-img-top" alt="Sin imagen" style="object-fit:cover;max-height:180px;">
-                        {% endif %}
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ producto.nombre }}</h5>
-                            <p class="card-text text-muted mb-1" style="font-size:0.95em;">
-                                {% with producto.categorias.all|first as first_cat %}
-                                    {% if first_cat %}
-                                        <i class="fas fa-tag"></i> {{ first_cat.nombre }}
-                                    {% else %}
-                                        <i class="fas fa-tag"></i> Sin categoría
-                                    {% endif %}
-                                {% endwith %}
-                            </p>
-                            <p class="card-text">{{ producto.descripcion|truncatechars:80 }}</p>
-                            <div class="mt-auto">
-                                <span class="fw-bold text-primary" style="font-size:1.2em;">
-                                    ${{ producto.precio }}
-                                </span>
+    </div>
+    
+    <!-- Featured Products Preview -->
+    <section class="section py-5 bg-white position-relative" style="z-index: 10; margin-top: -50px;">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="section-title d-inline-block">Productos Destacados</h2>
+                <p class="text-muted mt-2">Calidad garantizada para su maquinaria</p>
+            </div>
+            <div class="row g-4">
+                {% for producto in productos|slice:":4" %}
+                <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="{{ forloop.counter }}00">
+                    <div class="card h-100 product-card border-0 shadow-sm no-tilt">
+                        <div class="position-relative overflow-hidden rounded-top-3">
+                            {% if producto.imagen %}
+                            <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 220px; object-fit: cover;">
+                            {% else %}
+                            <img src="{% static 'images/default_event.jpg' %}" class="card-img-top" alt="Sin imagen" style="height: 220px; object-fit: cover;">
+                            {% endif %}
+                            <div class="overlay-action d-flex align-items-center justify-content-center">
+                                 <a href="{% url 'productos' producto.id %}" class="btn btn-light rounded-pill px-4 shadow-sm fw-bold transform-scale">Ver Detalles</a>
                             </div>
+                            <span class="position-absolute top-0 end-0 bg-primary text-white px-3 py-1 m-2 rounded-pill fw-bold shadow-sm font-monospace">${{ producto.precio }}</span>
+                        </div>
+                        <div class="card-body d-flex flex-column pt-4">
+                            <h5 class="card-title fw-bold text-dark">{{ producto.nombre }}</h5>
+                            <p class="card-text text-muted small flex-grow-1">{{ producto.descripcion|truncatechars:60 }}</p>
                         </div>
                     </div>
-                </a>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p class="text-muted">Visita nuestra tienda para ver el catálogo completo.</p>
+                </div>
+                {% endfor %}
             </div>
-            {% empty %}
-            <div class="col-12 text-center">
-                <div class="alert alert-info">No hay productos para mostrar.</div>
+            <div class="text-center mt-5" data-aos="fade-up">
+                <a href="{% url 'tienda' %}" class="btn btn-secondary btn-lg rounded-pill px-5 shadow hover-scale">Ver Todo el Catálogo</a>
             </div>
-            {% endfor %}
+        </div>
+    </section>
+</section>
+
+<!-- Contact CTA -->
+<section id="contacto" class="section py-5 text-white position-relative overflow-hidden contact-cta" style="background-image: url(https://img.freepik.com/vector-gratis/advertencia-elegante-cuidado-fondo-atencion-proteccion_1017-54458.jpg); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <div class="container text-center position-relative z-1" data-aos="zoom-in">
+        <h2 class="text-white mb-4 display-5 fw-bold">¿Necesita una solución específica?</h2>
+        <p class="lead mb-5 text-white-50 container-md mx-auto" style="max-width: 700px;">Nuestro equipo de expertos en EDES está listo para brindarle el soporte que su operación necesita. Contáctenos hoy mismo.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'cotizacion' %}" class="btn btn-primary btn-lg rounded-pill px-5 text-white shadow hover-scale">Solicitar Cotización</a>
+            <a href="https://wa.me/584241217906" target="_blank" class="btn btn-outline-light btn-lg rounded-pill px-5 hover-scale"><i class="fab fa-whatsapp me-2"></i> Chat WhatsApp</a>
         </div>
     </div>
 </section>
+
 {% endblock %}

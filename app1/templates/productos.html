@@ -1,95 +1,142 @@
 {% extends 'base_index.html' %}
 {% load static %}
 
-{% block title %}{{ producto.nombre }} | Detalle{% endblock %}
+{% block title %}{{ producto.nombre }} | EDES Venezuela{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <a href="{% url 'tienda' %}" class="btn btn-link mb-3"><i class="fas fa-arrow-left"></i> Volver a la tienda</a>
-    <div class="row">
-        <div class="col-md-6">
-            <!-- Carrusel de imágenes -->
-            <div id="carouselProducto" class="carousel slide mb-3" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    {% if imagenes %}
-                        {% for img in imagenes %}
-                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                            <img src="{{ img.url }}" class="d-block w-100" alt="{{ producto.nombre }}" style="object-fit:cover;max-height:350px;">
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="carousel-item active">
-                            <img src="{% static 'images/default_event.jpg' %}" class="d-block w-100" alt="Sin imagen" style="object-fit:cover;max-height:350px;">
-                        </div>
-                    {% endif %}
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselProducto" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Anterior</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselProducto" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Siguiente</span>
-                </button>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <h2>{{ producto.nombre }}</h2>
-            <p class="text-muted mb-1">
-                {% with producto.categorias.all|first as first_cat %}
-                    {% if first_cat %}
-                        <i class="fas fa-tag"></i> {{ first_cat.nombre }}
-                    {% else %}
-                        <i class="fas fa-tag"></i> Sin categoría
-                    {% endif %}
-                {% endwith %}
-            </p>
-            <h4 class="text-primary mb-3">${{ producto.precio }}</h4>
-            <p>{{ producto.descripcion }}</p>
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb" style="font-size: 0.9rem;">
+            <li class="breadcrumb-item"><a href="{% url 'tienda' %}">Tienda</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ producto.nombre }}</li>
+        </ol>
+    </nav>
 
-            <!-- Formulario para agregar a la solicitud de cotización -->
-            <form method="post" action="{% url 'cotizacion_add' %}" class="row g-2 align-items-center mt-3">
-                {% csrf_token %}
-                <input type="hidden" name="product_id" value="{{ producto.id }}">
-                <div class="col-auto">
-                    <label class="visually-hidden" for="cantidad">Cantidad</label>
-                    <input type="number" min="1" name="cantidad" value="1" class="form-control" style="width:100px;">
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-outline-primary"><i class="fas fa-shopping-cart me-1"></i> Solicitar cotización</button>
-                </div>
-                <div class="col-12 mt-2">
-                    <a href="{% url 'cotizacion' %}" class="btn btn-link">Ver mi solicitud de cotización</a>
-                </div>
-            </form>
-
-        </div>
-    </div>
-
-    <hr class="my-5">
-    <h4 class="mb-4">Productos sugeridos</h4>
-    <div class="row">
-        {% for sugerido in sugeridos %}
-        <div class="col-md-3 mb-4">
-            <div class="card h-100">
-                <a href="{% url 'productos' sugerido.id %}" style="text-decoration:none;color:inherit;">
-                    {% if sugerido.imagen %}
-                    <img src="{{ sugerido.imagen.url }}" class="card-img-top" alt="{{ sugerido.nombre }}" style="object-fit:cover;max-height:140px;">
-                    {% else %}
-                    <img src="{% static 'images/default_event.jpg' %}" class="card-img-top" alt="Sin imagen" style="object-fit:cover;max-height:140px;">
-                    {% endif %}
-                    <div class="card-body">
-                        <h6 class="card-title">{{ sugerido.nombre }}</h6>
-                        <span class="fw-bold text-primary">${{ sugerido.precio }}</span>
+    <!-- Main product card with colored background gradient -->
+    <div class="card shadow-lg border-0 overflow-hidden mb-5 rounded-3" style="background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);">
+        <div class="row g-0">
+            <!-- Left side with colored background -->
+            <div class="col-md-6 d-flex align-items-center justify-content-center p-4 p-md-5 position-relative" style="background: linear-gradient(135deg, rgba(140, 198, 63, 0.08) 0%, rgba(140, 198, 63, 0.03) 100%);">
+                <!-- Product Image/Carousel -->
+                <div id="carouselProducto" class="carousel slide w-100 position-relative" data-bs-ride="carousel">
+                    <div class="carousel-inner rounded-2 shadow bg-white p-3">
+                        {% if imagenes %}
+                            {% for img in imagenes %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <img src="{{ img.url }}" class="d-block w-100" alt="{{ producto.nombre }}" style="max-height: 350px; object-fit: contain; background: white;">
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="carousel-item active">
+                                <img src="{% static 'images/default_event.jpg' %}" class="d-block w-100" alt="Sin imagen" style="max-height: 350px; object-fit: contain; background: white;">
+                            </div>
+                        {% endif %}
                     </div>
-                </a>
+                    {% if imagenes|length > 1 %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselProducto" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" style="background-color: rgba(0,0,0,0.3); border-radius: 50%; padding: 10px;"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselProducto" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" style="background-color: rgba(0,0,0,0.3); border-radius: 50%; padding: 10px;"></span>
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Right side with better typography and reduced font sizes -->
+            <div class="col-md-6">
+                <div class="card-body p-4 p-lg-4 h-100 d-flex flex-column">
+                    <div class="mb-3">
+                        {% with producto.categorias.all|first as first_cat %}
+                            {% if first_cat %}
+                                <span class="badge rounded-pill px-3 py-1" style="background-color: rgba(0, 77, 37, 0.1); color: var(--secondary-color); border: 1px solid var(--secondary-color); font-size: 0.8rem;">{{ first_cat.nombre }}</span>
+                            {% endif %}
+                        {% endwith %}
+                        {% if producto.agotado %}
+                            <span class="badge rounded-pill px-3 py-1 ms-2" style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid #dc3545; font-size: 0.8rem;">Agotado</span>
+                        {% else %}
+                            <span class="badge rounded-pill px-3 py-1 ms-2" style="background-color: rgba(40, 167, 69, 0.1); color: #28a745; border: 1px solid #28a745; font-size: 0.8rem;">Disponible</span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Reduced heading size and improved spacing -->
+                    <h1 class="fw-bold mb-2 text-secondary" style="font-size: 1.6rem;">{{ producto.nombre }}</h1>
+                    <div class="d-flex align-items-center mb-4">
+                        <h2 class="text-primary mb-0 fw-bold me-3" style="font-size: 1.8rem;">${{ producto.precio }}</h2>
+                        <span class="text-muted small" style="font-size: 0.85rem;">Precio unitario</span>
+                    </div>
+                    
+                    <!-- Description box with green border and better styling -->
+                    <div class="mb-4 p-3 rounded-2" style="background-color: rgba(140, 198, 63, 0.08); border-left: 4px solid var(--accent-color);">
+                        <h5 class="text-secondary mb-2 fw-bold" style="font-size: 0.95rem;">Descripción del Producto</h5>
+                        <p class="mb-0 text-muted" style="font-size: 0.9rem;">{{ producto.descripcion }}</p>
+                    </div>
+
+                    <div class="mt-auto pt-3 border-top">
+                        <form method="post" action="{% url 'cotizacion_add' %}" class="row g-2 align-items-end">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="{{ producto.id }}">
+                            
+                            <!-- Improved quantity selector with better spacing -->
+                            <div class="col-sm-4">
+                                <label class="form-label fw-bold small text-uppercase text-muted" style="font-size: 0.8rem;">Cantidad</label>
+                                <div class="input-group">
+                                    <button class="btn btn-outline-secondary" type="button" style="font-size: 0.9rem;" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
+                                    <input type="number" min="1" name="cantidad" value="1" class="form-control text-center border-secondary" style="font-size: 0.9rem;">
+                                    <button class="btn btn-outline-secondary" type="button" style="font-size: 0.9rem;" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-8">
+                                <button type="submit" class="btn btn-primary w-100 rounded-pill shadow" style="font-size: 0.95rem; padding: 0.6rem;" {% if producto.agotado %}disabled{% endif %}>
+                                    <i class="fas fa-cart-plus me-2"></i> Agregar a Cotización
+                                </button>
+                            </div>
+                        </form>
+                        <div class="mt-2 text-center">
+                            <a href="{% url 'cotizacion' %}" class="text-decoration-none text-muted small" style="font-size: 0.85rem;">
+                                <i class="fas fa-clipboard-list me-1"></i> Ver mi lista de cotización actual
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        {% empty %}
-        <div class="col-12 text-center">
-            <div class="alert alert-info">No hay productos sugeridos.</div>
-        </div>
-        {% endfor %}
     </div>
+
+    <!-- Suggested Products with improved card styling and smaller sizes -->
+    {% if sugeridos %}
+    <div class="mt-5">
+        <h3 class="section-title text-start" style="font-size: 1.4rem;">Productos Relacionados</h3>
+        <div class="row g-3">
+            {% for sugerido in sugeridos %}
+            <div class="col-md-3 col-sm-6">
+                <div class="card h-100 shadow-sm border-0 rounded-2 overflow-hidden" style="background: white; transition: all 0.3s ease;">
+                    <a href="{% url 'productos' sugerido.id %}" class="text-decoration-none">
+                        <div class="position-relative overflow-hidden" style="height: 140px; background-color: #f9f9f9;">
+                            {% if sugerido.imagen %}
+                            <img src="{{ sugerido.imagen.url }}" class="w-100 h-100" alt="{{ sugerido.nombre }}" style="object-fit: cover; transition: transform 0.3s ease;">
+                            {% else %}
+                            <img src="{% static 'images/default_event.jpg' %}" class="w-100 h-100" alt="Sin imagen" style="object-fit: cover;">
+                            {% endif %}
+                        </div>
+                        <div class="card-body p-2 p-md-3">
+                            <h6 class="card-title text-dark mb-2" style="font-size: 0.9rem; font-weight: 700;">{{ sugerido.nombre }}</h6>
+                            <span class="text-primary fw-bold" style="font-size: 0.95rem;">${{ sugerido.precio }}</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 </div>
+
+<style>
+    @media (max-width: 768px) {
+        h1 { font-size: 1.3rem; }
+        .card-body { padding: 1.2rem !important; }
+    }
+</style>
 {% endblock %}
