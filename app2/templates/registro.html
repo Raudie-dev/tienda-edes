@@ -1,185 +1,285 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Panel de Pruebas{% endblock %}
+{% block title %}Agregar Productos y Categorías{% endblock %}
 
-{% block extra_head %}
-<style>
-    /* Dark panel overrides for this page */
-    body {
-        background-color: #000 !important;
-        color: #fff !important;
-    }
-    .content-area, .container-fluid {
-        background: transparent;
-        color: #fff !important;
-    }
-    .content-area .form-control,
-    .content-area .form-select,
-    textarea {
-        background-color: #111 !important;
-        color: #fff !important;
-        border: 1px solid #333 !important;
-    }
-    .content-area .form-control::placeholder { color: #bbb !important; }
-    .table, .table th, .table td { color: #fff !important; border-color: rgba(255,255,255,0.05) !important; }
-    .text-muted { color: rgba(255,255,255,0.6) !important; }
-</style>
-{% endblock %}
 {% block content %}
+
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-0">Gestión de Productos</h1>
+
+  <!-- Page Header -->
+  <div class="page-header my-4">
+    <h1 class="page-title">Agregar Productos y Categorías</h1>
+  </div>
+
+  <!-- PANEL DE CONTROL -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h5 class="mb-1 text-dark"><i class="fas fa-tools me-2 text-primary"></i>Panel de Registro</h5>
+          <p class="text-muted mb-0">Utiliza los botones para registrar nuevos elementos en el sistema.</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0 d-flex gap-2 justify-content-end">
+          <!-- Botón Nueva Categoría -->
+          <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalCrearCategoria">
+            <i class="fas fa-tags me-1"></i> Nueva Categoría
+          </button>
+          <!-- Botón Nuevo Producto -->
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearProducto">
+            <i class="fas fa-plus-circle me-1"></i> Nuevo Producto
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 
-        <div class="row mb-4 align-items-center">
-                <div class="col-md-6">
-                        <h5>Registrar</h5>
-                        <p class="text-muted">Usa los botones para abrir los modales y registrar productos o categorías.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                        <!-- Buttons to open modals -->
-                        <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#modalCrearCategoria">
-                                <i class="fas fa-plus-circle"></i> Nueva categoría
-                        </button>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearProducto">
-                                <i class="fas fa-box-open"></i> Nuevo producto
-                        </button>
-                </div>
-        </div>
-
-        <!-- Modales -->
-        <!-- Modal: Crear categoría -->
-        <div class="modal fade" id="modalCrearCategoria" tabindex="-1" aria-labelledby="modalCrearCategoriaLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content bg-dark text-white">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalCrearCategoriaLabel">Crear categoría</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="categoria_nombre_modal" class="form-label">Nombre</label>
-                                <input id="categoria_nombre_modal" type="text" name="categoria_nombre" class="form-control bg-dark text-white" placeholder="Nombre categoría" required>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" name="crear_categoria" class="btn btn-primary">Crear</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal: Crear producto -->
-        <div class="modal fade" id="modalCrearProducto" tabindex="-1" aria-labelledby="modalCrearProductoLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content bg-dark text-white">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalCrearProductoLabel">Crear producto</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="modal-body">
-                            <div class="row g-2">
-                                <div class="col-md-6">
-                                    <label class="form-label">Nombre</label>
-                                    <input type="text" name="nombre" class="form-control bg-dark text-white" required>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Precio</label>
-                                    <input type="number" step="0.01" name="precio" class="form-control bg-dark text-white" required>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Categorías</label>
-                                    <!-- Reemplazado: select múltiple -> lista con checkboxes -->
-                                    <div class="list-group categorias-list bg-dark text-white" style="max-height:200px; overflow:auto;">
-                                        {% for cat in categorias %}
-                                            <label class="list-group-item list-group-item-action bg-dark text-white d-flex justify-content-between align-items-center">
-                                                <span>{{ cat.nombre }}</span>
-                                                <input class="form-check-input ms-2" type="checkbox" name="categoria_ids" value="{{ cat.id }}">
-                                            </label>
-                                        {% empty %}
-                                            <div class="list-group-item bg-dark text-white">No hay categorías</div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">Descripción</label>
-                                    <textarea name="descripcion" class="form-control bg-dark text-white" rows="3"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">Imagen</label>
-                                    <input type="file" name="imagen" accept="image/*" class="form-control bg-dark text-white">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" name="crear_producto" class="btn btn-primary">Registrar producto</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-    <h3 class="mt-4">Categorías</h3>
-    <table class="table table-sm table-dark">
-        <thead>
+  <!-- LISTADO DE CATEGORÍAS (JERÁRQUICO) -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+        <h5 class="m-0"><i class="fas fa-list me-2"></i>Estructura de Categorías</h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="table-light">
             <tr>
-                <th>Nombre</th>
-                <th>Acciones</th>
+              <th>Nombre de Categoría</th>
+              <th>Tipo</th>
+              <th style="width: 200px;" class="text-end">Acciones</th>
             </tr>
-        </thead>
-        <tbody>
+          </thead>
+          <tbody>
             {% for cat in categorias %}
-            <tr>
-                <td>{{ cat.nombre }}</td>
-                <td>
-                    <form method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" name="eliminar_categoria" value="{{ cat.id }}" class="btn btn-outline-danger btn-sm">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
+                {# Lógica: Solo iteramos las principales (las que NO tienen padre) #}
+                {% if not cat.padre %}
+                    
+                    <!-- 1. FILA DE CATEGORÍA PRINCIPAL (PADRE) -->
+                    <tr class="table-active bg-opacity-10">
+                      <td>
+                          <i class="fas fa-folder text-warning me-2"></i>
+                          <strong>{{ cat.nombre }}</strong>
+                      </td>
+                      <td><span class="badge bg-primary">Principal</span></td>
+                      <td class="text-end">
+                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                data-bs-toggle="modal" data-bs-target="#modalEliminarCategoria"
+                                data-bs-id="{{ cat.id }}" data-bs-nombre="{{ cat.nombre }}"
+                                title="Eliminar categoría">
+                          <i class="fas fa-trash me-1"></i> Eliminar
+                        </button>
+                      </td>
+                    </tr>
+
+                    <!-- 2. BUCLE DE SUBCATEGORÍAS (HIJOS) -->
+                    {# cat.subcategorias.all funciona gracias a related_name='subcategorias' en models.py #}
+                    {% for sub in cat.subcategorias.all %}
+                    <tr>
+                      <td style="padding-left: 40px;">
+                          <i class="fas fa-level-up-alt fa-rotate-90 text-muted me-2"></i>
+                          {{ sub.nombre }}
+                      </td>
+                      <td><span class="badge bg-secondary">Subcategoría</span></td>
+                      <td class="text-end">
+                        <button type="button" class="btn btn-sm btn-outline-danger border-0" 
+                                data-bs-toggle="modal" data-bs-target="#modalEliminarCategoria"
+                                data-bs-id="{{ sub.id }}" data-bs-nombre="{{ sub.nombre }}"
+                                title="Eliminar subcategoría">
+                          <i class="fas fa-trash me-1"></i> Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+
+                {% endif %}
             {% empty %}
             <tr>
-                <td colspan="2" class="text-center">No hay categorías.</td>
+              <td colspan="3" class="text-center py-5">
+                <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No hay categorías registradas aún.</p>
+              </td>
             </tr>
             {% endfor %}
-        </tbody>
-    </table>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div> 
+{% endblock content %}
+
+
+<!-- BLOQUE DE MODALES -->
+{% block modals %}
+
+<!-- MODAL 1: CREAR CATEGORÍA (MODIFICADO) -->
+<div class="modal fade" id="modalCrearCategoria" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-secondary text-white">
+        <h5 class="modal-title"><i class="fas fa-tag me-2"></i> Nueva Categoría</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="modal-body p-4">
+          
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Nombre de la Categoría</label>
+            <input type="text" name="categoria_nombre" class="form-control" required placeholder="Ej. Ropa de Hombre">
+          </div>
+
+          <!-- Selector de Padre -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Jerarquía <small class="text-muted fw-normal">(Opcional)</small></label>
+            <select name="categoria_padre" class="form-select">
+                <option value="">Es una Categoría Principal</option>
+                {% for cat in categorias %}
+                    {# Solo mostramos las principales como opción para ser padre #}
+                    {% if not cat.padre %}
+                        <option value="{{ cat.id }}">Subcategoría de: {{ cat.nombre }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" name="crear_categoria" class="btn btn-primary"><i class="fas fa-save me-1"></i> Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
-{% endblock %}
 
-{% block extra_scripts %}
+<!-- MODAL 2: CREAR PRODUCTO (MODIFICADO VISUALMENTE) -->
+<div class="modal fade" id="modalCrearProducto" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title"><i class="fas fa-box-open me-2"></i> Registrar Nuevo Producto</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body p-4">
+          <div class="row g-4">
+            <!-- Columna Izquierda -->
+            <div class="col-md-8">
+              <div class="mb-3">
+                <label class="form-label fw-bold">Nombre del Producto</label>
+                <input type="text" name="nombre" class="form-control form-control-lg" placeholder="Nombre del producto" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">Descripción</label>
+                <textarea name="descripcion" rows="5" class="form-control" placeholder="Detalles del producto..."></textarea>
+              </div>
+              <div class="mb-3">
+                  <label class="form-label fw-bold">Imagen del Producto</label>
+                  <input type="file" name="imagen" accept="image/*" class="form-control">
+              </div>
+            </div>
+            <!-- Columna Derecha -->
+            <div class="col-md-4">
+              <div class="bg-light p-3 rounded h-100 border">
+                
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Precio</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-dark text-white border-secondary">$</span>
+                    <input type="number" step="0.01" name="precio" class="form-control" placeholder="0.00" required>
+                  </div>
+                </div>
+
+                <hr class="border-secondary">
+                
+                <!-- SELECTOR MULTIPLE CON JERARQUÍA VISUAL -->
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Asignar Categorías</label>
+                  <select name="categoria_ids" class="form-select" multiple size="8">
+                    {% for cat in categorias %}
+                        <!-- Mostramos Padres -->
+                        {% if not cat.padre %}
+                            <option value="{{ cat.id }}" class="fw-bold">{{ cat.nombre }} (Principal)</option>
+                            
+                            <!-- Mostramos sus Hijos indentados -->
+                            {% for sub in cat.subcategorias.all %}
+                                <option value="{{ sub.id }}">&nbsp;&nbsp;&nbsp;↳ {{ sub.nombre }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    {% empty %}
+                      <option disabled>No hay categorías creadas</option>
+                    {% endfor %}
+                  </select>
+                  <small class="form-text text-muted">Ctrl + Clic para selección múltiple.</small>
+                </div>
+
+                <hr class="border-secondary">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" name="agotado" id="checkAgotadoNuevo">
+                  <label class="form-check-label fw-bold" for="checkAgotadoNuevo">Marcar como Agotado</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" name="crear_producto" class="btn btn-primary"><i class="fas fa-save me-1"></i> Registrar Producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 3: ELIMINAR CATEGORÍA (IGUAL) -->
+<div class="modal fade" id="modalEliminarCategoria" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i> Confirmar Eliminación</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body text-center p-4">
+        <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
+        <p class="mb-1">¿Estás seguro de que deseas eliminar la categoría:</p>
+        <h4 id="nombreCategoriaBorrar" class="fw-bold"></h4>
+        <p class="text-danger small mt-2">¡Cuidado! Si eliminas una categoría principal, se borrarán también sus subcategorías.</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" name="eliminar_categoria" id="btnConfirmarEliminar" value="" class="btn btn-danger">
+                Sí, Eliminar
+            </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPT -->
 <script>
-// filepath: /home/juan/Documentos/Proyectos/tienda-edes/app2/templates/registro.html
-// Hacer cada item clicable y sincronizar clase .active con el checkbox
-(function(){
-    document.addEventListener('DOMContentLoaded', function(){
-        document.querySelectorAll('.categorias-list .list-group-item').forEach(function(item){
-            var cb = item.querySelector('input[type="checkbox"]');
-            if(!cb) return;
-            // Inicializar estado visual
-            if(cb.checked) item.classList.add('active');
-
-            // Al clicar en el label (todo el item)
-            item.addEventListener('click', function(e){
-                // Si el click vino desde el checkbox, dejar que cambie por defecto
-                if(e.target === cb) {
-                    item.classList.toggle('active', cb.checked);
-                    return;
-                }
-                // Si clicamos en cualquier otra parte del item, alternar el checkbox
-                cb.checked = !cb.checked;
-                item.classList.toggle('active', cb.checked);
-            });
+    document.addEventListener('DOMContentLoaded', function () {
+        var modalEliminar = document.getElementById('modalEliminarCategoria');
+        
+        modalEliminar.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var catId = button.getAttribute('data-bs-id');
+            var catNombre = button.getAttribute('data-bs-nombre');
+            
+            var modalNombre = modalEliminar.querySelector('#nombreCategoriaBorrar');
+            var modalBtn = modalEliminar.querySelector('#btnConfirmarEliminar');
+            
+            modalNombre.textContent = catNombre;
+            modalBtn.value = catId;
         });
     });
-})();
 </script>
-{% endblock %}
+
+{% endblock modals %}

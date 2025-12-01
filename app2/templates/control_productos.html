@@ -1,38 +1,53 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Control de Productos{% endblock %}
-
-{% block extra_head %}
-<style>
-/* Reuse dark overrides from registro */
-body { background-color: #000 !important; color: #fff !important; }
-.content-area, .container-fluid { background: transparent; color: #fff !important; }
-.form-control, .form-select, textarea { background-color: #111 !important; color:#fff !important; border:1px solid #333 !important; }
-.table, .table th, .table td { color: #fff !important; border-color: rgba(255,255,255,0.05) !important; }
-</style>
-{% endblock %}
+{% block title %}Gestión de Productos{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">Control de Productos</h1>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">Gestión de Productos</h1>
   </div>
 
-  <!-- BARRA DE BÚSQUEDA Y FILTROS -->
-  <div class="row mb-3">
-    <div class="col-12">
-      <form method="get" class="row g-2">
+  <!-- BUSCADOR / FILTROS -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="get" class="row g-3">
         <div class="col-sm-5 col-md-4">
-          <input type="text" name="q" class="form-control" placeholder="Buscar por nombre o descripción..." value="{{ q|default:'' }}">
+          <input type="text" name="q" class="form-control"
+                 placeholder="Buscar por nombre o descripción..."
+                 value="{{ q|default:'' }}">
         </div>
+
+        <!-- 1. CAMBIO EN FILTRO DE CATEGORÍAS (Buscador) -->
         <div class="col-sm-3 col-md-3">
           <select name="categoria" class="form-select">
             <option value="">Todas las categorías</option>
             {% for cat in categorias %}
-              <option value="{{ cat.id }}" {% if categoria_id|default:'' == cat.id|stringformat:'s' %}selected{% endif %}>{{ cat.nombre }}</option>
+              {# Solo mostramos las principales primero #}
+              {% if not cat.padre %}
+                  
+                  <!-- Categoría Padre -->
+                  <option value="{{ cat.id }}" class="fw-bold"
+                    {% if categoria_id|default:'' == cat.id|stringformat:'s' %}selected{% endif %}>
+                    {{ cat.nombre }}
+                  </option>
+                  
+                  <!-- Subcategorías (Indentadas) -->
+                  {% for sub in cat.subcategorias.all %}
+                      <option value="{{ sub.id }}"
+                        {% if categoria_id|default:'' == sub.id|stringformat:'s' %}selected{% endif %}>
+                        &nbsp;&nbsp;↳ {{ sub.nombre }}
+                      </option>
+                  {% endfor %}
+
+              {% endif %}
             {% endfor %}
           </select>
         </div>
+
         <div class="col-sm-2 col-md-2">
           <select name="agotado" class="form-select">
             <option value="">Todos</option>
@@ -40,121 +55,247 @@ body { background-color: #000 !important; color: #fff !important; }
             <option value="0" {% if agotado_filter == '0' %}selected{% endif %}>Disponible</option>
           </select>
         </div>
+
         <div class="col-sm-2 col-md-3 d-flex gap-2">
-          <button type="submit" class="btn btn-primary">Buscar</button>
-          <a href="{% url 'control_productos' %}" class="btn btn-secondary">Limpiar</a>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search me-1"></i> Buscar
+          </button>
+          <a href="{% url 'control_productos' %}" class="btn btn-secondary">
+            <i class="fas fa-eraser me-1"></i> Limpiar
+          </a>
         </div>
       </form>
     </div>
   </div>
 
-
-  <table class="table table-striped table-dark">
-    <thead>
-      <tr>
-        <th>Imagen</th>
-        <th>Nombre</th>
-        <th>Categorías</th>
-        <th>Precio</th>
-        <th>Agotado</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for producto in productos %}
-      <tr>
-        <td style="width:100px;">
-          {% if producto.imagen %}
-            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" style="max-width:80px; max-height:80px; object-fit:cover;">
-          {% else %}
-            <span class="text-muted">-</span>
-          {% endif %}
-        </td>
-        <td>{{ producto.nombre }}</td>
-        <td>
-          {% for c in producto.categorias.all %}
-            <span class="badge bg-secondary me-1">{{ c.nombre }}</span>
-          {% empty %}
-            <span class="text-muted">Sin categoría</span>
-          {% endfor %}
-        </td>
-        <td>${{ producto.precio }}</td>
-        <td>{% if producto.agotado %}<span class="badge bg-danger">Agotado</span>{% else %}<span class="badge bg-success">Disponible</span>{% endif %}</td>
-        <td>
-          <!-- Edit modal trigger -->
-          <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEdit{{ producto.id }}">Editar</button>
-
-          <!-- Toggle agotado form -->
-          <form method="post" style="display:inline">
-            {% csrf_token %}
-            <button type="submit" name="toggle_agotado" value="{{ producto.id }}" class="btn btn-sm {% if producto.agotado %}btn-warning{% else %}btn-outline-warning{% endif %} me-1">{% if producto.agotado %}Desmarcar{% else %}Marcar agotado{% endif %}</button>
-          </form>
-
-          <!-- Delete form -->
-          <form method="post" style="display:inline" onsubmit="return confirm('Eliminar producto?');">
-            {% csrf_token %}
-            <button type="submit" name="eliminar_producto" value="{{ producto.id }}" class="btn btn-sm btn-danger">Eliminar</button>
-          </form>
-        </td>
-      </tr>
-
-      <!-- Edit modal per product -->
-      <div class="modal fade" id="modalEdit{{ producto.id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content bg-dark text-white">
-            <div class="modal-header">
-              <h5 class="modal-title">Editar producto - {{ producto.nombre }}</h5>
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="post" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="modal-body">
-                <input type="hidden" name="editar_producto_id" value="{{ producto.id }}">
-                <div class="row g-2">
-                  <div class="col-md-6">
-                    <label class="form-label">Nombre</label>
-                    <input type="text" name="nombre" class="form-control bg-dark text-white" value="{{ producto.nombre }}" required>
+  <!-- TABLA DE PRODUCTOS -->
+  <div class="card">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>Imagen</th>
+              <th>Nombre</th>
+              <th>Categorías</th>
+              {% if SHOW_PRICES %}
+              <th>Precio</th>
+              {% endif %}
+              <th>Estado</th>
+              <th style="width: 280px;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for producto in productos %}
+            <tr>
+              <td style="width:100px;">
+                {% if producto.imagen %}
+                  <img src="{{ producto.imagen.url }}"
+                       alt="{{ producto.nombre }}"
+                       style="max-width:80px; max-height:80px; object-fit:cover; border-radius: 8px;">
+                {% else %}
+                  <div style="width:80px; height:80px; background:#f0f0f0; border-radius:8px; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-image text-muted"></i>
                   </div>
-                  <div class="col-md-3">
-                    <label class="form-label">Precio</label>
-                    <input type="number" step="0.01" name="precio" class="form-control bg-dark text-white" value="{{ producto.precio }}" required>
+                {% endif %}
+              </td>
+              <td><strong>{{ producto.nombre }}</strong></td>
+              <td>
+                <!-- Mostramos las categorías como badges -->
+                {% for c in producto.categorias.all %}
+                    {% if c.padre %}
+                        <span class="badge bg-info text-dark me-1" title="Subcategoría de {{ c.padre.nombre }}">
+                            {{ c.nombre }}
+                        </span>
+                    {% else %}
+                        <span class="badge bg-secondary me-1">{{ c.nombre }}</span>
+                    {% endif %}
+                {% empty %}
+                  <span class="text-muted">Sin categoría</span>
+                {% endfor %}
+              </td>
+              {% if SHOW_PRICES %}
+              <td><strong>${{ producto.precio }}</strong></td>
+              {% endif %}
+              <td>
+                {% if producto.agotado %}
+                  <span class="badge bg-danger">
+                    <i class="fas fa-times-circle me-1"></i> Agotado
+                  </span>
+                {% else %}
+                  <span class="badge bg-success">
+                    <i class="fas fa-check-circle me-1"></i> Disponible
+                  </span>
+                {% endif %}
+              </td>
+              <td>
+                <button class="btn btn-sm btn-primary me-1"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEdit{{ producto.id }}"
+                        title="Editar producto">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <form method="post" style="display:inline">
+                  {% csrf_token %}
+                  <button type="submit" name="toggle_agotado" value="{{ producto.id }}"
+                    class="btn btn-sm {% if producto.agotado %}btn-accent{% else %}btn-warning{% endif %} me-1"
+                    title="{% if producto.agotado %}Marcar disponible{% else %}Marcar agotado{% endif %}">
+                    <i class="fas fa-{% if producto.agotado %}check{% else %}ban{% endif %}"></i>
+                  </button>
+                </form>
+                <form method="post" style="display:inline" onsubmit="return confirm('¿Eliminar este producto?');">
+                  {% csrf_token %}
+                  <button type="submit" name="eliminar_producto" value="{{ producto.id }}"
+                    class="btn btn-sm btn-danger"
+                    title="Eliminar producto">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center py-5">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No se encontraron productos</p>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div> 
+{% endblock %}
+
+
+<!-- =========== Bloque de modales =========== -->
+{% block modals %}
+  {% for producto in productos %}
+  <div class="modal fade" id="modalEdit{{ producto.id }}" tabindex="-1" aria-labelledby="modalEditLabel{{ producto.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+
+        <div class="modal-header bg-secondary text-white border-0">
+          <h5 class="modal-title" id="modalEditLabel{{ producto.id }}">
+            <i class="fas fa-edit me-2"></i>
+            Editar producto: <span class="fw-normal">{{ producto.nombre }}</span>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="modal-body p-4">
+            <input type="hidden" name="editar_producto_id" value="{{ producto.id }}">
+            
+            <div class="row g-4">
+              <!-- COLUMNA IZQUIERDA -->
+              <div class="col-md-8">
+                <div class="mb-3">
+                  <label for="nombre-{{ producto.id }}" class="form-label fw-bold">
+                    <i class="fas fa-tag me-1 text-primary"></i> Nombre del Producto
+                  </label>
+                  <input type="text" name="nombre" id="nombre-{{ producto.id }}" class="form-control form-control-lg" value="{{ producto.nombre }}" required>
+                </div>
+
+                <div class="mb-3">
+                  <label for="descripcion-{{ producto.id }}" class="form-label fw-bold">
+                    <i class="fas fa-align-left me-1 text-primary"></i> Descripción
+                  </label>
+                  <textarea name="descripcion" id="descripcion-{{ producto.id }}" rows="5" class="form-control">{{ producto.descripcion }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">
+                        <i class="fas fa-image me-1 text-primary"></i> Imagen del Producto
+                    </label>
+
+                    {% if producto.imagen %}
+                        <div class="text-center mb-3">
+                            <img src="{{ producto.imagen.url }}"
+                                alt="Imagen actual"
+                                class="img-thumbnail"
+                                style="width: 220px; height: 220px; object-fit: cover;">
+                        </div>
+                    {% endif %}
+
+                    <input type="file" name="imagen" id="imagen-{{ producto.id }}" accept="image/*" class="form-control">
+                    <small class="form-text text-muted">Sube un nuevo archivo para reemplazar la imagen actual.</small>
+                </div>
+              </div>
+
+              <!-- COLUMNA DERECHA -->
+              <div class="col-md-4">
+                <div class="bg-light p-3 rounded h-100">
+                  {% if SHOW_PRICES %}
+                  <div class="mb-3">
+                    <label for="precio-{{ producto.id }}" class="form-label fw-bold">
+                      <i class="fas fa-dollar-sign me-1 text-primary"></i> Precio
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-text">$</span>
+                      <input type="number" step="0.01" name="precio" id="precio-{{ producto.id }}" class="form-control" value="{{ producto.precio }}" required>
+                    </div>
                   </div>
-                  <div class="col-md-3">
-                    <label class="form-label">Categorías</label>
-                    <select name="categoria_ids" class="form-select bg-dark text-white" multiple>
+                  {% endif %}
+                  
+                  <!-- 2. CAMBIO EN SELECTOR DE CATEGORÍAS (Edición) -->
+                  <div class="mb-3">
+                    <label for="categorias-{{ producto.id }}" class="form-label fw-bold">
+                      <i class="fas fa-folder me-1 text-primary"></i> Categorías
+                    </label>
+                    <select name="categoria_ids" id="categorias-{{ producto.id }}" class="form-select" multiple size="8">
                       {% for cat in categorias %}
-                        <option value="{{ cat.id }}" {% if cat in producto.categorias.all %}selected{% endif %}>{{ cat.nombre }}</option>
+                        {# Solo iteramos las principales #}
+                        {% if not cat.padre %}
+                            
+                            <!-- Opción Padre -->
+                            <option value="{{ cat.id }}" class="fw-bold" 
+                                {% if cat in producto.categorias.all %}selected{% endif %}>
+                                {{ cat.nombre }} (Principal)
+                            </option>
+                            
+                            <!-- Opción Hijos -->
+                            {% for sub in cat.subcategorias.all %}
+                                <option value="{{ sub.id }}" 
+                                    {% if sub in producto.categorias.all %}selected{% endif %}>
+                                    &nbsp;&nbsp;&nbsp;↳ {{ sub.nombre }}
+                                </option>
+                            {% endfor %}
+
+                        {% endif %}
                       {% endfor %}
                     </select>
+                    <small class="form-text text-muted">Mantén Ctrl/Cmd para seleccionar varias.</small>
                   </div>
-                  <div class="col-12">
-                    <label class="form-label">Descripción</label>
-                    <textarea name="descripcion" class="form-control bg-dark text-white" rows="3">{{ producto.descripcion }}</textarea>
-                  </div>
-                  <div class="col-12">
-                    <label class="form-label">Imagen (opcional)</label>
-                    <input type="file" name="imagen" accept="image/*" class="form-control bg-dark text-white">
-                  </div>
-                  <div class="col-12">
-                    <div class="form-check mt-2">
-                      <input class="form-check-input" type="checkbox" name="agotado" id="agotado{{ producto.id }}" {% if producto.agotado %}checked{% endif %}>
-                      <label class="form-check-label" for="agotado{{ producto.id }}">Agotado</label>
-                    </div>
+                  
+                  <hr>
+
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" name="agotado" id="agotado-{{ producto.id }}" {% if producto.agotado %}checked{% endif %}>
+                    <label class="form-check-label fw-bold" for="agotado-{{ producto.id }}">
+                      Producto Agotado
+                    </label>
                   </div>
                 </div>
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" name="editar_producto" class="btn btn-primary">Guardar cambios</button>
-              </div>
-            </form>
+            </div>
           </div>
-        </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <i class="fas fa-times me-1"></i> Cancelar
+            </button>
+            <button type="submit" name="editar_producto" class="btn btn-primary">
+              <i class="fas fa-save me-1"></i> Guardar cambios
+            </button>
+          </div>
+        </form>
       </div>
-
-      {% endfor %}
-    </tbody>
-  </table>
-
-</div>
-{% endblock %}
+    </div>
+  </div>
+  {% endfor %}
+{% endblock modals %}

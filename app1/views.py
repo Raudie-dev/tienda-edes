@@ -31,27 +31,48 @@ def index(request):
 
 # Nueva vista: tienda pública con búsqueda y filtros
 def tienda(request):
-    categorias = Category.objects.all()
+    # Optimización: Cargar subcategorías de una vez para el menú
+    categorias = Category.objects.prefetch_related('subcategorias').all()
+    
+    # Base de productos
     productos = Product.objects.prefetch_related('categorias').all()
 
     q = request.GET.get('q', '').strip()
     categoria_id = request.GET.get('categoria', '').strip()
     agotado_filter = request.GET.get('agotado', '').strip()  # '' | '1' | '0'
 
+    # 1. Filtro por Texto
     if q:
         from django.db.models import Q
         productos = productos.filter(Q(nombre__icontains=q) | Q(descripcion__icontains=q))
+
+    # 2. Filtro por Categoría (MEJORADO PARA SUBCATEGORÍAS)
     if categoria_id:
         try:
-            productos = productos.filter(categorias__id=int(categoria_id))
-        except (ValueError, TypeError):
-            pass
+            cid = int(categoria_id)
+            # Buscamos la categoría seleccionada
+            cat_obj = Category.objects.get(id=cid)
+            
+            # Obtenemos una lista con el ID seleccionado + IDs de sus hijos
+            # values_list('id', flat=True) devuelve solo los números [1, 5, 8...]
+            ids_a_buscar = list(cat_obj.subcategorias.values_list('id', flat=True))
+            ids_a_buscar.append(cid) # Agregamos el padre también
+            
+            # Filtramos productos que estén en CUALQUIERA de esos IDs
+            productos = productos.filter(categorias__id__in=ids_a_buscar)
+            
+        except (ValueError, TypeError, Category.DoesNotExist):
+            pass # Si el ID no es válido o no existe, ignoramos el filtro
+
+    # 3. Filtro por Disponibilidad
     if agotado_filter == '1':
         productos = productos.filter(agotado=True)
     elif agotado_filter == '0':
         productos = productos.filter(agotado=False)
 
     productos = productos.distinct().order_by('-creado')
+    
+    # Asumo que esta función auxiliar la tienes definida en tu archivo
     cart_count = _get_cart_count(request)
 
     return render(request, 'tienda.html', {

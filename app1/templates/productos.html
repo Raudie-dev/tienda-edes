@@ -46,24 +46,40 @@
             <!-- Right side with better typography and reduced font sizes -->
             <div class="col-md-6">
                 <div class="card-body p-4 p-lg-4 h-100 d-flex flex-column">
-                    <div class="mb-3">
-                        {% with producto.categorias.all|first as first_cat %}
-                            {% if first_cat %}
-                                <span class="badge rounded-pill px-3 py-1" style="background-color: rgba(0, 77, 37, 0.1); color: var(--secondary-color); border: 1px solid var(--secondary-color); font-size: 0.8rem;">{{ first_cat.nombre }}</span>
-                            {% endif %}
-                        {% endwith %}
+                    <div class="mb-3 d-flex flex-wrap align-items-center">
+                        <!-- BUCLE DE CATEGORÍAS -->
+                    {% for cat in producto.categorias.all %}
+                        <!-- Solo mostramos si TIENE padre (es subcategoría) -->
+                        {% if cat.padre %}
+                            <span class="badge rounded-pill px-3 py-1 me-2 mb-1 d-inline-flex align-items-center" 
+                                style="background-color: rgba(0, 77, 37, 0.1); color: var(--secondary-color); border: 1px solid var(--secondary-color); font-size: 0.8rem;">
+                                
+                                <span class="fw-normal text-muted" style="font-size: 0.9em; opacity: 0.85;">{{ cat.padre.nombre }}</span>
+                                <i class="fas fa-chevron-right mx-2" style="font-size: 0.6em; opacity: 0.6;"></i>
+                                <span class="fw-bold">{{ cat.nombre }}</span>
+                                
+                            </span>
+                        {% endif %}
+                        
+                        <!-- Muestra categorías raíz SOLO si no tienen hijos (esto requiere lógica que el template no tiene bien) -->
+                        <!-- Por eso recomiendo fuertemente la Opción 1 -->
+                    {% endfor %}
+
+                        <!-- ESTADO (AGOTADO/DISPONIBLE) - Sin cambios, se mantiene igual -->
                         {% if producto.agotado %}
-                            <span class="badge rounded-pill px-3 py-1 ms-2" style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid #dc3545; font-size: 0.8rem;">Agotado</span>
+                            <span class="badge rounded-pill px-3 py-1 mb-1" style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid #dc3545; font-size: 0.8rem;">Agotado</span>
                         {% else %}
-                            <span class="badge rounded-pill px-3 py-1 ms-2" style="background-color: rgba(40, 167, 69, 0.1); color: #28a745; border: 1px solid #28a745; font-size: 0.8rem;">Disponible</span>
+                            <span class="badge rounded-pill px-3 py-1 mb-1" style="background-color: rgba(40, 167, 69, 0.1); color: #28a745; border: 1px solid #28a745; font-size: 0.8rem;">Disponible</span>
                         {% endif %}
                     </div>
                     
                     <!-- Reduced heading size and improved spacing -->
                     <h1 class="fw-bold mb-2 text-secondary" style="font-size: 1.6rem;">{{ producto.nombre }}</h1>
                     <div class="d-flex align-items-center mb-4">
+                        {% if SHOW_PRICES_CLIENTES %}
                         <h2 class="text-primary mb-0 fw-bold me-3" style="font-size: 1.8rem;">${{ producto.precio }}</h2>
                         <span class="text-muted small" style="font-size: 0.85rem;">Precio unitario</span>
+                        {% endif %}
                     </div>
                     
                     <!-- Description box with green border and better styling -->

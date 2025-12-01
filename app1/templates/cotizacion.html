@@ -31,8 +31,10 @@
                                 <tr>
                                     <th class="ps-4 py-2 text-secondary fw-bold" style="font-size: 0.85rem;">Producto</th>
                                     <th class="text-center py-2 text-secondary fw-bold" style="font-size: 0.85rem;">Cantidad</th>
+                                    {% if SHOW_PRICES_CLIENTES %}
                                     <th class="text-end py-2 text-secondary fw-bold" style="font-size: 0.85rem;">Precio Unit.</th>
                                     <th class="text-end pe-4 py-2 text-secondary fw-bold" style="font-size: 0.85rem;">Total</th>
+                                    {% endif %}
                                 </tr>
                             </thead>
                             <tbody>
@@ -52,18 +54,22 @@
                                     <td class="text-center">
                                         <span class="badge rounded-pill px-2 py-1" style="background-color: rgba(140, 198, 63, 0.15); color: var(--secondary-color); border: 1px solid var(--accent-color); font-size: 0.8rem; font-weight: 700;">{{ it.cantidad }}</span>
                                     </td>
+                                    {% if SHOW_PRICES_CLIENTES %}
                                     <td class="text-end text-muted fw-bold" style="font-size: 0.9rem;">${{ it.product.precio }}</td>
                                     <td class="text-end pe-4 fw-bold" style="color: var(--primary-color); font-size: 0.95rem;">${{ it.total }}</td>
+                                    {% endif %}
                                 </tr>
                                 {% endfor %}
                             </tbody>
                             <!-- Footer with green background -->
+                             {% if SHOW_PRICES_CLIENTES %}
                             <tfoot style="background: linear-gradient(135deg, rgba(140, 198, 63, 0.08) 0%, rgba(140, 198, 63, 0.05) 100%); border-top: 2px solid var(--accent-color);">
                                 <tr>
                                     <td colspan="3" class="text-end py-3 px-4 fw-bold text-secondary" style="font-size: 0.9rem; text-transform: uppercase;">Subtotal Estimado:</td>
                                     <td class="text-end pe-4 py-3 fw-bold" style="color: var(--primary-color); font-size: 1.1rem;">${{ subtotal }}</td>
                                 </tr>
                             </tfoot>
+                            {% endif %}
                         </table>
                     </div>
                     {% else %}

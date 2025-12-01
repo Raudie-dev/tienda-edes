@@ -64,6 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'proyecto.context_processors.global_settings',
             ],
         },
     },
@@ -133,3 +134,6 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SHOW_PRICES = True  # Cambia a False para ocultar los precios
+SHOW_PRICES_CLIENTES = False  # Cambia a False para ocultar los precios a los clientes

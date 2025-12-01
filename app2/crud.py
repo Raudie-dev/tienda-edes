@@ -2,17 +2,35 @@ from django.core.exceptions import ObjectDoesNotExist
 from app1.models import Product, Category
 
 
-def crear_categoria(nombre):
-    """Crea una categoría nueva o devuelve la existente."""
+def crear_categoria(nombre, padre_id=None):
+    """
+    Crea una categoría nueva o devuelve la existente.
+    Acepta un padre_id opcional para crear subcategorías.
+    """
     nombre = (nombre or '').strip()
     if not nombre:
         return None
-    cat, _ = Category.objects.get_or_create(nombre=nombre)
+    
+    # Preparamos los valores por defecto si se tiene que crear nueva
+    defaults = {}
+    if padre_id:
+        defaults['padre_id'] = padre_id
+        
+    # get_or_create busca por nombre. Si no existe, usa 'defaults' para crearla con el padre.
+    cat, created = Category.objects.get_or_create(
+        nombre=nombre,
+        defaults=defaults
+    )
     return cat
 
 
 def obtener_categorias():
-    return Category.objects.all()
+    """
+    Obtiene todas las categorías.
+    Usamos 'prefetch_related' para cargar las subcategorías eficientemente
+    y evitar lentitud en la plantilla HTML.
+    """
+    return Category.objects.prefetch_related('subcategorias').all()
 
 
 def eliminar_categoria(cat_id):
@@ -48,7 +66,7 @@ def crear_producto(nombre, precio, descripcion='', categoria_ids=None, imagen=No
 
 
 def obtener_productos():
-    # Prefetch M2M categorias
+    # Prefetch M2M categorias para optimizar la carga
     return Product.objects.prefetch_related('categorias').all()
 
 
