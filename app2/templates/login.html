@@ -1,35 +1,240 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Acceso</title>
-    {% load static %}
+    <title>Acceso Administrativo - EDES</title>
+    
+    <!-- Fuentes (Anton y Poppins) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Estilos personalizados -->
-    <link rel="stylesheet" href="{% static 'css/login-styles.css' %}">
+    
+    <style>
+        :root {
+            --primary-color: #f6650f; /* Naranja */
+            --primary-hover: #d95300;
+            --secondary-color: #004d25; /* Verde Oscuro */
+            --accent-color: #8aba4c;  /* Verde Claro */
+            --bg-color: #f6f6f6;
+            --text-color: #333;
+            --card-radius: 20px;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #002813 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Patrón de fondo opcional */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(var(--accent-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .login-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 420px;
+            padding: 2.5rem;
+            border-radius: var(--card-radius);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 10;
+            border-top: 6px solid var(--primary-color);
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-container img {
+            max-height: 80px; /* Ajusta según tu logo */
+            margin-bottom: 1rem;
+        }
+        
+        /* Si no carga la imagen, mostramos un icono */
+        .logo-placeholder {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-title {
+            font-family: 'Anton', sans-serif;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .login-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* Inputs */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            color: #aaa;
+            transition: 0.3s;
+        }
+
+        .form-control {
+            height: 50px;
+            padding-left: 45px; /* Espacio para el icono */
+            padding-right: 45px;
+            border-radius: 50px;
+            border: 1px solid #e1e1e1;
+            background-color: #f9f9f9;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(246, 101, 15, 0.1);
+            background-color: #fff;
+        }
+
+        .form-control:focus + .input-icon, 
+        .input-wrapper:focus-within .input-icon {
+            color: var(--primary-color);
+        }
+
+        /* Botón Ojo Contraseña */
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        /* Botón Login */
+        .btn-login {
+            width: 100%;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(246, 101, 15, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(246, 101, 15, 0.4);
+        }
+
+        /* Alertas */
+        .alert {
+            border-radius: 12px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            background-color: #ffe5e5;
+            color: #d63333;
+        }
+        
+        .alert p { margin: 0; }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
 </head>
-<body class="admin-login">
+<body>
+
     <div class="login-card">
         <!-- Logo y título -->
         <div class="login-header">
             <div class="logo-container">
-                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-img">
+                <!-- Si tienes logo, descomenta la linea de abajo y borra el div logo-placeholder -->
+                <!-- <img src="{% static 'images/logo.png' %}" alt="EDES Logo"> -->
+                
+                <div class="logo-placeholder">
+                    <i class="fas fa-flask-vial"></i>
+                </div>
+                <h1 class="login-title">EDES Admin</h1>
             </div>
-            <p class="login-subtitle">Panel de Acceso</p>
-            <div class="role-badge">
-                <i class="fas fa-sign-in-alt"></i>
-                <span>Acceso</span>
-            </div>
+            <p class="login-subtitle">Inicia sesión para gestionar el sistema</p>
         </div>
         
         <!-- Mensajes de error -->
         {% if messages %}
         <div class="alert alert-danger">
-            <i class="fas fa-exclamation-circle"></i>
+            <i class="fas fa-exclamation-triangle"></i>
             <div>
                 {% for message in messages %}
                     <p>{{ message }}</p>
@@ -41,11 +246,12 @@
         <!-- Formulario de inicio de sesión -->
         <form class="login-form" method="post">
             {% csrf_token %}
+            
             <div class="form-group">
                 <label for="nombre">Usuario</label>
                 <div class="input-wrapper">
                     <i class="fas fa-user input-icon"></i>
-                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingresa tu usuario" required autofocus>
+                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ej. admin" required autofocus>
                 </div>
             </div>
             
@@ -53,41 +259,40 @@
                 <label for="password">Contraseña</label>
                 <div class="input-wrapper">
                     <i class="fas fa-lock input-icon"></i>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Ingresa tu contraseña" required>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
                     <button type="button" class="password-toggle" onclick="togglePassword()">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
             </div>
+
             <button type="submit" class="btn-login">
-                <i class="fas fa-sign-in-alt"></i>
                 <span>Ingresar</span>
+                <i class="fas fa-arrow-right"></i>
             </button>
         </form>
         
         <div class="login-footer">
-            <p>© 2025 agrolucha - Todos los derechos reservados</p>
+            <p>© {% now "Y" %} EDES Venezuela. Todos los derechos reservados.</p>
         </div>
     </div>
 
     <!-- Bootstrap JS y dependencias -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Scripts adicionales -->
     <script>
         function togglePassword() {
             const passwordInput = document.getElementById('password');
-            const toggleBtn = document.querySelector('.password-toggle i');
+            const toggleIcon = document.querySelector('.password-toggle i');
             
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
-                toggleBtn.classList.remove('fa-eye');
-                toggleBtn.classList.add('fa-eye-slash');
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
             } else {
                 passwordInput.type = 'password';
-                toggleBtn.classList.remove('fa-eye-slash');
-                toggleBtn.classList.add('fa-eye');
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
             }
         }
     </script>

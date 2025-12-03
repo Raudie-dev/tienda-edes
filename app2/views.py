@@ -43,32 +43,31 @@ def registro(request):
     user_id = request.session.get('user_admin_id')
     if not user_id:
         messages.error(request, 'Debe iniciar sesión primero')
-        # Render login template directly to avoid redirect loops from repeated requests
         return render(request, 'login.html')
+    
     try:
         user = User_admin.objects.get(id=user_id)
     except User_admin.DoesNotExist:
         messages.error(request, 'Usuario no encontrado')
-        # Render login template directly to avoid redirect loops
         return render(request, 'login.html')
 
-    # Nuevas operaciones: categorías y productos
+    # --- PROCESAMIENTO DE FORMULARIOS (POST) ---
     if request.method == 'POST':
-        # Crear categoría
+        
+        # 1. CREAR CATEGORÍA (Con soporte jerárquico)
         if 'crear_categoria' in request.POST:
             nombre_cat = request.POST.get('categoria_nombre', '').strip()
             
-            # --- NUEVO: Capturar el ID del padre ---
+            # Capturamos el ID del padre del select
             padre_id = request.POST.get('categoria_padre')
             
-            # Si viene vacío, lo convertimos a None (es una categoría principal)
+            # Si el valor es vacío o string vacía, lo forzamos a None (Raíz)
             if not padre_id:
                 padre_id = None
-            # ---------------------------------------
-
+            
             if nombre_cat:
                 try:
-                    # Pasamos el nombre Y el padre_id
+                    # Llamamos a la función corregida enviando el padre_id
                     crear_categoria(nombre_cat, padre_id)
                     messages.success(request, 'Categoría creada correctamente')
                 except Exception as e:
@@ -76,14 +75,17 @@ def registro(request):
             else:
                 messages.error(request, 'El nombre de la categoría es obligatorio')
 
-        # Crear producto
+        # 2. CREAR PRODUCTO
         elif 'crear_producto' in request.POST:
             nombre = request.POST.get('nombre', '').strip()
             precio = request.POST.get('precio', '0')
             descripcion = request.POST.get('descripcion', '')
-            # aceptar múltiples categorias
+            
+            # getlist obtiene todos los IDs seleccionados (Ctrl + Click)
             categoria_ids = request.POST.getlist('categoria_ids') or None
+            
             imagen = request.FILES.get('imagen')
+            
             if nombre:
                 try:
                     crear_producto(nombre, precio, descripcion, categoria_ids, imagen)
@@ -93,31 +95,35 @@ def registro(request):
             else:
                 messages.error(request, 'El nombre del producto es obligatorio')
 
-        # Eliminar producto
+        # 3. ELIMINAR PRODUCTO
         elif 'eliminar_producto' in request.POST:
             pid = request.POST.get('eliminar_producto')
             if pid:
                 eliminar_producto(pid)
                 messages.success(request, 'Producto eliminado')
 
-        # Eliminar categoría
+        # 4. ELIMINAR CATEGORÍA
         elif 'eliminar_categoria' in request.POST:
             cid = request.POST.get('eliminar_categoria')
             if cid:
                 eliminar_categoria(cid)
                 messages.success(request, 'Categoría eliminada')
 
-    # Después de cualquier POST redirigimos al control para evitar repost
-    if request.method == 'POST':
+        # Patrón PRG (Post-Redirect-Get) para evitar reenvíos al refrescar
         return redirect(reverse('registro'))
 
+    # --- MÉTODO GET (Renderizar página) ---
+    
+    # Asegúrate que 'obtener_categorias()' devuelva el queryset correctamente.
+    # Si quieres optimizar la carga del árbol jerárquico (N+1 problem):
+    # categorias = Category.objects.prefetch_related('subcategorias__subcategorias').all()
     categorias = obtener_categorias()
     productos = obtener_productos()
+    
     return render(request, 'registro.html', {
         'productos': productos,
         'categorias': categorias,
     })
-
 
 def control_productos(request):
     user_id = request.session.get('user_admin_id')

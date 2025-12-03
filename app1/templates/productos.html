@@ -5,19 +5,30 @@
 
 {% block content %}
 <div class="container py-5">
+    
+    <!-- 1. BREADCRUMB CON JERARQUÍA (Corregido para usar hoja) -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb" style="font-size: 0.9rem;">
             <li class="breadcrumb-item"><a href="{% url 'tienda' %}">Tienda</a></li>
+            
+            {# Tomamos la primera categoría "Hoja" (la más específica) para trazar la ruta hacia atrás #}
+            {% with cat_principal=producto.categorias_hoja|first %}
+                {% if cat_principal %}
+                    {# Llamamos al include recursivo para generar: Abuelo / Padre / Hijo #}
+                    {% include "includes/breadcrumb_items.html" with cat=cat_principal %}
+                {% endif %}
+            {% endwith %}
+            
             <li class="breadcrumb-item active" aria-current="page">{{ producto.nombre }}</li>
         </ol>
     </nav>
 
-    <!-- Main product card with colored background gradient -->
+    <!-- Main product card -->
     <div class="card shadow-lg border-0 overflow-hidden mb-5 rounded-3" style="background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);">
         <div class="row g-0">
-            <!-- Left side with colored background -->
+            
+            <!-- COLUMNA IZQUIERDA: CARRUSEL DE IMÁGENES -->
             <div class="col-md-6 d-flex align-items-center justify-content-center p-4 p-md-5 position-relative" style="background: linear-gradient(135deg, rgba(140, 198, 63, 0.08) 0%, rgba(140, 198, 63, 0.03) 100%);">
-                <!-- Product Image/Carousel -->
                 <div id="carouselProducto" class="carousel slide w-100 position-relative" data-bs-ride="carousel">
                     <div class="carousel-inner rounded-2 shadow bg-white p-3">
                         {% if imagenes %}
@@ -43,38 +54,34 @@
                 </div>
             </div>
             
-            <!-- Right side with better typography and reduced font sizes -->
+            <!-- COLUMNA DERECHA: INFORMACIÓN -->
             <div class="col-md-6">
                 <div class="card-body p-4 p-lg-4 h-100 d-flex flex-column">
-                    <div class="mb-3 d-flex flex-wrap align-items-center">
-                        <!-- BUCLE DE CATEGORÍAS -->
-                    {% for cat in producto.categorias.all %}
-                        <!-- Solo mostramos si TIENE padre (es subcategoría) -->
-                        {% if cat.padre %}
-                            <span class="badge rounded-pill px-3 py-1 me-2 mb-1 d-inline-flex align-items-center" 
+                    
+                    <!-- 2. BUCLE DE CATEGORÍAS (Usando categorias_hoja) -->
+                    <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
+                        
+                        {# Iteramos SOLO sobre las hojas para evitar duplicados visuales #}
+                        {% for cat in producto.categorias_hoja %}
+                            <span class="badge rounded-pill px-3 py-1 d-inline-flex align-items-center" 
                                 style="background-color: rgba(0, 77, 37, 0.1); color: var(--secondary-color); border: 1px solid var(--secondary-color); font-size: 0.8rem;">
                                 
-                                <span class="fw-normal text-muted" style="font-size: 0.9em; opacity: 0.85;">{{ cat.padre.nombre }}</span>
-                                <i class="fas fa-chevron-right mx-2" style="font-size: 0.6em; opacity: 0.6;"></i>
-                                <span class="fw-bold">{{ cat.nombre }}</span>
+                                {# Include recursivo: Pinta "Padre > Hijo" dentro del badge #}
+                                {% include "includes/texto_jerarquia.html" with cat=cat %}
                                 
                             </span>
-                        {% endif %}
-                        
-                        <!-- Muestra categorías raíz SOLO si no tienen hijos (esto requiere lógica que el template no tiene bien) -->
-                        <!-- Por eso recomiendo fuertemente la Opción 1 -->
-                    {% endfor %}
+                        {% endfor %}
 
-                        <!-- ESTADO (AGOTADO/DISPONIBLE) - Sin cambios, se mantiene igual -->
+                        <!-- ESTADO -->
                         {% if producto.agotado %}
-                            <span class="badge rounded-pill px-3 py-1 mb-1" style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid #dc3545; font-size: 0.8rem;">Agotado</span>
+                            <span class="badge rounded-pill px-3 py-1" style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid #dc3545; font-size: 0.8rem;">Agotado</span>
                         {% else %}
-                            <span class="badge rounded-pill px-3 py-1 mb-1" style="background-color: rgba(40, 167, 69, 0.1); color: #28a745; border: 1px solid #28a745; font-size: 0.8rem;">Disponible</span>
+                            <span class="badge rounded-pill px-3 py-1" style="background-color: rgba(40, 167, 69, 0.1); color: #28a745; border: 1px solid #28a745; font-size: 0.8rem;">Disponible</span>
                         {% endif %}
                     </div>
                     
-                    <!-- Reduced heading size and improved spacing -->
                     <h1 class="fw-bold mb-2 text-secondary" style="font-size: 1.6rem;">{{ producto.nombre }}</h1>
+                    
                     <div class="d-flex align-items-center mb-4">
                         {% if SHOW_PRICES_CLIENTES %}
                         <h2 class="text-primary mb-0 fw-bold me-3" style="font-size: 1.8rem;">${{ producto.precio }}</h2>
@@ -82,18 +89,18 @@
                         {% endif %}
                     </div>
                     
-                    <!-- Description box with green border and better styling -->
+                    <!-- Descripción -->
                     <div class="mb-4 p-3 rounded-2" style="background-color: rgba(140, 198, 63, 0.08); border-left: 4px solid var(--accent-color);">
                         <h5 class="text-secondary mb-2 fw-bold" style="font-size: 0.95rem;">Descripción del Producto</h5>
                         <p class="mb-0 text-muted" style="font-size: 0.9rem;">{{ producto.descripcion }}</p>
                     </div>
 
+                    <!-- Botones de Acción -->
                     <div class="mt-auto pt-3 border-top">
                         <form method="post" action="{% url 'cotizacion_add' %}" class="row g-2 align-items-end">
                             {% csrf_token %}
                             <input type="hidden" name="product_id" value="{{ producto.id }}">
                             
-                            <!-- Improved quantity selector with better spacing -->
                             <div class="col-sm-4">
                                 <label class="form-label fw-bold small text-uppercase text-muted" style="font-size: 0.8rem;">Cantidad</label>
                                 <div class="input-group">
@@ -120,7 +127,7 @@
         </div>
     </div>
 
-    <!-- Suggested Products with improved card styling and smaller sizes -->
+    <!-- Productos Relacionados -->
     {% if sugeridos %}
     <div class="mt-5">
         <h3 class="section-title text-start" style="font-size: 1.4rem;">Productos Relacionados</h3>
@@ -138,7 +145,9 @@
                         </div>
                         <div class="card-body p-2 p-md-3">
                             <h6 class="card-title text-dark mb-2" style="font-size: 0.9rem; font-weight: 700;">{{ sugerido.nombre }}</h6>
+                            {% if SHOW_PRICES_CLIENTES %}
                             <span class="text-primary fw-bold" style="font-size: 0.95rem;">${{ sugerido.precio }}</span>
+                            {% endif %}
                         </div>
                     </a>
                 </div>

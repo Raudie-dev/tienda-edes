@@ -137,3 +137,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SHOW_PRICES = True  # Cambia a False para ocultar los precios
 SHOW_PRICES_CLIENTES = False  # Cambia a False para ocultar los precios a los clientes
+
+# Configuración de envío de correos (Gmail)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'edsnotifaciones@gmail.com'
+EMAIL_HOST_PASSWORD = 'jdkx ywkx tlum givz'  # Tu contraseña de aplicación
+
+# Definimos el correo destino como una variable para fácil acceso
+CORREO_VENTAS = 'xdarkvaderxx@gmail.com'
+#CORREO_VENTAS = 'ventas@edesvenezuela.com'

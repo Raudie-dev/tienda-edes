@@ -5,22 +5,20 @@ from app1.models import Product, Category
 def crear_categoria(nombre, padre_id=None):
     """
     Crea una categoría nueva o devuelve la existente.
-    Acepta un padre_id opcional para crear subcategorías.
+    La unicidad se basa en el par (nombre, padre_id) para permitir
+    mismos nombres en diferentes ramas del árbol.
     """
     nombre = (nombre or '').strip()
     if not nombre:
         return None
     
-    # Preparamos los valores por defecto si se tiene que crear nueva
-    defaults = {}
-    if padre_id:
-        defaults['padre_id'] = padre_id
-        
-    # get_or_create busca por nombre. Si no existe, usa 'defaults' para crearla con el padre.
+    # IMPORTANTE: Buscamos usando el nombre Y el padre_id.
+    # get_or_create devuelve una tupla (objeto, creado_boolean)
     cat, created = Category.objects.get_or_create(
         nombre=nombre,
-        defaults=defaults
+        padre_id=padre_id
     )
+    
     return cat
 
 
@@ -30,7 +28,7 @@ def obtener_categorias():
     Usamos 'prefetch_related' para cargar las subcategorías eficientemente
     y evitar lentitud en la plantilla HTML.
     """
-    return Category.objects.prefetch_related('subcategorias').all()
+    return Category.objects.prefetch_related('subcategorias').all().order_by('nombre')
 
 
 def eliminar_categoria(cat_id):

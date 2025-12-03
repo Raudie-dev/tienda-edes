@@ -5,6 +5,8 @@
 
 <div class="container mb-5">
     {% block content %}
+    
+    <!-- Encabezado -->
     <div class="bg-light py-4 mb-5 border-bottom">
         <div class="container">
             <div class="row align-items-center">
@@ -23,21 +25,24 @@
             </div>
         </div>
     </div>
+
     <div class="filtro row">
         <!-- Sidebar Filters -->
         <div class="col-lg-3 mb-4">
-            <!-- Added mobile toggle for filters -->
+            <!-- Botón toggle móvil -->
             <button class="btn btn-primary w-100 d-lg-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
                 <i class="fas fa-filter me-2"></i> Mostrar Filtros
             </button>
             
             <div class="collapse d-lg-block" id="filterCollapse">
                 <div class="card shadow-sm border-0 rounded-3" >
-                    <div class="card-header  text-white py-3 rounded-top-3" style="background-color: var(--primary-color);">
+                    <div class="card-header text-white py-3 rounded-top-3" style="background-color: var(--primary-color);">
                         <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filtros</h5>
                     </div>
                     <div class="card-body p-4">
                         <form method="get">
+                            
+                            <!-- Buscador -->
                             <div class="mb-4">
                                 <label class="form-label fw-bold text-uppercase small text-muted">Buscar</label>
                                 <div class="input-group">
@@ -46,34 +51,26 @@
                                 </div>
                             </div>
                             
+                            <!-- SELECTOR DE CATEGORÍA (JERARQUÍA INFINITA) -->
                             <div class="mb-4">
                                 <label class="form-label fw-bold text-uppercase small text-muted">Categoría</label>
                                 <select name="categoria" class="form-select bg-light" onchange="this.form.submit()">
                                     <option value="">Todas las categorías</option>
                                     
                                     {% for cat in categorias %}
-                                        {# Lógica: Solo mostramos primero las que son PADRES (no tienen padre) #}
+                                        {# IMPORTANTE: Solo iniciamos el ciclo con las categorías RAÍZ (Padres) #}
                                         {% if not cat.padre %}
                                             
-                                            <!-- Opción Padre (Negrita) -->
-                                            <option value="{{ cat.id }}" class="fw-bold text-dark" 
-                                                {% if categoria_id|default:'' == cat.id|stringformat:'s' %}selected{% endif %}>
-                                                {{ cat.nombre }}
-                                            </option>
+                                            {# Incluimos el archivo recursivo #}
+                                            {% include "includes/opcion_categoria_publica.html" with cat=cat level=0 current_selected=categoria_id %}
                                             
-                                            <!-- Bucle interno para sus HIJOS (Subcategorías) -->
-                                            {% for sub in cat.subcategorias.all %}
-                                                <option value="{{ sub.id }}"
-                                                    {% if categoria_id|default:'' == sub.id|stringformat:'s' %}selected{% endif %}>
-                                                    &nbsp;&nbsp;&nbsp;↳ {{ sub.nombre }}
-                                                </option>
-                                            {% endfor %}
-
                                         {% endif %}
                                     {% endfor %}
+                                    
                                 </select>
                             </div>
 
+                            <!-- Disponibilidad -->
                             <div class="mb-4">
                                 <label class="form-label fw-bold text-uppercase small text-muted">Disponibilidad</label>
                                 <div class="d-flex flex-column gap-2">
@@ -88,6 +85,7 @@
                                 </div>
                             </div>
 
+                            <!-- Botones Acción -->
                             <div class="d-grid gap-2">
                                 <button class="btn btn-primary rounded-pill" type="submit">Aplicar</button>
                                 <a href="{% url 'tienda' %}" class="btn btn-outline-secondary btn-sm rounded-pill">Limpiar Filtros</a>
@@ -102,8 +100,10 @@
         <div class="col-lg-9">
             <div class="product-grid">
                 {% for producto in productos %}
-                <div class="product-item">
+                <div class="product-item mb-4">
                     <div class="card h-100 product-card border-0 shadow-sm">
+                        
+                        <!-- Imagen y Badges -->
                         <div class="position-relative overflow-hidden rounded-top-3">
                             <a href="{% url 'productos' producto.id %}">
                                 {% if producto.imagen %}
@@ -112,19 +112,21 @@
                                     <img src="{% static 'images/default_event.jpg' %}" class="card-img-top" alt="Sin imagen" style="height: 240px; object-fit: cover;">
                                 {% endif %}
                             </a>
-                            <!-- Improved badge styling -->
+                            
                             {% if producto.agotado %}
                                 <span class="position-absolute top-0 start-0 bg-danger text-white px-3 py-1 m-3 rounded-pill small fw-bold shadow-sm">AGOTADO</span>
                             {% else %}
                                 <span class="position-absolute top-0 start-0 bg-success text-white px-3 py-1 m-3 rounded-pill small fw-bold shadow-sm">DISPONIBLE</span>
                             {% endif %}
                             
-                            <!-- Quick action overlay -->
                             <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-dark opacity-0 hover-opacity-100 transition-opacity d-flex justify-content-center">
                                 <a href="{% url 'productos' producto.id %}" class="btn btn-light btn-sm rounded-pill shadow-sm stretched-link">Ver Detalles</a>
                             </div>
                         </div>
+
+                        <!-- Cuerpo de la Tarjeta -->
                         <div class="card-body d-flex flex-column p-4">
+                            <!-- Categoría Principal -->
                             <div class="mb-2">
                                 {% with producto.categorias.all|first as first_cat %}
                                     {% if first_cat %}
@@ -132,10 +134,13 @@
                                     {% endif %}
                                 {% endwith %}
                             </div>
+
                             <h5 class="card-title mb-2 fw-bold">
                                 <a href="{% url 'productos' producto.id %}" class="text-decoration-none text-secondary stretched-link">{{ producto.nombre }}</a>
                             </h5>
+                            
                             <p class="card-text text-muted small flex-grow-1">{{ producto.descripcion|truncatechars:60 }}</p>
+                            
                             <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-light">
                                 {% if SHOW_PRICES_CLIENTES %}
                                 <span class="h4 mb-0 text-primary fw-bold">${{ producto.precio }}</span>

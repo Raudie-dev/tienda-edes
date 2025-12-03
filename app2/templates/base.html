@@ -29,13 +29,13 @@
     <link rel="stylesheet" href="{% static 'css/admin.css' %}" />
 
     {% block extra_head %}{% endblock %}
-    
+
     <!-- CSS INLINE PARA CORREGIR EL COMPORTAMIENTO FLEX DEL MAIN -->
     <style>
       /* Asegura que el área de contenido ocupe al menos toda la altura de la pantalla menos el header */
       /* Ajusta '60px' a la altura real de tu .admin-header si es diferente */
       .content-area {
-        min-height: calc(100vh - 60px); 
+        min-height: calc(100vh - 60px);
       }
       .footer {
         margin-top: auto; /* Empuja el footer hacia abajo si hay poco contenido */
@@ -58,6 +58,17 @@
             <span>EDES Admin</span>
           </a>
         </div>
+        <div class="header-right">
+          <form action="{% url 'logout' %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button
+              type="submit"
+              class="btn btn-sm btn-outline-light rounded-pill"
+            >
+              <i class="fas fa-power-off"></i> Salir
+            </button>
+          </form>
+        </div>
       </div>
     </header>
 
@@ -67,39 +78,36 @@
         <h5>Panel de Control</h5>
       </div>
       <ul class="nav flex-column">
-          
-          <li class="nav-item">
-            <a
-              class="nav-link {% if request.resolver_match.url_name == 'registro' %}active{% endif %}"
-              href="{% url 'registro' %}"
-            >
-              <i class="fas fa-box-open"></i>
-              <span>Agregar Productos</span>
-            </a>
-          </li>
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.resolver_match.url_name == 'registro' %}active{% endif %}"
+            href="{% url 'registro' %}"
+          >
+            <i class="fas fa-box-open"></i>
+            <span>Agregar Productos</span>
+          </a>
+        </li>
 
-          <li class="nav-item">
-            <a
-              class="nav-link {% if request.resolver_match.url_name == 'control_productos' %}active{% endif %}"
-              href="{% url 'control_productos' %}"
-            >
-              <i class="fas fa-tags"></i>
-              <span>Gestión de Productos</span>
-            </a>
-          </li>
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.resolver_match.url_name == 'control_productos' %}active{% endif %}"
+            href="{% url 'control_productos' %}"
+          >
+            <i class="fas fa-tags"></i>
+            <span>Gestión de Productos</span>
+          </a>
+        </li>
 
-          <li class="nav-item">
-            <a
-              class="nav-link {% if request.resolver_match.url_name == 'solicitudes_cotizacion' %}active{% endif %}"
-              href="{% url 'solicitudes_cotizacion' %}"
-            >
-              <i class="fas fa-file-lines"></i>
-              <span>Cotización</span>
-            </a>
-          </li>
-
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.resolver_match.url_name == 'solicitudes_cotizacion' %}active{% endif %}"
+            href="{% url 'solicitudes_cotizacion' %}"
+          >
+            <i class="fas fa-file-lines"></i>
+            <span>Cotización</span>
+          </a>
+        </li>
       </ul>
-
     </aside>
 
     <!-- OVERLAY PARA MÓVIL -->
@@ -115,51 +123,52 @@
       y movimos el footer ADENTRO de esta etiqueta.
     -->
     <main class="content-area d-flex flex-column" id="contentArea">
-      
       <!-- Wrapper del contenido (crece para ocupar espacio) -->
       <div class="flex-grow-1">
-        
         <!-- Mensajes -->
-        {% if messages %} 
-          {% for message in messages %}
-          <div
-            class="alert alert-{{ message.tags }} alert-dismissible fade show mt-2"
-            role="alert"
-          >
-            {{ message }}
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Close"
-            ></button>
-          </div>
-          {% endfor %} 
-        {% endif %}
+        {% if messages %} {% for message in messages %}
+        <div
+          class="alert alert-{{ message.tags }} alert-dismissible fade show mt-2"
+          role="alert"
+        >
+          {{ message }}
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+        </div>
+        {% endfor %} {% endif %}
 
         <!-- Contenido dinámico -->
-        <div class="fade-in">
-            {% block content %}{% endblock %}
-        </div>
-      
-      </div> <!-- Fin del flex-grow-1 -->
+        <div class="fade-in">{% block content %}{% endblock %}</div>
+      </div>
+      <!-- Fin del flex-grow-1 -->
 
       <!-- FOOTER AHORA DENTRO DEL MAIN AREA -->
-       {% comment %}
-        <footer class="footer mt-4">
-        <div class="container-fluid"> <!-- container-fluid para que se alinee con el contenido -->
-          <div class="footer-content d-flex justify-content-between align-items-center">
+      {% comment %}
+      <footer class="footer mt-4">
+        <div class="container-fluid">
+          <!-- container-fluid para que se alinee con el contenido -->
+          <div
+            class="footer-content d-flex justify-content-between align-items-center"
+          >
             <div class="d-flex align-items-center gap-3">
-                <a href="{% url 'index' %}" class="footer-logo text-decoration-none text-muted fw-bold">
+              <a
+                href="{% url 'index' %}"
+                class="footer-logo text-decoration-none text-muted fw-bold"
+              >
                 <i class="fas fa-flask-vial me-1"></i> EDES
-                </a>
-                <span class="text-muted small">&copy; {{ now|date:"Y" }} Todos los derechos reservados.</span>
+              </a>
+              <span class="text-muted small"
+                >&copy; {{ now|date:"Y" }} Todos los derechos reservados.</span
+              >
             </div>
           </div>
         </div>
-      </footer> 
+      </footer>
       {% endcomment %}
-
     </main>
 
     <!-- Scripts -->
@@ -235,11 +244,7 @@
       });
     </script>
 
-    {% block extra_scripts %}
-    {% endblock extra_scripts %}
-
-    {% block modals %}
-    {% endblock modals %}
-
+    {% block extra_scripts %} {% endblock extra_scripts %} {% block modals %} {% endblock modals %}
+   
   </body>
 </html>

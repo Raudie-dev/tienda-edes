@@ -3,6 +3,36 @@
 
 {% block title %}Agregar Productos y Categorías{% endblock %}
 
+{% block extra_head %}
+<style>
+    /* Estilos auxiliares para el funcionamiento del acordeón en tabla */
+    .cursor-pointer {
+        cursor: pointer;
+    }
+    .rotate-icon {
+        transition: transform 0.3s ease;
+    }
+    /* Rota la flecha cuando el acordeón está abierto */
+    [aria-expanded="true"] .rotate-icon {
+        transform: rotate(90deg);
+    }
+    /* Indentación para jerarquía visual */
+    .indent-1 { padding-left: 1rem !important; }
+    .indent-2 { padding-left: 3.5rem !important; position: relative; }
+    .indent-3 { padding-left: 6rem !important; position: relative; }
+    
+    /* Líneas guías visuales sutiles para hijos */
+    .indent-2::before {
+        content: ''; position: absolute; left: 2rem; top: 0; bottom: 0;
+        width: 2px; background-color: #dee2e6;
+    }
+    .indent-3::before {
+        content: ''; position: absolute; left: 2rem; top: 0; bottom: 0;
+        width: 2px; background-color: #dee2e6;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
 <div class="container-fluid">
@@ -34,7 +64,7 @@
     </div>
   </div>
 
-  <!-- LISTADO DE CATEGORÍAS (JERÁRQUICO) -->
+  <!-- LISTADO DE CATEGORÍAS (JERÁRQUICO TIPO ACORDEÓN) -->
   <div class="card shadow-sm">
     <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
         <h5 class="m-0"><i class="fas fa-list me-2"></i>Estructura de Categorías</h5>
@@ -44,63 +74,24 @@
         <table class="table table-hover mb-0 align-middle">
           <thead class="table-light">
             <tr>
-              <th>Nombre de Categoría</th>
+              <th style="width: 60%;">Nombre de Categoría</th>
               <th>Tipo</th>
-              <th style="width: 200px;" class="text-end">Acciones</th>
+              <th class="text-end">Acciones</th>
             </tr>
           </thead>
-          <tbody>
-            {% for cat in categorias %}
-                {# Lógica: Solo iteramos las principales (las que NO tienen padre) #}
+            <tbody>
+              {% for cat in categorias %}
+                {# IMPORTANTE: Solo iniciamos el ciclo con las categorías PADRE (Raíz) #}
                 {% if not cat.padre %}
                     
-                    <!-- 1. FILA DE CATEGORÍA PRINCIPAL (PADRE) -->
-                    <tr class="table-active bg-opacity-10">
-                      <td>
-                          <i class="fas fa-folder text-warning me-2"></i>
-                          <strong>{{ cat.nombre }}</strong>
-                      </td>
-                      <td><span class="badge bg-primary">Principal</span></td>
-                      <td class="text-end">
-                        <button type="button" class="btn btn-sm btn-outline-danger" 
-                                data-bs-toggle="modal" data-bs-target="#modalEliminarCategoria"
-                                data-bs-id="{{ cat.id }}" data-bs-nombre="{{ cat.nombre }}"
-                                title="Eliminar categoría">
-                          <i class="fas fa-trash me-1"></i> Eliminar
-                        </button>
-                      </td>
-                    </tr>
-
-                    <!-- 2. BUCLE DE SUBCATEGORÍAS (HIJOS) -->
-                    {# cat.subcategorias.all funciona gracias a related_name='subcategorias' en models.py #}
-                    {% for sub in cat.subcategorias.all %}
-                    <tr>
-                      <td style="padding-left: 40px;">
-                          <i class="fas fa-level-up-alt fa-rotate-90 text-muted me-2"></i>
-                          {{ sub.nombre }}
-                      </td>
-                      <td><span class="badge bg-secondary">Subcategoría</span></td>
-                      <td class="text-end">
-                        <button type="button" class="btn btn-sm btn-outline-danger border-0" 
-                                data-bs-toggle="modal" data-bs-target="#modalEliminarCategoria"
-                                data-bs-id="{{ sub.id }}" data-bs-nombre="{{ sub.nombre }}"
-                                title="Eliminar subcategoría">
-                          <i class="fas fa-trash me-1"></i> Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                    {% endfor %}
-
+                    {# Incluimos el archivo recursivo comenzando en nivel 0 #}
+                    {% include "includes/fila_categoria.html" with cat=cat nivel=0 %}
+                    
                 {% endif %}
-            {% empty %}
-            <tr>
-              <td colspan="3" class="text-center py-5">
-                <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
-                <p class="text-muted">No hay categorías registradas aún.</p>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
+              {% empty %}
+                <tr><td colspan="3" class="text-center p-4">No hay categorías registradas.</td></tr>
+              {% endfor %}
+            </tbody>
         </table>
       </div>
     </div>
@@ -113,7 +104,7 @@
 <!-- BLOQUE DE MODALES -->
 {% block modals %}
 
-<!-- MODAL 1: CREAR CATEGORÍA (MODIFICADO) -->
+<!-- MODAL 1: CREAR CATEGORÍA (Con soporte jerárquico de 3 niveles) -->
 <div class="modal fade" id="modalCrearCategoria" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -128,21 +119,22 @@
           <!-- Nombre -->
           <div class="mb-3">
             <label class="form-label fw-bold">Nombre de la Categoría</label>
-            <input type="text" name="categoria_nombre" class="form-control" required placeholder="Ej. Ropa de Hombre">
+            <input type="text" name="categoria_nombre" class="form-control" required placeholder="Ej. Motores">
           </div>
 
-          <!-- Selector de Padre -->
+          <!-- Selector de Padre (3 Niveles) -->
           <div class="mb-3">
-            <label class="form-label fw-bold">Jerarquía <small class="text-muted fw-normal">(Opcional)</small></label>
-            <select name="categoria_padre" class="form-select">
-                <option value="">Es una Categoría Principal</option>
-                {% for cat in categorias %}
-                    {# Solo mostramos las principales como opción para ser padre #}
-                    {% if not cat.padre %}
-                        <option value="{{ cat.id }}">Subcategoría de: {{ cat.nombre }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
+            <label class="form-label fw-bold">Categoría Padre <small class="text-muted fw-normal">(Opcional)</small></label>
+              <select name="categoria_padre" class="form-select">
+                  <option value="">-- Es una Categoría Principal (Nivel 1) --</option>
+                  {% for cat in categorias %}
+                      {% if not cat.padre %}
+                          {# Usamos el include recursivo #}
+                          {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
+                      {% endif %}
+                  {% endfor %}
+              </select>
+            <div class="form-text">Si seleccionas un padre, esta será una subcategoría.</div>
           </div>
 
         </div>
@@ -155,7 +147,7 @@
   </div>
 </div>
 
-<!-- MODAL 2: CREAR PRODUCTO (MODIFICADO VISUALMENTE) -->
+<!-- MODAL 2: CREAR PRODUCTO (Selector de Categoría mejorado) -->
 <div class="modal fade" id="modalCrearProducto" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
@@ -196,24 +188,16 @@
 
                 <hr class="border-secondary">
                 
-                <!-- SELECTOR MULTIPLE CON JERARQUÍA VISUAL -->
+                <!-- SELECTOR MULTIPLE CON JERARQUÍA -->
                 <div class="mb-3">
                   <label class="form-label fw-bold">Asignar Categorías</label>
-                  <select name="categoria_ids" class="form-select" multiple size="8">
-                    {% for cat in categorias %}
-                        <!-- Mostramos Padres -->
-                        {% if not cat.padre %}
-                            <option value="{{ cat.id }}" class="fw-bold">{{ cat.nombre }} (Principal)</option>
-                            
-                            <!-- Mostramos sus Hijos indentados -->
-                            {% for sub in cat.subcategorias.all %}
-                                <option value="{{ sub.id }}">&nbsp;&nbsp;&nbsp;↳ {{ sub.nombre }}</option>
-                            {% endfor %}
-                        {% endif %}
-                    {% empty %}
-                      <option disabled>No hay categorías creadas</option>
-                    {% endfor %}
-                  </select>
+                    <select name="categoria_ids" class="form-select" multiple size="10">
+                        {% for cat in categorias %}
+                            {% if not cat.padre %}
+                                {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
+                            {% endif %}
+                        {% endfor %}
+                    </select>
                   <small class="form-text text-muted">Ctrl + Clic para selección múltiple.</small>
                 </div>
 
@@ -247,7 +231,7 @@
         <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
         <p class="mb-1">¿Estás seguro de que deseas eliminar la categoría:</p>
         <h4 id="nombreCategoriaBorrar" class="fw-bold"></h4>
-        <p class="text-danger small mt-2">¡Cuidado! Si eliminas una categoría principal, se borrarán también sus subcategorías.</p>
+        <p class="text-danger small mt-2">¡Cuidado! Si eliminas una categoría padre, se borrarán también sus subcategorías.</p>
       </div>
       <div class="modal-footer justify-content-center">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -263,7 +247,7 @@
   </div>
 </div>
 
-<!-- SCRIPT -->
+<!-- SCRIPT (Funcionalidad para pasar datos al modal de eliminar) -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var modalEliminar = document.getElementById('modalEliminarCategoria');

@@ -4,6 +4,10 @@ from django.contrib import messages
 from .models import Category, Product
 from . import crud
 import random
+from django.conf import settings  # Importar settings para usar las variables
+from django.core.mail import EmailMultiAlternatives # Para enviar HTML
+from django.template.loader import render_to_string # Para renderizar el HTML
+from django.utils.html import strip_tags # Para limpiar HTML para la versión texto plano
 
 def _get_cart_count(request):
     cart = request.session.get('cotizacion', {}) or {}
@@ -12,19 +16,32 @@ def _get_cart_count(request):
     except Exception:
         return 0
 
+# Vista de inicio mejorada con 4 productos aleatorios
 def index(request):
     categoria_id = request.GET.get('categoria')
     categorias = Category.objects.all()
-    productos = Product.objects.all()
+    
+    # 1. Obtenemos todos los productos (Recomendación: Solo los no agotados)
+    # Si quieres mostrar agotados también, usa Product.objects.all()
+    productos = Product.objects.filter(agotado=False) 
+
+    # 2. Aplicamos el filtro de categoría si existe
     if categoria_id:
         try:
             productos = productos.filter(categorias__id=int(categoria_id))
         except (ValueError, TypeError):
             pass
+
+    # 3. AQUÍ APLICAMOS LA LÓGICA DE "4 ALEATORIOS"
+    # .order_by('?') -> Mezcla los resultados aleatoriamente
+    # [:4] -> Corta la lista y se queda solo con los primeros 4
+    productos = productos.order_by('?')[:4]
+
     cart_count = _get_cart_count(request)
+    
     return render(request, 'index.html', {
         'categorias': categorias,
-        'productos': productos,
+        'productos': productos, # Ahora esta variable solo lleva 4 items aleatorios
         'categoria_id': categoria_id,
         'cart_count': cart_count,
     })
@@ -139,6 +156,8 @@ def cotizacion(request):
     items = []
     subtotal = 0
     prod_map = {p.id: p for p in productos}
+    
+    # Reconstruimos los items
     for pid_str, qty in cart.items():
         try:
             pid = int(pid_str)
@@ -163,13 +182,56 @@ def cotizacion(request):
             return render(request, 'cotizacion.html', {'items': items, 'subtotal': subtotal, 'cart_count': _get_cart_count(request)})
 
         try:
+            # 1. Crear cliente y cotización en BD
             cliente = crud.crear_cliente(nombre, correo, telefono)
             items_payload = [{'product_id': p['product'].id, 'cantidad': p['cantidad']} for p in items]
             cot = crud.crear_cotizacion_desde_carrito(cliente, items_payload, mensaje=mensaje)
+            
+            # --- INICIO LÓGICA DE ENVÍO DE CORREO ---
+            
+            # Asunto del correo
+            subject = f'Nueva Solicitud de Cotización - {nombre}'
+            
+            # Contexto para la plantilla del correo
+            email_context = {
+                'nombre': nombre,
+                'correo': correo,
+                'telefono': telefono,
+                'mensaje': mensaje,
+                'items': items,
+                'subtotal': subtotal,
+                'cotizacion_id': cot.id if cot else 'N/A'
+            }
+
+            # Renderizar el contenido HTML
+            html_content = render_to_string('emails/cotizacion_email.html', email_context)
+            # Crear versión de texto plano (buena práctica para evitar spam)
+            text_content = strip_tags(html_content)
+
+            # Configurar el correo
+            msg = EmailMultiAlternatives(
+                subject,                # Asunto
+                text_content,           # Contenido texto plano
+                settings.EMAIL_HOST_USER, # De: (edsnotificaciones@gmail.com)
+                [settings.CORREO_VENTAS]  # Para: (ventas@edesvenezuela.com)
+            )
+            
+            # Adjuntar el contenido HTML
+            msg.attach_alternative(html_content, "text/html")
+            
+            # Enviar
+            msg.send()
+            
+            # --- FIN LÓGICA DE ENVÍO DE CORREO ---
+
+            # Limpiar carrito y finalizar
             request.session['cotizacion'] = {}
             request.session.modified = True
             return render(request, 'cotizacion_success.html', {'cotizacion': cot, 'cart_count': 0})
+            
         except Exception as e:
+            # Es útil imprimir el error en consola para depurar si falla el correo
+            print(f"Error procesando cotización/correo: {e}") 
             messages.error(request, f'Error al crear la solicitud: {e}')
             return render(request, 'cotizacion.html', {'items': items, 'subtotal': subtotal, 'cart_count': _get_cart_count(request)})
 

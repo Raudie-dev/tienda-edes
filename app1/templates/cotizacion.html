@@ -5,7 +5,6 @@
 
 {% block content %}
 
-
 <div class="container py-5">
     
     <div class="text-center mb-5">
@@ -14,17 +13,15 @@
     </div>
 
     <div class="cotizacion row g-4">
-        <!-- Order Summary with better card styling and colors -->
+        <!-- Order Summary (Sin cambios) -->
         <div class="col-lg-8">
             <div class="card shadow-lg border-0 rounded-3 overflow-hidden h-100 no-tilt" style="background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);">
-                <!-- Card header with orange background instead of gradient-primary -->
                 <div class="card-header text-white py-3 px-4 px-md-4" style="background-color: var(--primary-color);">
                     <h5 class="mb-0 fw-bold" style="font-size: 1.05rem;"><i class="fas fa-list-alt me-2"></i>Productos Seleccionados</h5>
                 </div>
                 
                 <div class="card-body p-0">
                     {% if items %}
-                    <!-- Improved responsive table with smaller font sizes -->
                     <div class="table-responsive">
                         <table class="table table-hover mb-0 align-middle">
                             <thead class="bg-light border-bottom" style="background-color: #f0f0f0 !important;">
@@ -61,7 +58,6 @@
                                 </tr>
                                 {% endfor %}
                             </tbody>
-                            <!-- Footer with green background -->
                              {% if SHOW_PRICES_CLIENTES %}
                             <tfoot style="background: linear-gradient(135deg, rgba(140, 198, 63, 0.08) 0%, rgba(140, 198, 63, 0.05) 100%); border-top: 2px solid var(--accent-color);">
                                 <tr>
@@ -73,7 +69,6 @@
                         </table>
                     </div>
                     {% else %}
-                    <!-- Improved empty state with better styling -->
                     <div class="text-center py-5 px-4">
                         <div class="mb-3">
                             <i class="fas fa-shopping-basket fa-4x text-muted" style="opacity: 0.4;"></i>
@@ -89,12 +84,11 @@
             </div>
         </div>
 
-        <!-- Contact Form with orange primary color background -->
+        <!-- Contact Form -->
         <div class="col-lg-4">
             {% if items %}
-            <!-- Updated card with primary color and better spacing -->
             <div class="card shadow-lg border-0 text-white rounded-3 position-relative overflow-hidden h-100 no-tilt" style="background: linear-gradient(135deg, var(--primary-color) 0%, #e85a00 100%);">
-                <!-- Decorative elements with opacity -->
+                <!-- Decorative elements -->
                 <div class="position-absolute top-0 end-0 rounded-circle opacity-10" style="width: 200px; height: 200px; background-color: white; transform: translate(50%, -50%);"></div>
                 <div class="position-absolute bottom-0 start-0 rounded-circle opacity-5" style="width: 150px; height: 150px; background-color: white; transform: translate(-30%, 30%);"></div>
                 
@@ -102,14 +96,17 @@
                     <h4 class="mb-3 pb-3 fw-bold" style="border-bottom: 2px solid rgba(255,255,255,0.2); font-size: 1.05rem;">
                         <i class="fas fa-user-edit me-2"></i>Datos de Contacto
                     </h4>
-                    <form method="post" class="row g-3">
+                    
+                    <!-- Agregamos ID 'cotizacionForm' -->
+                    <form method="post" class="row g-3" id="cotizacionForm">
                         {% csrf_token %}
                         <!-- Full Name -->
                         <div class="col-12">
                             <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Nombre Completo*</label>
                             <div class="input-group rounded-2 overflow-hidden">
                                 <span class="input-group-text border-0" style="background-color: rgba(255,255,255,0.2); color: white;"><i class="fas fa-user"></i></span>
-                                <input type="text" name="nombre" class="form-control border-0" placeholder="Su nombre completo" required style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;">
+                                <!-- Agregamos ID 'inputNombre' -->
+                                <input type="text" id="inputNombre" name="nombre" class="form-control border-0" placeholder="Su nombre completo" required style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;">
                             </div>
                         </div>
                         
@@ -118,16 +115,22 @@
                             <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Correo Electrónico*</label>
                             <div class="input-group rounded-2 overflow-hidden">
                                 <span class="input-group-text border-0" style="background-color: rgba(255,255,255,0.2); color: white;"><i class="fas fa-envelope"></i></span>
-                                <input type="email" name="correo" class="form-control border-0" placeholder="ejemplo@correo.com" required style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;">
+                                <!-- Agregamos ID 'inputCorreo' -->
+                                <input type="email" id="inputCorreo" name="correo" class="form-control border-0" placeholder="ejemplo@correo.com" required style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;">
                             </div>
                         </div>
                         
-                        <!-- Phone -->
+                        <!-- Phone VALIDACIÓN ESTRICTA -->
                         <div class="col-12">
-                            <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Teléfono</label>
-                            <div class="input-group rounded-2 overflow-hidden">
+                            <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Teléfono (Formato Internacional)*</label>
+                            <div class="input-group rounded-2 overflow-hidden position-relative">
                                 <span class="input-group-text border-0" style="background-color: rgba(255,255,255,0.2); color: white;"><i class="fas fa-phone"></i></span>
-                                <input type="text" name="telefono" class="form-control border-0" placeholder="+58 ..." style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;">
+                                <!-- Agregamos ID 'inputTelefono' y maxlength -->
+                                <input type="text" id="inputTelefono" name="telefono" class="form-control border-0" placeholder="+58 412 123 4567" required style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;">
+                            </div>
+                            <!-- Mensaje de error oculto por defecto -->
+                            <div id="phoneError" class="mt-1 ps-1" style="display: none; color: #ffcccc; font-size: 0.75rem; font-weight: bold;">
+                                <i class="fas fa-exclamation-circle me-1"></i> Debe iniciar con "+" y contener solo números.
                             </div>
                         </div>
                         
@@ -137,10 +140,10 @@
                             <textarea name="mensaje" class="form-control border-0 rounded-2" rows="3" placeholder="Información adicional..." style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;"></textarea>
                         </div>
                         
-                        <!-- Submit Button -->
+                        <!-- Submit Button - DESHABILITADO POR DEFECTO -->
                         <div class="col-12 mt-4">
-                            <button type="submit" class="btn btn-light text-primary w-100 rounded-pill shadow fw-bold" style="font-size: 0.95rem;">
-                                Enviar Solicitud <i class="fas fa-paper-plane ms-2"></i>
+                            <button type="submit" id="btnSubmit" class="btn btn-light text-primary w-100 rounded-pill shadow fw-bold" style="font-size: 0.95rem;" disabled>
+                                Completar datos para enviar <i class="fas fa-lock ms-2"></i>
                             </button>
                         </div>
                     </form>
@@ -161,10 +164,89 @@
         color: rgba(255, 255, 255, 0.6) !important;
     }
     
+    /* Estilo para cuando el botón está deshabilitado */
+    button:disabled {
+        background-color: rgba(255, 255, 255, 0.3) !important;
+        color: rgba(255, 255, 255, 0.5) !important;
+        border: none !important;
+        cursor: not-allowed;
+    }
+    
+    /* Borde rojo suave si hay error */
+    .input-error {
+        box-shadow: inset 0 0 0 2px rgba(255, 150, 150, 0.5) !important;
+    }
+
     @media (max-width: 768px) {
         h1 { font-size: 1.7rem; }
         table th, table td { font-size: 0.8rem !important; padding: 0.5rem !important; }
     }
 </style>
-{% endblock %}
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const phoneInput = document.getElementById('inputTelefono');
+    const nameInput = document.getElementById('inputNombre');
+    const emailInput = document.getElementById('inputCorreo');
+    const submitBtn = document.getElementById('btnSubmit');
+    const errorMsg = document.getElementById('phoneError');
+
+    // Función principal de validación
+    function validateForm() {
+        const phoneValue = phoneInput.value.trim();
+        const nameValue = nameInput.value.trim();
+        const emailValue = emailInput.value.trim();
+        
+        // 1. Validar Teléfono: Debe empezar con + y tener números
+        // Regex: Empieza con +, seguido de espacios opcionales y números
+        const phoneRegex = /^\+[\d\s]+$/;
+        // Validamos también una longitud mínima (ej: + y al menos 6 digitos)
+        const isPhoneValid = phoneRegex.test(phoneValue) && phoneValue.replace(/\D/g, '').length > 6;
+
+        // 2. Control visual del error del teléfono
+        if (phoneValue.length > 0 && !isPhoneValid) {
+            errorMsg.style.display = 'block';
+            phoneInput.classList.add('input-error');
+        } else {
+            errorMsg.style.display = 'none';
+            phoneInput.classList.remove('input-error');
+        }
+
+        // 3. Validar Campos Requeridos (Nombre y Correo no vacíos)
+        const isNameValid = nameValue.length > 2;
+        const isEmailValid = emailValue.includes('@') && emailValue.includes('.');
+
+        // 4. Activar o Desactivar Botón
+        if (isPhoneValid && isNameValid && isEmailValid) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Enviar Solicitud <i class="fas fa-paper-plane ms-2"></i>';
+            submitBtn.classList.remove('text-muted');
+            submitBtn.classList.add('text-primary');
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Complete los datos correctamente <i class="fas fa-lock ms-2"></i>';
+        }
+    }
+
+    // Event listeners para validación en tiempo real ("al momento de escribir")
+    phoneInput.addEventListener('input', validateForm);
+    nameInput.addEventListener('input', validateForm);
+    emailInput.addEventListener('input', validateForm);
+
+    // Validación extra para impedir escribir letras en el teléfono
+    phoneInput.addEventListener('keypress', function(e) {
+        // Permitir solo números, el signo +, y teclas de control
+        const allowedChars = /[0-9\+\s]/;
+        if (!allowedChars.test(e.key)) {
+            e.preventDefault();
+        }
+        
+        // Asegurar que el + sea solo el primer carácter
+        if (e.key === '+' && this.value.length > 0) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+
+{% endblock %}

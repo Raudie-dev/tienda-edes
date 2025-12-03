@@ -7,42 +7,31 @@
 <div class="container-fluid">
 
   <!-- Page Header -->
-  <div class="page-header">
-    <h1 class="page-title">Gestión de Productos</h1>
+  <div class="page-header my-4">
+    <h1 class="page-title"><i class="fas fa-boxes me-2 text-primary"></i>Gestión de Productos</h1>
   </div>
 
   <!-- BUSCADOR / FILTROS -->
-  <div class="card mb-4">
+  <div class="card mb-4 shadow-sm">
     <div class="card-body">
       <form method="get" class="row g-3">
         <div class="col-sm-5 col-md-4">
-          <input type="text" name="q" class="form-control"
-                 placeholder="Buscar por nombre o descripción..."
+          <div class="input-group">
+             <span class="input-group-text bg-light"><i class="fas fa-search text-muted"></i></span>
+             <input type="text" name="q" class="form-control"
+                 placeholder="Buscar por nombre..."
                  value="{{ q|default:'' }}">
+          </div>
         </div>
 
-        <!-- 1. CAMBIO EN FILTRO DE CATEGORÍAS (Buscador) -->
+        <!-- 1. FILTRO CATEGORÍAS (RECURSIVO INFINITO) -->
         <div class="col-sm-3 col-md-3">
           <select name="categoria" class="form-select">
             <option value="">Todas las categorías</option>
             {% for cat in categorias %}
-              {# Solo mostramos las principales primero #}
               {% if not cat.padre %}
-                  
-                  <!-- Categoría Padre -->
-                  <option value="{{ cat.id }}" class="fw-bold"
-                    {% if categoria_id|default:'' == cat.id|stringformat:'s' %}selected{% endif %}>
-                    {{ cat.nombre }}
-                  </option>
-                  
-                  <!-- Subcategorías (Indentadas) -->
-                  {% for sub in cat.subcategorias.all %}
-                      <option value="{{ sub.id }}"
-                        {% if categoria_id|default:'' == sub.id|stringformat:'s' %}selected{% endif %}>
-                        &nbsp;&nbsp;↳ {{ sub.nombre }}
-                      </option>
-                  {% endfor %}
-
+                  {# Usamos el include recursivo en modo 'single' #}
+                  {% include "includes/opcion_select_recursiva.html" with cat=cat level=0 selection_mode='single' current_selected=categoria_id %}
               {% endif %}
             {% endfor %}
           </select>
@@ -50,18 +39,16 @@
 
         <div class="col-sm-2 col-md-2">
           <select name="agotado" class="form-select">
-            <option value="">Todos</option>
+            <option value="">Estado: Todos</option>
             <option value="1" {% if agotado_filter == '1' %}selected{% endif %}>Agotado</option>
             <option value="0" {% if agotado_filter == '0' %}selected{% endif %}>Disponible</option>
           </select>
         </div>
 
         <div class="col-sm-2 col-md-3 d-flex gap-2">
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-search me-1"></i> Buscar
-          </button>
-          <a href="{% url 'control_productos' %}" class="btn btn-secondary">
-            <i class="fas fa-eraser me-1"></i> Limpiar
+          <button type="submit" class="btn btn-primary w-100">Buscar</button>
+          <a href="{% url 'control_productos' %}" class="btn btn-outline-secondary" title="Limpiar filtros">
+            <i class="fas fa-eraser"></i>
           </a>
         </div>
       </form>
@@ -69,99 +56,146 @@
   </div>
 
   <!-- TABLA DE PRODUCTOS -->
-  <div class="card">
+  <div class="card shadow-sm">
     <div class="card-body p-0">
       <div class="table-responsive">
-        <table class="table table-hover mb-0">
-          <thead>
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
             <tr>
-              <th>Imagen</th>
+              <th class="ps-4">Imagen</th>
               <th>Nombre</th>
               <th>Categorías</th>
               {% if SHOW_PRICES %}
               <th>Precio</th>
               {% endif %}
               <th>Estado</th>
-              <th style="width: 280px;">Acciones</th>
+              <th class="text-end pe-4" style="width: 200px;">Acciones</th>
             </tr>
           </thead>
-          <tbody>
-            {% for producto in productos %}
-            <tr>
-              <td style="width:100px;">
-                {% if producto.imagen %}
-                  <img src="{{ producto.imagen.url }}"
-                       alt="{{ producto.nombre }}"
-                       style="max-width:80px; max-height:80px; object-fit:cover; border-radius: 8px;">
-                {% else %}
-                  <div style="width:80px; height:80px; background:#f0f0f0; border-radius:8px; display:flex; align-items:center; justify-content:center;">
-                    <i class="fas fa-image text-muted"></i>
-                  </div>
-                {% endif %}
-              </td>
-              <td><strong>{{ producto.nombre }}</strong></td>
-              <td>
-                <!-- Mostramos las categorías como badges -->
-                {% for c in producto.categorias.all %}
-                    {% if c.padre %}
-                        <span class="badge bg-info text-dark me-1" title="Subcategoría de {{ c.padre.nombre }}">
+            <tbody>
+              {% for producto in productos %}
+              <tr class="align-middle"> <!-- Alineación vertical centrada para toda la fila -->
+                
+                <!-- IMAGEN -->
+                <td class="ps-4" style="width:100px;">
+                  {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}"
+                        alt="{{ producto.nombre }}"
+                        class="shadow-sm border"
+                        style="width:50px; height:50px; object-fit:cover; border-radius: 8px;">
+                  {% else %}
+                    <div class="bg-light border rounded d-flex align-items-center justify-content-center" 
+                        style="width:50px; height:50px;">
+                      <i class="fas fa-camera text-muted"></i>
+                    </div>
+                  {% endif %}
+                </td>
+
+                <!-- NOMBRE Y DESCRIPCIÓN -->
+                <td>
+                    <div class="d-flex flex-column">
+                        <span class="fw-bold text-dark">{{ producto.nombre }}</span>
+                        {% if producto.descripcion %}
+                            <small class="text-muted text-truncate" style="max-width: 250px;">
+                                {{ producto.descripcion }}
+                            </small>
+                        {% endif %}
+                    </div>
+                </td>
+
+                <!-- CATEGORÍAS (MÁXIMO 3) -->
+                <td style="max-width: 250px;">
+                  <div class="d-flex flex-wrap gap-1">
+                    {# 1. Mostramos solo las primeras 3 categorías #}
+                    {% for c in producto.categorias.all|slice:":3" %}
+                        <span class="badge bg-light text-dark border">
                             {{ c.nombre }}
                         </span>
-                    {% else %}
-                        <span class="badge bg-secondary me-1">{{ c.nombre }}</span>
-                    {% endif %}
-                {% empty %}
-                  <span class="text-muted">Sin categoría</span>
-                {% endfor %}
-              </td>
-              {% if SHOW_PRICES %}
-              <td><strong>${{ producto.precio }}</strong></td>
-              {% endif %}
-              <td>
-                {% if producto.agotado %}
-                  <span class="badge bg-danger">
-                    <i class="fas fa-times-circle me-1"></i> Agotado
-                  </span>
-                {% else %}
-                  <span class="badge bg-success">
-                    <i class="fas fa-check-circle me-1"></i> Disponible
-                  </span>
+                    {% empty %}
+                        <span class="text-muted small fst-italic">Sin categoría</span>
+                    {% endfor %}
+
+                    {# 2. Calculamos si sobran categorías #}
+                    {% with total=producto.categorias.count %}
+                        {% if total > 3 %}
+                            <span class="badge bg-secondary" title="Ver todas en editar">
+                                +{{ total|add:"-3" }} más
+                            </span>
+                        {% endif %}
+                    {% endwith %}
+                  </div>
+                </td>
+
+                <!-- PRECIO -->
+                {% if SHOW_PRICES %}
+                <td class="fw-bold text-success text-nowrap">
+                    ${{ producto.precio }}
+                </td>
                 {% endif %}
-              </td>
-              <td>
-                <button class="btn btn-sm btn-primary me-1"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalEdit{{ producto.id }}"
-                        title="Editar producto">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <form method="post" style="display:inline">
-                  {% csrf_token %}
-                  <button type="submit" name="toggle_agotado" value="{{ producto.id }}"
-                    class="btn btn-sm {% if producto.agotado %}btn-accent{% else %}btn-warning{% endif %} me-1"
-                    title="{% if producto.agotado %}Marcar disponible{% else %}Marcar agotado{% endif %}">
-                    <i class="fas fa-{% if producto.agotado %}check{% else %}ban{% endif %}"></i>
-                  </button>
-                </form>
-                <form method="post" style="display:inline" onsubmit="return confirm('¿Eliminar este producto?');">
-                  {% csrf_token %}
-                  <button type="submit" name="eliminar_producto" value="{{ producto.id }}"
-                    class="btn btn-sm btn-danger"
-                    title="Eliminar producto">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </form>
-              </td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td colspan="6" class="text-center py-5">
-                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                <p class="text-muted">No se encontraron productos</p>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
+
+                <!-- ESTADO -->
+                <td>
+                  {% if producto.agotado %}
+                    <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger">
+                      Agotado
+                    </span>
+                  {% else %}
+                    <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success">
+                      Disponible
+                    </span>
+                  {% endif %}
+                </td>
+
+                <!-- ACCIONES (BOTONES ALINEADOS) -->
+                <td class="text-end pe-4 text-nowrap" style="width: 1%;">
+                  <div class="d-flex justify-content-end gap-2">
+                      
+                      <!-- Botón Editar -->
+                      <button type="button" 
+                              class="btn btn-sm btn-outline-primary"
+                              data-bs-toggle="modal"
+                              data-bs-target="#modalEdit{{ producto.id }}"
+                              data-bs-toggle="tooltip" 
+                              title="Editar">
+                        <i class="fas fa-pen fa-fw"></i>
+                      </button>
+                      
+                      <!-- Botón Toggle Estado -->
+                      <form method="post" class="m-0 p-0 d-flex">
+                        {% csrf_token %}
+                        <button type="submit" name="toggle_agotado" value="{{ producto.id }}"
+                          class="btn btn-sm {% if producto.agotado %}btn-outline-success{% else %}btn-outline-warning{% endif %}"
+                          title="{% if producto.agotado %}Activar{% else %}Agotar{% endif %}">
+                          <i class="fas fa-{% if producto.agotado %}box-open{% else %}box{% endif %} fa-fw"></i>
+                        </button>
+                      </form>
+                      
+                      <!-- Botón Eliminar (Modal) -->
+                      <button type="button" 
+                              class="btn btn-sm btn-outline-danger"
+                              data-bs-toggle="modal" 
+                              data-bs-target="#modalEliminarProducto"
+                              data-bs-id="{{ producto.id }}"
+                              data-bs-nombre="{{ producto.nombre }}"
+                              title="Eliminar">
+                        <i class="fas fa-trash fa-fw"></i>
+                      </button>
+
+                  </div>
+                </td>
+
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="6" class="text-center py-5 bg-light">
+                  <div class="text-muted opacity-75">
+                      <i class="fas fa-search fa-2x mb-3"></i>
+                      <p class="mb-0">No se encontraron productos.</p>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
         </table>
       </div>
     </div>
@@ -173,16 +207,15 @@
 
 <!-- =========== Bloque de modales =========== -->
 {% block modals %}
+
+  <!-- MODAL DE EDICIÓN (Uno por producto dentro del loop) -->
   {% for producto in productos %}
-  <div class="modal fade" id="modalEdit{{ producto.id }}" tabindex="-1" aria-labelledby="modalEditLabel{{ producto.id }}" aria-hidden="true">
+  <div class="modal fade" id="modalEdit{{ producto.id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
 
-        <div class="modal-header bg-secondary text-white border-0">
-          <h5 class="modal-title" id="modalEditLabel{{ producto.id }}">
-            <i class="fas fa-edit me-2"></i>
-            Editar producto: <span class="fw-normal">{{ producto.nombre }}</span>
-          </h5>
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Editar: {{ producto.nombre }}</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
 
@@ -192,110 +225,149 @@
             <input type="hidden" name="editar_producto_id" value="{{ producto.id }}">
             
             <div class="row g-4">
-              <!-- COLUMNA IZQUIERDA -->
+              <!-- Columna Izquierda -->
               <div class="col-md-8">
-                <div class="mb-3">
-                  <label for="nombre-{{ producto.id }}" class="form-label fw-bold">
-                    <i class="fas fa-tag me-1 text-primary"></i> Nombre del Producto
-                  </label>
-                  <input type="text" name="nombre" id="nombre-{{ producto.id }}" class="form-control form-control-lg" value="{{ producto.nombre }}" required>
+                <div class="form-floating mb-3">
+                  <input type="text" name="nombre" class="form-control" id="nom{{ producto.id }}" value="{{ producto.nombre }}" required>
+                  <label for="nom{{ producto.id }}">Nombre del Producto</label>
                 </div>
 
-                <div class="mb-3">
-                  <label for="descripcion-{{ producto.id }}" class="form-label fw-bold">
-                    <i class="fas fa-align-left me-1 text-primary"></i> Descripción
-                  </label>
-                  <textarea name="descripcion" id="descripcion-{{ producto.id }}" rows="5" class="form-control">{{ producto.descripcion }}</textarea>
+                <div class="form-floating mb-3">
+                  <textarea name="descripcion" class="form-control" id="desc{{ producto.id }}" style="height: 120px">{{ producto.descripcion }}</textarea>
+                  <label for="desc{{ producto.id }}">Descripción</label>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold">
-                        <i class="fas fa-image me-1 text-primary"></i> Imagen del Producto
-                    </label>
-
-                    {% if producto.imagen %}
-                        <div class="text-center mb-3">
-                            <img src="{{ producto.imagen.url }}"
-                                alt="Imagen actual"
-                                class="img-thumbnail"
-                                style="width: 220px; height: 220px; object-fit: cover;">
+                <div class="mb-3 border rounded p-3 bg-light">
+                    <label class="form-label fw-bold small text-uppercase text-muted">Imagen Actual</label>
+                    <div class="d-flex align-items-center gap-3">
+                        {% if producto.imagen %}
+                            <img src="{{ producto.imagen.url }}" class="rounded border bg-white" style="width: 80px; height: 80px; object-fit: cover;">
+                        {% else %}
+                             <div class="rounded border d-flex align-items-center justify-content-center bg-white" style="width: 80px; height: 80px;">
+                                 <i class="fas fa-image text-muted"></i>
+                             </div>
+                        {% endif %}
+                        <div class="flex-grow-1">
+                            <input type="file" name="imagen" class="form-control form-control-sm">
+                            <small class="text-muted" style="font-size: 0.8rem;">Sube un archivo solo si deseas cambiar la imagen.</small>
                         </div>
-                    {% endif %}
-
-                    <input type="file" name="imagen" id="imagen-{{ producto.id }}" accept="image/*" class="form-control">
-                    <small class="form-text text-muted">Sube un nuevo archivo para reemplazar la imagen actual.</small>
+                    </div>
                 </div>
               </div>
 
-              <!-- COLUMNA DERECHA -->
+              <!-- Columna Derecha -->
               <div class="col-md-4">
-                <div class="bg-light p-3 rounded h-100">
+                <div class="bg-light p-3 rounded h-100 border">
                   {% if SHOW_PRICES %}
                   <div class="mb-3">
-                    <label for="precio-{{ producto.id }}" class="form-label fw-bold">
-                      <i class="fas fa-dollar-sign me-1 text-primary"></i> Precio
-                    </label>
+                    <label class="form-label fw-bold">Precio</label>
                     <div class="input-group">
                       <span class="input-group-text">$</span>
-                      <input type="number" step="0.01" name="precio" id="precio-{{ producto.id }}" class="form-control" value="{{ producto.precio }}" required>
+                      <input type="number" step="0.01" name="precio" class="form-control" value="{{ producto.precio }}" required>
                     </div>
                   </div>
                   {% endif %}
                   
-                  <!-- 2. CAMBIO EN SELECTOR DE CATEGORÍAS (Edición) -->
+                  <!-- 3. SELECTOR DE CATEGORÍAS (RECURSIVO MULTIPLE) -->
                   <div class="mb-3">
-                    <label for="categorias-{{ producto.id }}" class="form-label fw-bold">
-                      <i class="fas fa-folder me-1 text-primary"></i> Categorías
-                    </label>
-                    <select name="categoria_ids" id="categorias-{{ producto.id }}" class="form-select" multiple size="8">
+                    <label class="form-label fw-bold">Categorías</label>
+                    <select name="categoria_ids" class="form-select" multiple size="8">
                       {% for cat in categorias %}
-                        {# Solo iteramos las principales #}
                         {% if not cat.padre %}
-                            
-                            <!-- Opción Padre -->
-                            <option value="{{ cat.id }}" class="fw-bold" 
-                                {% if cat in producto.categorias.all %}selected{% endif %}>
-                                {{ cat.nombre }} (Principal)
-                            </option>
-                            
-                            <!-- Opción Hijos -->
-                            {% for sub in cat.subcategorias.all %}
-                                <option value="{{ sub.id }}" 
-                                    {% if sub in producto.categorias.all %}selected{% endif %}>
-                                    &nbsp;&nbsp;&nbsp;↳ {{ sub.nombre }}
-                                </option>
-                            {% endfor %}
-
+                            {# Usamos el include recursivo en modo 'multiple' #}
+                            {# Pasamos 'producto.categorias.all' como la selección actual #}
+                            {% include "includes/opcion_select_recursiva.html" with cat=cat level=0 selection_mode='multiple' current_selected=producto.categorias.all %}
                         {% endif %}
                       {% endfor %}
                     </select>
-                    <small class="form-text text-muted">Mantén Ctrl/Cmd para seleccionar varias.</small>
+                    <small class="text-muted d-block mt-1"><i class="fas fa-info-circle me-1"></i>Ctrl + Clic para seleccionar varias</small>
                   </div>
                   
                   <hr>
-
                   <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" name="agotado" id="agotado-{{ producto.id }}" {% if producto.agotado %}checked{% endif %}>
-                    <label class="form-check-label fw-bold" for="agotado-{{ producto.id }}">
-                      Producto Agotado
-                    </label>
+                    <input class="form-check-input" type="checkbox" name="agotado" id="agotado{{ producto.id }}" {% if producto.agotado %}checked{% endif %}>
+                    <label class="form-check-label fw-bold" for="agotado{{ producto.id }}">Marcar como Agotado</label>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              <i class="fas fa-times me-1"></i> Cancelar
-            </button>
-            <button type="submit" name="editar_producto" class="btn btn-primary">
-              <i class="fas fa-save me-1"></i> Guardar cambios
-            </button>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" name="editar_producto" class="btn btn-primary px-4"><i class="fas fa-save me-1"></i> Guardar Cambios</button>
           </div>
         </form>
       </div>
     </div>
   </div>
   {% endfor %}
+
+  <!-- 4. MODAL ÚNICO DE ELIMINACIÓN DE PRODUCTO -->
+  <div class="modal fade" id="modalEliminarProducto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        
+        <!-- Header Rojo -->
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i> Confirmar Eliminación</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <!-- Body Centrado con Icono -->
+        <div class="modal-body text-center p-4">
+          <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
+          <p class="mb-1">¿Estás seguro de que deseas eliminar el producto:</p>
+          
+          <!-- Aquí se inyectará el nombre vía JS -->
+          <h4 id="nombreProductoBorrar" class="fw-bold my-2"></h4>
+          
+          <p class="text-danger small mt-2">
+              <i class="fas fa-info-circle me-1"></i> Esta acción es permanente y no se puede deshacer.
+          </p>
+        </div>
+
+        <!-- Footer Centrado -->
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          
+          <form method="post">
+              {% csrf_token %}
+              <!-- El value se inyectará vía JS -->
+              <button type="submit" name="eliminar_producto" id="btnConfirmarEliminarProducto" value="" class="btn btn-danger">
+                  Sí, Eliminar
+              </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT PARA EL MODAL DE ELIMINACIÓN -->
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          // Lógica para el modal de eliminar PRODUCTO
+          var modalEliminarProd = document.getElementById('modalEliminarProducto');
+          
+          if (modalEliminarProd) {
+              modalEliminarProd.addEventListener('show.bs.modal', function (event) {
+                  // Botón que disparó el modal
+                  var button = event.relatedTarget;
+                  
+                  // Extraer información de los atributos data-bs-*
+                  var prodId = button.getAttribute('data-bs-id');
+                  var prodNombre = button.getAttribute('data-bs-nombre');
+                  
+                  // Elementos dentro del modal
+                  var modalNombre = modalEliminarProd.querySelector('#nombreProductoBorrar');
+                  var modalBtn = modalEliminarProd.querySelector('#btnConfirmarEliminarProducto');
+                  
+                  // Actualizar contenido
+                  modalNombre.textContent = prodNombre;
+                  modalBtn.value = prodId;
+              });
+          }
+      });
+  </script>
+
 {% endblock modals %}
