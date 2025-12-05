@@ -5,6 +5,41 @@
 
 {% block content %}
 
+{% if messages %}
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+    {% for message in messages %}
+    <div 
+        id="toast-{{ forloop.counter }}" 
+        class="toast align-items-center 
+            {% if message.tags == 'success' %}bg-success text-white border-0
+            {% elif message.tags == 'error' %}bg-danger text-white border-0
+            {% elif message.tags == 'warning' %}bg-warning text-dark border-0
+            {% else %}bg-secondary text-white border-0{% endif %}"
+        role="alert" 
+        aria-live="assertive" 
+        aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <strong>
+                    {% if message.tags == 'success' %}
+                        <i class="fas fa-check-circle me-2"></i> ¡Éxito!
+                    {% elif message.tags == 'error' %}
+                        <i class="fas fa-exclamation-triangle me-2"></i> Error
+                    {% elif message.tags == 'warning' %}
+                        <i class="fas fa-exclamation-circle me-2"></i> Atención
+                    {% else %}
+                        <i class="fas fa-info-circle me-2"></i> Notificación
+                    {% endif %}
+                </strong><br>
+                {{ message }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <!-- Hero Carousel -->
 <section class="hero-section">
     <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
@@ -267,6 +302,146 @@
 </section>
 <!-- ======================= FIN SECCIÓN FAQ ======================= -->
 
+<!-- ======================= SECCIÓN DE CONTACTO ======================= -->
+<section id="contacto" class="section py-5" style="background-color: #f8f9fa">
+  <div class="container">
+    <!-- Header de la Sección -->
+    <div class="text-center mb-5" data-aos="fade-up">
+      <span
+        class="text-primary fw-bold text-uppercase letter-spacing-2 d-block mb-2"
+        >Hablemos</span
+      >
+      <h2 class="section-title d-inline-block">Póngase en Contacto</h2>
+      <p class="text-muted mt-2">
+        ¿Listo para potenciar su operación? Llene el formulario y nuestro equipo
+        se comunicará con usted a la brevedad.
+      </p>
+    </div>
+
+    <!-- Fila centrada -->
+    <div class="row g-5 justify-content-center">
+
+      <!-- Columna del Formulario con ancho ajustado -->
+      <div class="col-lg-8 col-md-10" data-aos="fade-up">
+        <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4">
+          <!-- El action y method no cambian -->
+          <form action="{% url 'guardar_contacto' %}" method="post">
+            {% csrf_token %}
+            <div class="row g-4">
+              <!-- Campo: Nombre Completo -->
+              <div class="col-12">
+                <label for="nombre" class="form-label fw-bold"
+                  >Nombre Completo</label
+                >
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0"
+                    ><i class="fas fa-user text-muted"></i
+                  ></span>
+                  <input
+                    type="text"
+                    class="form-control border-start-0"
+                    id="nombre"
+                    name="nombre"
+                    placeholder="Ej: Juan Pérez"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- Campo: Teléfono -->
+              <div class="col-md-6">
+                <label for="telefono" class="form-label fw-bold"
+                  >Teléfono</label
+                >
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0"
+                    ><i class="fas fa-phone text-muted"></i
+                  ></span>
+                  <input
+                    type="tel"
+                    class="form-control border-start-0"
+                    id="telefono"
+                    name="telefono"
+                    placeholder="Ej: (+58) 414-1234567"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- Campo: Correo Electrónico -->
+              <div class="col-md-6">
+                <label for="correo" class="form-label fw-bold"
+                  >Correo Electrónico</label
+                >
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0"
+                    ><i class="fas fa-envelope text-muted"></i
+                  ></span>
+                  <input
+                    type="email"
+                    class="form-control border-start-0"
+                    id="correo"
+                    name="correo"
+                    placeholder="Ej: juan.perez@email.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- Campo: Motivo de Contacto -->
+              <div class="col-12">
+                <label for="motivo" class="form-label fw-bold"
+                  >Motivo de Contacto</label
+                >
+                <select class="form-select" id="motivo" name="motivo" required>
+                  <option value="" disabled selected>
+                    Seleccione un motivo...
+                  </option>
+                  <option value="cotizacion_repuestos">
+                    Solicitar Cotización de Repuestos
+                  </option>
+                  <option value="soporte_tecnico">
+                    Soporte Técnico / Mantenimiento
+                  </option>
+                  <option value="alquiler_equipos">
+                    Información sobre Alquiler de Equipos
+                  </option>
+                  <option value="info_general">Consulta General</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+
+              <!-- Campo: Mensaje -->
+              <div class="col-12">
+                <label for="mensaje" class="form-label fw-bold">Mensaje</label>
+                <textarea
+                  class="form-control"
+                  id="mensaje"
+                  name="mensaje"
+                  rows="5"
+                  placeholder="Escriba su mensaje aquí..."
+                  required
+                ></textarea>
+              </div>
+
+              <!-- Botón de Enviar -->
+              <div class="col-12 text-center">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg w-100 rounded-pill shadow hover-scale"
+                >
+                  <i class="fas fa-paper-plane me-2"></i> Enviar Mensaje
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ======================= FIN SECCIÓN DE CONTACTO ======================= -->
+
 <!-- Contact CTA -->
 <section id="contacto" class="section py-5 text-white position-relative overflow-hidden contact-cta" style="background-image: url(https://img.freepik.com/vector-gratis/advertencia-elegante-cuidado-fondo-atencion-proteccion_1017-54458.jpg); background-size: cover; background-position: center; background-repeat: no-repeat;">
     <div class="container text-center position-relative z-1" data-aos="zoom-in">
@@ -278,5 +453,18 @@
         </div>
     </div>
 </section>
+
+<!-- ======================= SCRIPT PARA ACTIVAR TOASTS ======================= -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const toastElements = document.querySelectorAll('.toast');
+    toastElements.forEach(function (toastEl) {
+        const toast = new bootstrap.Toast(toastEl, {
+            delay: 5000 // El toast se ocultará después de 5 segundos
+        });
+        toast.show();
+    });
+});
+</script>
 
 {% endblock %}

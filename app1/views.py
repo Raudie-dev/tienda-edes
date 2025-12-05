@@ -8,6 +8,7 @@ from django.conf import settings  # Importar settings para usar las variables
 from django.core.mail import EmailMultiAlternatives # Para enviar HTML
 from django.template.loader import render_to_string # Para renderizar el HTML
 from django.utils.html import strip_tags # Para limpiar HTML para la versión texto plano
+from django.core.mail import send_mail
 
 def _get_cart_count(request):
     cart = request.session.get('cotizacion', {}) or {}
@@ -236,3 +237,72 @@ def cotizacion(request):
             return render(request, 'cotizacion.html', {'items': items, 'subtotal': subtotal, 'cart_count': _get_cart_count(request)})
 
     return render(request, 'cotizacion.html', {'items': items, 'subtotal': subtotal, 'cart_count': _get_cart_count(request)})
+
+
+def guardar_contacto(request):
+    if request.method == "POST":
+        # 1. Obtener los datos del formulario (sin cambios)
+        nombre = request.POST.get('nombre', '').strip()
+        telefono = request.POST.get('telefono', '').strip()
+        correo = request.POST.get('correo', '').strip()
+        motivo_form = request.POST.get('motivo')
+        mensaje = request.POST.get('mensaje', '').strip()
+
+        # 2. Traducir el motivo a un texto legible (sin cambios)
+        motivos_map = {
+            'cotizacion_repuestos': 'Solicitar Cotización de Repuestos',
+            'soporte_tecnico': 'Soporte Técnico / Mantenimiento',
+            'alquiler_equipos': 'Información sobre Alquiler de Equipos',
+            'info_general': 'Consulta General',
+            'otro': 'Otro',
+        }
+        motivo_legible = motivos_map.get(motivo_form, 'No especificado')
+
+        # --- INICIO LÓGICA DE ENVÍO DE CORREO (AJUSTADA) ---
+        
+        try:
+            # 3. Preparar el contexto para la plantilla del correo
+            email_context = {
+                'nombre': nombre,
+                'telefono': telefono,
+                'correo': correo,
+                'motivo_legible': motivo_legible,
+                'mensaje': mensaje,
+            }
+
+            # 4. Renderizar SÓLO la plantilla HTML
+            html_content = render_to_string('emails/nuevo_contacto.html', email_context)
+            # 5. Crear la versión de texto plano automáticamente desde el HTML
+            text_content = strip_tags(html_content)
+
+            # 6. Configurar el correo usando EmailMultiAlternatives
+            subject = f'Nuevo Contacto desde la Web: {motivo_legible}'
+            
+            msg = EmailMultiAlternatives(
+                subject,                       # Asunto
+                text_content,                  # Contenido en texto plano (body)
+                settings.EMAIL_HOST_USER,      # De: (tu correo de notificaciones)
+                [settings.CORREO_VENTAS]       # Para: (el correo de ventas)
+            )
+            
+            # 7. Adjuntar la versión HTML
+            msg.attach_alternative(html_content, "text/html")
+            
+            # 8. Enviar el correo
+            msg.send()
+
+            # --- FIN LÓGICA DE ENVÍO DE CORREO ---
+            
+            # 9. Mostrar mensaje de éxito al usuario
+            messages.success(request, '¡Gracias por contactarnos! Hemos recibido tu mensaje y te responderemos pronto.')
+        
+        except Exception as e:
+            # En caso de error, es útil registrarlo para depuración
+            print(f"Error al enviar correo de contacto: {e}")
+            messages.error(request, 'Hubo un error al enviar tu mensaje. Por favor, inténtalo de nuevo o contáctanos directamente.')
+
+        # 10. Redirigir de vuelta al formulario en la página de inicio
+        return redirect('/#contacto')
+
+    # Si alguien intenta acceder a la URL por método GET, redirigir al inicio
+    return redirect('/')

@@ -106,7 +106,7 @@ class Cotizacion(models.Model):
 
 class CotizacionItem(models.Model):
     cotizacion = models.ForeignKey(Cotizacion, on_delete=models.CASCADE, related_name='items')
-    producto = models.ForeignKey(Product, on_delete=models.PROTECT)
+    producto = models.ForeignKey(Product, on_delete=models.CASCADE)  # ← Cambiado aquí
     cantidad = models.PositiveIntegerField(default=1)
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
