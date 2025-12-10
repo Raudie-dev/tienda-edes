@@ -758,16 +758,6 @@ a:hover {
   overflow: hidden;
 }
 
-.reparaciones-section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--secondary-color));
-}
-
 /* Header de la sección */
 .reparaciones-header {
   text-align: center;
@@ -830,7 +820,6 @@ a:hover {
   margin: 0 auto;
 }
 
-/* Wrapper del carrusel */
 .ba-carousel-wrapper {
   max-width: 1000px;
   margin: 0 auto;
@@ -1022,13 +1011,14 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 30px;
-  margin-top: 40px;
+  gap: 40px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .ba-control-btn {
-  width: 55px;
-  height: 55px;
+  width: 40px;
+  height: 40px;
   border: none;
   border-radius: 50%;
   background: var(--secondary-color);
