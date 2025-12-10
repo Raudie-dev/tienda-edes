@@ -1,37 +1,16 @@
-{% extends 'base_index.html' %}
-{% load static %}
+{% extends 'base_index.html' %} {% load static %}
 
-{% block title %}Inicio | EDES Venezuela{% endblock %}
+{% block title %}Inicio | EDES{% endblock %}
 
 {% block content %}
 
 {% if messages %}
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
     {% for message in messages %}
-    <div 
-        id="toast-{{ forloop.counter }}" 
-        class="toast align-items-center 
-            {% if message.tags == 'success' %}bg-success text-white border-0
-            {% elif message.tags == 'error' %}bg-danger text-white border-0
-            {% elif message.tags == 'warning' %}bg-warning text-dark border-0
-            {% else %}bg-secondary text-white border-0{% endif %}"
-        role="alert" 
-        aria-live="assertive" 
-        aria-atomic="true">
+    <div id="toast-{{ forloop.counter }}" class="toast align-items-center {% if message.tags == 'success' %}bg-success text-white border-0 {% elif message.tags == 'error' %}bg-danger text-white border-0 {% elif message.tags == 'warning' %}bg-warning text-dark border-0 {% else %}bg-secondary text-white border-0{% endif %}" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body">
-                <strong>
-                    {% if message.tags == 'success' %}
-                        <i class="fas fa-check-circle me-2"></i> ¡Éxito!
-                    {% elif message.tags == 'error' %}
-                        <i class="fas fa-exclamation-triangle me-2"></i> Error
-                    {% elif message.tags == 'warning' %}
-                        <i class="fas fa-exclamation-circle me-2"></i> Atención
-                    {% else %}
-                        <i class="fas fa-info-circle me-2"></i> Notificación
-                    {% endif %}
-                </strong><br>
-                {{ message }}
+                <strong> {% if message.tags == 'success' %} <i class="fas fa-check-circle me-2"></i> ¡Éxito! {% elif message.tags == 'error' %} <i class="fas fa-exclamation-triangle me-2"></i> Error {% elif message.tags == 'warning' %} <i class="fas fa-exclamation-circle me-2"></i> Atención {% else %} <i class="fas fa-info-circle me-2"></i> Notificación {% endif %}</strong><br> {{ message }}
             </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
@@ -50,7 +29,7 @@
         </div>
         <div class="carousel-inner">
             <!-- Slide 1 -->
-            <div class="carousel-item active hero-carousel-item" style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+            <div class="carousel-item active hero-carousel-item" style="background-image: url('https://www.bardahlindustria.com/wp-content/uploads/2019/03/el-futuro-de-la-industria-montacargas.png');">
                 <div class="hero-overlay">
                     <div class="container hero-content" data-aos="fade-up">
                         <span class="badge bg-accent text-white mb-3 px-3 py-2 rounded-pill animate__animated animate__fadeInDown">LÍDERES EN REPUESTOS</span>
@@ -68,7 +47,7 @@
                 <div class="hero-overlay">
                     <div class="container hero-content" data-aos="fade-up">
                         <span class="badge bg-primary text-white mb-3 px-3 py-2 rounded-pill">SOPORTE ROBUSTO</span>
-                        <h1 class="display-2 fw-bold mb-3 text-white">CONTINUIDAD<br>OPERATIVA</h1>
+                        <h1 class="display-2 fw-bold mb-3 text-white">CONTINUIDAD<br><span class="text-primary">OPERATIVA</span></h1>
                         <p class="lead mb-4 fs-4 text-light">Servicio posventa que no se detiene, asegurando su productividad.</p>
                         <a href="#contacto" class="btn btn-light text-secondary btn-lg rounded-pill px-5 shadow-lg hover-scale">Agendar Servicio</a>
                     </div>
@@ -79,7 +58,7 @@
                 <div class="hero-overlay">
                     <div class="container hero-content" data-aos="fade-up">
                         <span class="badge bg-accent text-white mb-3 px-3 py-2 rounded-pill">EL PODER DE LA EXCELENCIA</span>
-                        <h1 class="display-2 fw-bold mb-3 text-white">CONFIABILIDAD<br>INQUEBRANTABLE</h1>
+                        <h1 class="display-2 fw-bold mb-3 text-white">CONFIABILIDAD<br><span class="text-primary">INQUEBRANTABLE</span></h1>
                         <p class="lead mb-4 fs-4 text-light">Elevando el estándar de calidad y servicio en cada operación.</p>
                         <a href="{% url 'tienda' %}" class="btn btn-primary btn-lg rounded-pill px-5 text-white shadow-lg hover-scale">Comprar Ahora</a>
                     </div>
@@ -138,7 +117,7 @@
                 <div class="position-relative ps-lg-5">
                     <img src="https://plus.unsplash.com/premium_photo-1663100854088-bd8ab87870a7?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bW9udGFjYXJnYXxlbnwwfHwwfHx8MA%3D%3D" alt="Almacén" class="img-fluid rounded-4 shadow-lg" style="border-bottom: 8px solid var(--primary-color);">
                     <div class="position-absolute bottom-0 start-0 bg-secondary text-white p-4 rounded-3 shadow m-4 d-none d-md-block animate__animated animate__fadeInUp" style="max-width: 220px;">
-                        <h3 class="text-primary display-4 fw-bold mb-0">10+</h3>
+                        <h3 class="text-primary display-4 fw-bold mb-0">15+</h3>
                         <p class="mb-0 fw-bold">Años de Excelencia</p>
                     </div>
                 </div>
@@ -148,12 +127,12 @@
                 <h2 class="section-title text-start mx-0 mb-4 display-4">El Poder De La Excelencia</h2>
                 
                 <div class="mb-4 p-4 bg-white rounded-4 shadow-sm border-start border-4 border-primary">
-                    <h4 class="text-secondary fw-bold mb-2"><i class="fas fa-bullseye me-2 text-primary"></i>Misión</h4>
+                    <h4 class=" fw-bold mb-2"><i class="fas fa-bullseye me-2 text-primary"></i>Misión</h4>
                     <p class="text-muted mb-0">Nuestra misión es ayudar a garantizar la eficiencia y maximizar la productividad de nuestros clientes, brindando soluciones integrales en logística y energía industrial (venta, alquiler y servicio), con un soporte posventa robusto que no se detiene y que asegura la continuidad operativa.</p>
                 </div>
 
                 <div class="mb-4 p-4 bg-white rounded-4 shadow-sm border-start border-4 border-secondary">
-                    <h4 class="text-secondary fw-bold mb-2"><i class="fas fa-eye me-2 text-secondary"></i>Visión</h4>
+                    <h4 class="fw-bold mb-2"><i class="fas fa-eye me-2 text-primary"></i>Visión</h4>
                     <p class="text-muted mb-0">Ser el referente indiscutible, a nivel nacional e internacional, en soluciones de Logística y Energía Industrial. Nos inspira <strong>El Poder De La Excelencia</strong>, lo cual nos convierte en una marca líder, elegida por la confiabilidad inquebrantable de nuestros productos y servicios, superando consistentemente las expectativas de nuestros clientes.</p>
                 </div>
 
@@ -216,9 +195,152 @@
     </section>
 </section>
 
-<!-- ======================= SECCIÓN DE FAQ (NUEVA) ======================= -->
+<!-- Nueva sección de Carrusel Antes y Después de Reparaciones -->
+<section id="reparaciones" class="reparaciones-section">
+    <div class="container">
+        <!-- Header Sección -->
+        <div class="reparaciones-header" data-aos="fade-up">
+            <span class="reparaciones-subtitle">Nuestro Trabajo</span>
+            <h2 class="reparaciones-title">Antes y Después</h2>
+            <p class="reparaciones-description">Vea la transformación de los montacargas que hemos reparado con excelencia.</p>
+        </div>
+
+        <!-- Carrusel Personalizado -->
+        <div class="ba-carousel-wrapper" data-aos="fade-up" data-aos-delay="100">
+            <div class="ba-carousel">
+                <div class="ba-carousel-track" id="baCarouselTrack">
+                    <!-- Slide 1 -->
+                    <div class="ba-slide">
+                        <div class="ba-comparison">
+                            <div class="ba-image-container ba-before">
+                                <div class="ba-label ba-label-before">
+                                    <span class="ba-label-icon">&#10005;</span>
+                                    <span>ANTES</span>
+                                </div>
+                                <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=600&q=80" alt="Montacargas antes de reparación">
+                                <div class="ba-image-overlay ba-overlay-before">
+                                    <p>Sistema hidráulico dañado</p>
+                                </div>
+                            </div>
+                            <div class="ba-arrow-divider">
+                                <div class="ba-arrow-circle">
+                                    <span>&#10140;</span>
+                                </div>
+                            </div>
+                            <div class="ba-image-container ba-after">
+                                <div class="ba-label ba-label-after">
+                                    <span class="ba-label-icon">&#10003;</span>
+                                    <span>DESPUÉS</span>
+                                </div>
+                                <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&q=80" alt="Montacargas después de reparación">
+                                <div class="ba-image-overlay ba-overlay-after">
+                                    <p>100% Operativo</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ba-slide-info">
+                            <span class="ba-slide-tag">Reparación Completa</span>
+                            <h3 class="ba-slide-title">Sistema Hidráulico</h3>
+                            <p class="ba-slide-desc">Restauración total del sistema hidráulico con repuestos originales.</p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="ba-slide">
+                        <div class="ba-comparison">
+                            <div class="ba-image-container ba-before">
+                                <div class="ba-label ba-label-before">
+                                    <span class="ba-label-icon">&#10005;</span>
+                                    <span>ANTES</span>
+                                </div>
+                                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80" alt="Motor antes de reparación">
+                                <div class="ba-image-overlay ba-overlay-before">
+                                    <p>Motor con fallas críticas</p>
+                                </div>
+                            </div>
+                            <div class="ba-arrow-divider">
+                                <div class="ba-arrow-circle">
+                                    <span>&#10140;</span>
+                                </div>
+                            </div>
+                            <div class="ba-image-container ba-after">
+                                <div class="ba-label ba-label-after">
+                                    <span class="ba-label-icon">&#10003;</span>
+                                    <span>DESPUÉS</span>
+                                </div>
+                                <img src="https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=600&q=80" alt="Motor después de reparación">
+                                <div class="ba-image-overlay ba-overlay-after">
+                                    <p>Motor reconstruido</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ba-slide-info">
+                            <span class="ba-slide-tag">Reconstrucción</span>
+                            <h3 class="ba-slide-title">Motor Industrial</h3>
+                            <p class="ba-slide-desc">Reconstrucción completa del motor con garantía extendida.</p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="ba-slide">
+                        <div class="ba-comparison">
+                            <div class="ba-image-container ba-before">
+                                <div class="ba-label ba-label-before">
+                                    <span class="ba-label-icon">&#10005;</span>
+                                    <span>ANTES</span>
+                                </div>
+                                <img src="https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=600&q=80" alt="Estructura antes de reparación">
+                                <div class="ba-image-overlay ba-overlay-before">
+                                    <p>Estructura oxidada</p>
+                                </div>
+                            </div>
+                            <div class="ba-arrow-divider">
+                                <div class="ba-arrow-circle">
+                                    <span>&#10140;</span>
+                                </div>
+                            </div>
+                            <div class="ba-image-container ba-after">
+                                <div class="ba-label ba-label-after">
+                                    <span class="ba-label-icon">&#10003;</span>
+                                    <span>DESPUÉS</span>
+                                </div>
+                                <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80" alt="Estructura después de reparación">
+                                <div class="ba-image-overlay ba-overlay-after">
+                                    <p>Pintura y protección nueva</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ba-slide-info">
+                            <span class="ba-slide-tag">Restauración</span>
+                            <h3 class="ba-slide-title">Carrocería y Pintura</h3>
+                            <p class="ba-slide-desc">Tratamiento anticorrosivo y pintura industrial de alta durabilidad.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controles del Carrusel -->
+            <div class="ba-controls">
+                <button class="ba-control-btn ba-prev" id="baPrev" aria-label="Anterior">
+                    <span>&#10094;</span>
+                </button>
+                <div class="ba-dots" id="baDots">
+                    <button class="ba-dot active" data-index="0" aria-label="Slide 1"></button>
+                    <button class="ba-dot" data-index="1" aria-label="Slide 2"></button>
+                    <button class="ba-dot" data-index="2" aria-label="Slide 3"></button>
+                </div>
+                <button class="ba-control-btn ba-next" id="baNext" aria-label="Siguiente">
+                    <span>&#10095;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
 <section class="section py-5" style="background-color: #f1f3f5;">
     <div class="container">
+
         <!-- Header Sección -->
         <div class="text-center mb-5" data-aos="fade-up">
             <span class="text-primary fw-bold text-uppercase letter-spacing-2 d-block mb-2">Ayuda y Soporte</span>
@@ -227,12 +349,8 @@
         </div>
 
         <div class="row justify-content-center align-items-start gy-4">
-            <!-- Imagen Decorativa (Opcional, si prefieres solo texto usa col-lg-10 y centra) -->
             <div class="col-lg-5 d-none d-lg-block" data-aos="fade-right">
-                <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80" 
-                     alt="Soporte EDES" 
-                     class="img-fluid rounded-4 shadow-lg"
-                     style="height: 100%; object-fit: cover; min-height: 400px;">
+                <img src="https://img.freepik.com/foto-gratis/hombre-que-trabaja-almacen-conduce-carretilla-elevadora_1303-26625.jpg?semt=ais_se_enriched&w=740&q=80" alt="Soporte EDES" class="img-fluid rounded-4 shadow-lg" style="height: 100%; object-fit: cover; min-height: 400px;">
             </div>
 
             <!-- Acordeón de Preguntas -->
@@ -242,7 +360,7 @@
                     <!-- Pregunta 1 -->
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button fw-bold text-dark py-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <button class="accordion-button text-dark py-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                 <i class="fas fa-boxes text-primary me-3"></i> ¿Qué servicios ofrece EDES Venezuela?
                             </button>
                         </h2>
@@ -256,7 +374,7 @@
                     <!-- Pregunta 2 -->
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button collapsed fw-bold text-dark py-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <button class="accordion-button collapsed text-dark py-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                 <i class="fas fa-wrench text-primary me-3"></i> ¿Ofrecen servicio técnico y mantenimiento?
                             </button>
                         </h2>
@@ -270,7 +388,7 @@
                     <!-- Pregunta 3 -->
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingThree">
-                            <button class="accordion-button collapsed fw-bold text-dark py-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <button class="accordion-button collapsed text-dark py-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                 <i class="fas fa-map-marker-alt text-primary me-3"></i> ¿Cuál es su zona de cobertura?
                             </button>
                         </h2>
@@ -284,13 +402,13 @@
                     <!-- Pregunta 4 -->
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingFour">
-                            <button class="accordion-button collapsed fw-bold text-dark py-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            <button class="accordion-button collapsed text-dark py-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                                 <i class="fas fa-file-invoice-dollar text-primary me-3"></i> ¿Cómo puedo solicitar una cotización?
                             </button>
                         </h2>
                         <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
                             <div class="accordion-body text-muted pb-4">
-                                Es muy sencillo. Puede navegar por nuestro <a href="{% url 'tienda' %}" class="text-primary fw-bold text-decoration-none">catálogo en línea</a> para ver nuestros productos, o utilizar el botón de "Solicitar Cotización" al final de esta página. También atendemos directamente vía WhatsApp para una respuesta inmediata.
+                                Es muy sencillo. Puede navegar por nuestro <a href="{% url 'tienda' %}" class="text-primary text-decoration-none">catálogo en línea</a> para ver nuestros productos, o utilizar el botón de "Solicitar Cotización" al final de esta página. También atendemos directamente vía WhatsApp para una respuesta inmediata.
                             </div>
                         </div>
                     </div>
@@ -300,22 +418,15 @@
         </div>
     </div>
 </section>
-<!-- ======================= FIN SECCIÓN FAQ ======================= -->
 
 <!-- ======================= SECCIÓN DE CONTACTO ======================= -->
 <section id="contacto" class="section py-5" style="background-color: #f8f9fa">
   <div class="container">
     <!-- Header de la Sección -->
     <div class="text-center mb-5" data-aos="fade-up">
-      <span
-        class="text-primary fw-bold text-uppercase letter-spacing-2 d-block mb-2"
-        >Hablemos</span
-      >
+      <span class="text-primary fw-bold text-uppercase letter-spacing-2 d-block mb-2">Hablemos</span>
       <h2 class="section-title d-inline-block">Póngase en Contacto</h2>
-      <p class="text-muted mt-2">
-        ¿Listo para potenciar su operación? Llene el formulario y nuestro equipo
-        se comunicará con usted a la brevedad.
-      </p>
+      <p class="text-muted mt-2">¿Listo para potenciar su operación? Llene el formulario y nuestro equipo se comunicará con usted a la brevedad.</p>
     </div>
 
     <!-- Fila centrada -->
@@ -330,82 +441,39 @@
             <div class="row g-4">
               <!-- Campo: Nombre Completo -->
               <div class="col-12">
-                <label for="nombre" class="form-label fw-bold"
-                  >Nombre Completo</label
-                >
+                <label for="nombre" class="form-label fw-bold">Nombre Completo</label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light border-end-0"
-                    ><i class="fas fa-user text-muted"></i
-                  ></span>
-                  <input
-                    type="text"
-                    class="form-control border-start-0"
-                    id="nombre"
-                    name="nombre"
-                    placeholder="Ej: Juan Pérez"
-                    required
-                  />
+                  <span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-muted"></i></span>
+                  <input type="text" class="form-control border-start-0" id="nombre" name="nombre" placeholder="Ej: Juan Pérez" required />
                 </div>
               </div>
 
               <!-- Campo: Teléfono -->
               <div class="col-md-6">
-                <label for="telefono" class="form-label fw-bold"
-                  >Teléfono</label
-                >
+                <label for="telefono" class="form-label fw-bold">Teléfono</label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light border-end-0"
-                    ><i class="fas fa-phone text-muted"></i
-                  ></span>
-                  <input
-                    type="tel"
-                    class="form-control border-start-0"
-                    id="telefono"
-                    name="telefono"
-                    placeholder="Ej: (+58) 414-1234567"
-                    required
-                  />
+                  <span class="input-group-text bg-light border-end-0"><i class="fas fa-phone text-muted"></i></span>
+                  <input type="tel" class="form-control border-start-0" id="telefono" name="telefono" placeholder="Ej: (+58) 414-1234567" required />
                 </div>
               </div>
 
               <!-- Campo: Correo Electrónico -->
               <div class="col-md-6">
-                <label for="correo" class="form-label fw-bold"
-                  >Correo Electrónico</label
-                >
+                <label for="correo" class="form-label fw-bold">Correo Electrónico</label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light border-end-0"
-                    ><i class="fas fa-envelope text-muted"></i
-                  ></span>
-                  <input
-                    type="email"
-                    class="form-control border-start-0"
-                    id="correo"
-                    name="correo"
-                    placeholder="Ej: juan.perez@email.com"
-                    required
-                  />
+                  <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-muted"></i></span>
+                  <input type="email" class="form-control border-start-0" id="correo" name="correo" placeholder="Ej: juan.perez@email.com" required />
                 </div>
               </div>
 
               <!-- Campo: Motivo de Contacto -->
               <div class="col-12">
-                <label for="motivo" class="form-label fw-bold"
-                  >Motivo de Contacto</label
-                >
+                <label for="motivo" class="form-label fw-bold">Motivo de Contacto</label>
                 <select class="form-select" id="motivo" name="motivo" required>
-                  <option value="" disabled selected>
-                    Seleccione un motivo...
-                  </option>
-                  <option value="cotizacion_repuestos">
-                    Solicitar Cotización de Repuestos
-                  </option>
-                  <option value="soporte_tecnico">
-                    Soporte Técnico / Mantenimiento
-                  </option>
-                  <option value="alquiler_equipos">
-                    Información sobre Alquiler de Equipos
-                  </option>
+                  <option value="" disabled selected>Seleccione un motivo...</option>
+                  <option value="cotizacion_repuestos">Solicitar Cotización de Repuestos</option>
+                  <option value="soporte_tecnico">Soporte Técnico / Mantenimiento</option>
+                  <option value="alquiler_equipos">Información sobre Alquiler de Equipos</option>
                   <option value="info_general">Consulta General</option>
                   <option value="otro">Otro</option>
                 </select>
@@ -414,22 +482,12 @@
               <!-- Campo: Mensaje -->
               <div class="col-12">
                 <label for="mensaje" class="form-label fw-bold">Mensaje</label>
-                <textarea
-                  class="form-control"
-                  id="mensaje"
-                  name="mensaje"
-                  rows="5"
-                  placeholder="Escriba su mensaje aquí..."
-                  required
-                ></textarea>
+                <textarea class="form-control" id="mensaje" name="mensaje" rows="5" placeholder="Escriba su mensaje aquí..." required></textarea>
               </div>
 
               <!-- Botón de Enviar -->
               <div class="col-12 text-center">
-                <button
-                  type="submit"
-                  class="btn btn-primary btn-lg w-100 rounded-pill shadow hover-scale"
-                >
+                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow hover-scale">
                   <i class="fas fa-paper-plane me-2"></i> Enviar Mensaje
                 </button>
               </div>
@@ -443,7 +501,7 @@
 <!-- ======================= FIN SECCIÓN DE CONTACTO ======================= -->
 
 <!-- Contact CTA -->
-<section id="contacto" class="section py-5 text-white position-relative overflow-hidden contact-cta" style="background-image: url(https://img.freepik.com/vector-gratis/advertencia-elegante-cuidado-fondo-atencion-proteccion_1017-54458.jpg); background-size: cover; background-position: center; background-repeat: no-repeat;">
+<section id="contacto-cta" class="section py-5 text-white position-relative overflow-hidden contact-cta" style="background-image: url(https://img.freepik.com/vector-gratis/advertencia-elegante-cuidado-fondo-atencion-proteccion_1017-54458.jpg); background-size: cover; background-position: center; background-repeat: no-repeat;">
     <div class="container text-center position-relative z-1" data-aos="zoom-in">
         <h2 class="text-white mb-4 display-5 fw-bold">¿Necesita una solución específica?</h2>
         <p class="lead mb-5 text-white-50 container-md mx-auto" style="max-width: 700px;">Nuestro equipo de expertos en EDES está listo para brindarle el soporte que su operación necesita. Contáctenos hoy mismo.</p>

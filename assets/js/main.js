@@ -404,3 +404,77 @@ document.addEventListener("DOMContentLoaded", () => {
   // Removed hover-card tilt/3D effects to disable cursor movement animations globally.
 })
 
+document.addEventListener("DOMContentLoaded", () => {
+  const track = document.getElementById("baCarouselTrack")
+  const prevBtn = document.getElementById("baPrev")
+  const nextBtn = document.getElementById("baNext")
+  const dots = document.querySelectorAll(".ba-dot")
+
+  if (!track || !prevBtn || !nextBtn) return
+
+  let currentIndex = 0
+  const totalSlides = document.querySelectorAll(".ba-slide").length
+  let autoPlayInterval
+
+  function updateCarousel() {
+    track.style.transform = `translateX(-${currentIndex * 100}%)`
+
+    dots.forEach((dot, index) => {
+      dot.classList.toggle("active", index === currentIndex)
+    })
+  }
+
+  function nextSlide() {
+    currentIndex = (currentIndex + 1) % totalSlides
+    updateCarousel()
+  }
+
+  function prevSlide() {
+    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides
+    updateCarousel()
+  }
+
+  function goToSlide(index) {
+    currentIndex = index
+    updateCarousel()
+  }
+
+  function startAutoPlay() {
+    autoPlayInterval = setInterval(nextSlide, 5000)
+  }
+
+  function stopAutoPlay() {
+    clearInterval(autoPlayInterval)
+  }
+
+  // Event Listeners
+  nextBtn.addEventListener("click", () => {
+    stopAutoPlay()
+    nextSlide()
+    startAutoPlay()
+  })
+
+  prevBtn.addEventListener("click", () => {
+    stopAutoPlay()
+    prevSlide()
+    startAutoPlay()
+  })
+
+  dots.forEach((dot) => {
+    dot.addEventListener("click", () => {
+      stopAutoPlay()
+      goToSlide(Number.parseInt(dot.dataset.index))
+      startAutoPlay()
+    })
+  })
+
+  // Pausar en hover
+  const carousel = document.querySelector(".ba-carousel")
+  if (carousel) {
+    carousel.addEventListener("mouseenter", stopAutoPlay)
+    carousel.addEventListener("mouseleave", startAutoPlay)
+  }
+
+  // Iniciar autoplay
+  startAutoPlay()
+})

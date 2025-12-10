@@ -1,4 +1,4 @@
-/* 
+/*
    EDES Venezuela - Brand Identity
    Primary: Orange (#f6650f)
    Secondary: Dark Green (#004d25)
@@ -14,7 +14,7 @@
   --primary-hover: #d95300;
   --secondary-color: #004d25;
   --secondary-hover: #00381a;
-  --accent-color: #8aba4c;  
+  --accent-color: #8aba4c;
   --text-color: #333333;
   --text-muted: #6c757d;
   --bg-color: #f6f6f6;
@@ -28,7 +28,6 @@
 }
 
 /* Added smooth scrolling and better base typography */
-
 
 html,
 body {
@@ -80,7 +79,8 @@ a {
   transition: all 0.3s ease;
 }
 
-.cotizacion.row.g-4 h5, .cotizacion.row.g-4 h4 {
+.cotizacion.row.g-4 h5,
+.cotizacion.row.g-4 h4 {
   color: var(--bg-color);
 }
 
@@ -125,7 +125,7 @@ a:hover {
 }
 
 .logo img {
-  height: 50px;
+  height: 70px;
   width: auto;
   transition: height 0.3s ease;
 }
@@ -134,20 +134,19 @@ a:hover {
   color: var(--secondary-color) !important;
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.85rem;
+  font-size: 1rem;
   padding: 0.5rem 1.2rem;
   transition: color 0.3s ease;
   position: relative;
 }
 
-
-.text-primary{
-    color: var(--accent-color) !important;
+.text-primary {
+  color: var(--accent-color) !important;
 }
 
 .bg-primary {
-    background-color: var(--accent-color)!important;
-    color: var(--white)!important;
+  background-color: var(--accent-color) !important;
+  color: var(--white) !important;
 }
 
 .nav-link::after {
@@ -174,7 +173,7 @@ a:hover {
 .btn {
   border-radius: 50px;
   font-weight: 600;
-  padding: 0.7rem 1.8rem;
+  padding: 0.5rem 1.8rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -224,7 +223,7 @@ a:hover {
 }
 
 .btn-group {
-  gap:0.85rem;
+  gap: 0.85rem;
 }
 
 .btn-secondary:hover {
@@ -236,6 +235,10 @@ a:hover {
 
 .hover-scale:hover {
   transform: scale(1.05);
+}
+
+.accordion-button {
+  font-size: 1.225rem;
 }
 
 /* Cards */
@@ -265,7 +268,7 @@ a:hover {
 }
 
 .filtro.row {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 /* New Product Overlay */
@@ -349,6 +352,157 @@ a:hover {
   }
 }
 
+/* ======================= SECCIÓN ANTES Y DESPUÉS ======================= */
+.reparaciones-carousel {
+  position: relative;
+  padding: 0 60px;
+}
+
+.reparaciones-carousel .carousel-inner {
+  overflow: visible;
+}
+
+.reparaciones-carousel .carousel-item {
+  padding: 20px 10px;
+}
+
+/* Cards de Antes y Después */
+.before-after-card {
+  position: relative;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  transition: all 0.4s ease;
+}
+
+.before-after-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.before-after-card img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.before-after-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Badge de Antes/Después */
+.ba-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  z-index: 10;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.antes-badge {
+  background-color: #dc3545;
+  color: white;
+}
+
+.despues-badge {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+/* Overlay con descripción */
+.ba-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(220, 53, 69, 0.9));
+  color: white;
+  padding: 40px 20px 20px;
+  font-weight: 500;
+}
+
+.ba-overlay.success {
+  background: linear-gradient(transparent, rgba(0, 77, 37, 0.9));
+}
+
+/* Flecha de transformación */
+.arrow-transform {
+  animation: pulse-arrow 2s infinite;
+}
+
+@keyframes pulse-arrow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Controles del carrusel personalizados */
+.reparaciones-control {
+  width: 50px;
+  height: 50px;
+  background-color: var(--secondary-color) !important;
+  border-radius: 50%;
+  opacity: 1;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+}
+
+.reparaciones-control:hover {
+  background-color: var(--primary-color) !important;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-control-prev.reparaciones-control {
+  left: 0;
+}
+
+.carousel-control-next.reparaciones-control {
+  right: 0;
+}
+
+.carousel-control-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: white;
+  font-size: 1.2rem;
+}
+
+/* Indicadores personalizados */
+.reparaciones-indicators {
+  bottom: -50px;
+}
+
+.reparaciones-indicators button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--text-muted);
+  border: none;
+  margin: 0 5px;
+  transition: all 0.3s ease;
+}
+
+.reparaciones-indicators button.active {
+  background-color: var(--primary-color);
+  transform: scale(1.3);
+}
+
 /* Contact CTA background and overlay */
 .contact-cta {
   background-repeat: no-repeat;
@@ -403,7 +557,8 @@ a:hover {
   padding-top: 2rem;
 }
 
-.carousel-control-next, .carousel-control-prev {
+.carousel-control-next,
+.carousel-control-prev {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -417,11 +572,12 @@ a:hover {
   text-align: center;
   background: 0 0;
   border: 0;
-  opacity: .5;
+  opacity: 0.5;
   transition: opacity .15s ease;
 }
 
-.carousel-control-next-icon, .carousel-control-prev-icon {
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
   display: inline-block;
   width: 1.5rem;
   height: 1.5rem;
@@ -550,4 +706,365 @@ a:hover {
   .section-title.text-start::after {
     margin: 15px auto 0;
   }
+
+  .reparaciones-carousel {
+    padding: 0 15px;
+  }
+
+  .before-after-card img {
+    height: 200px;
+  }
+
+  .reparaciones-control {
+    width: 40px;
+    height: 40px;
+  }
+
+  .carousel-control-prev.reparaciones-control {
+    left: -5px;
+  }
+
+  .carousel-control-next.reparaciones-control {
+    right: -5px;
+  }
+
+  .ba-badge {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+
+  /* Mostrar flecha vertical en móvil */
+  .arrow-transform-mobile {
+    display: block;
+    text-align: center;
+    padding: 15px 0;
+  }
+
+  .arrow-transform-mobile i {
+    transform: rotate(90deg);
+  }
+}
+
+/* Añadir margen inferior para los indicadores */
+#reparaciones {
+  padding-bottom: 80px;
+}
+
+/* ======================= NUEVA SECCIÓN ANTES Y DESPUÉS - CSS PURO ======================= */
+.reparaciones-section {
+  padding: 100px 0;
+  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 50%, #f8f9fa 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.reparaciones-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--secondary-color));
+}
+
+/* Header de la sección */
+.reparaciones-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.reparaciones-subtitle {
+  display: inline-block;
+  color: var(--primary-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  position: relative;
+  padding: 0 20px;
+}
+
+.reparaciones-subtitle::before,
+.reparaciones-subtitle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 30px;
+  height: 2px;
+  background: var(--primary-color);
+}
+
+.reparaciones-subtitle::before {
+  left: -20px;
+}
+
+.reparaciones-subtitle::after {
+  right: -20px;
+}
+
+.reparaciones-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: var(--secondary-color);
+  margin-bottom: 15px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.reparaciones-title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: var(--primary-color);
+  margin: 15px auto 0;
+  border-radius: 2px;
+}
+
+.reparaciones-description {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Wrapper del carrusel */
+.ba-carousel-wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.ba-carousel {
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.12);
+}
+
+.ba-carousel-track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ba-slide {
+  min-width: 100%;
+  background: white;
+}
+
+/* Comparación lado a lado */
+.ba-comparison {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+}
+
+.ba-image-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.ba-image-container img {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.ba-image-container:hover img {
+  transform: scale(1.05);
+}
+
+/* Labels Antes/Después */
+.ba-label {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.ba-label-icon {
+  font-size: 1rem;
+}
+
+.ba-label-before {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.ba-label-after {
+  background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+  color: white;
+}
+
+/* Overlay de imagen */
+.ba-image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 60px 20px 20px;
+  color: white;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s ease;
+}
+
+.ba-overlay-before {
+  background: linear-gradient(to top, rgba(231, 76, 60, 0.95), transparent);
+}
+
+.ba-overlay-after {
+  background: linear-gradient(to top, rgba(0, 77, 37, 0.95), transparent);
+}
+
+.ba-image-container:hover .ba-image-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ba-image-overlay p {
+  margin: 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Flecha divisora */
+.ba-arrow-divider {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+
+.ba-arrow-circle {
+  width: 60px;
+  height: 60px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.ba-arrow-circle span {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 8px 40px rgba(246, 101, 15, 0.4);
+    transform: scale(1.05);
+  }
+}
+
+/* Info del slide */
+.ba-slide-info {
+  padding: 30px;
+  text-align: center;
+  background: linear-gradient(135deg, #fafafa, #ffffff);
+  border-top: 1px solid #eee;
+}
+
+.ba-slide-tag {
+  display: inline-block;
+  background: var(--primary-color);
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.ba-slide-title {
+  font-size: 1.5rem;
+  color: var(--secondary-color);
+  margin-bottom: 8px;
+}
+
+.ba-slide-desc {
+  color: var(--text-muted);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Controles del carrusel */
+.ba-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.ba-control-btn {
+  width: 55px;
+  height: 55px;
+  border: none;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  color: white;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 20px rgba(0, 77, 37, 0.3);
+}
+
+.ba-control-btn:hover {
+  background: var(--primary-color);
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(246, 101, 15, 0.4);
+}
+
+.ba-control-btn:active {
+  transform: scale(0.95);
+}
+
+/* Dots indicadores */
+.ba-dots {
+  display: flex;
+  gap: 12px;
+}
+
+.ba-dot {
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 50%;
+  background: #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
 }

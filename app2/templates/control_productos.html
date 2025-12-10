@@ -14,8 +14,8 @@
   <!-- BUSCADOR / FILTROS -->
   <div class="card mb-4 shadow-sm">
     <div class="card-body">
-      <form method="get" class="row g-3">
-        <div class="col-sm-5 col-md-4">
+      <form method="get" class="row g-3 align-items-center">
+        <div class="col-sm-3 col-md-3">
           <div class="input-group">
              <span class="input-group-text bg-light"><i class="fas fa-search text-muted"></i></span>
              <input type="text" name="q" class="form-control"
@@ -37,7 +37,7 @@
           </select>
         </div>
 
-        <div class="col-sm-2 col-md-2">
+        <div class="col-sm-3 col-md-3">
           <select name="agotado" class="form-select">
             <option value="">Estado: Todos</option>
             <option value="1" {% if agotado_filter == '1' %}selected{% endif %}>Agotado</option>
@@ -45,7 +45,7 @@
           </select>
         </div>
 
-        <div class="col-sm-2 col-md-3 d-flex gap-2">
+        <div class="col-sm-3 col-md-3 d-flex gap-2">
           <button type="submit" class="btn btn-primary w-100">Buscar</button>
           <a href="{% url 'control_productos' %}" class="btn btn-outline-secondary" title="Limpiar filtros">
             <i class="fas fa-eraser"></i>
