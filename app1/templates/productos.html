@@ -136,7 +136,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="card h-100 shadow-sm border-0 rounded-2 overflow-hidden" style="background: white; transition: all 0.3s ease;">
                     <a href="{% url 'productos' sugerido.id %}" class="text-decoration-none">
-                        <div class="position-relative overflow-hidden" style="height: 140px; background-color: #f9f9f9;">
+                        <div class="position-relative overflow-hidden" style="height: 100%; background-color: #f9f9f9;">
                             {% if sugerido.imagen %}
                             <img src="{{ sugerido.imagen.url }}" class="w-100 h-100" alt="{{ sugerido.nombre }}" style="object-fit: cover; transition: transform 0.3s ease;">
                             {% else %}

@@ -159,9 +159,9 @@
                     <div class="card h-100 product-card border-0 shadow-sm no-tilt">
                         <div class="position-relative overflow-hidden rounded-top-3">
                             {% if producto.imagen %}
-                            <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 220px; object-fit: cover;">
+                            <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 100%; object-fit: cover;">
                             {% else %}
-                            <img src="{% static 'images/default_event.jpg' %}" class="card-img-top" alt="Sin imagen" style="height: 220px; object-fit: cover;">
+                            <img src="{% static 'images/default_event.jpg' %}" class="card-img-top" alt="Sin imagen" style="height: 100%; object-fit: cover;">
                             {% endif %}
                             
                             <div class="overlay-action d-flex align-items-center justify-content-center">
