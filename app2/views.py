@@ -187,12 +187,18 @@ def control_productos(request):
             producto.save()
             messages.success(request, f'Estado de "{producto.nombre}" actualizado.')
 
-        # Delete product (Tu código aquí parece correcto, asumiendo que eliminar_producto funciona)
+        # Delete product
         elif 'eliminar_producto' in request.POST:
             pid = request.POST.get('eliminar_producto')
             try:
                 producto = Product.objects.get(id=pid)
                 nombre_producto = producto.nombre
+
+                # Eliminar imagen si existe
+                if producto.imagen:
+                    producto.imagen.delete(save=False)
+
+                # Eliminar el producto
                 producto.delete()
                 messages.success(request, f'Producto "{nombre_producto}" eliminado.')
             except Product.DoesNotExist:
