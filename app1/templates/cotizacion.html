@@ -122,7 +122,7 @@
                         
                         <!-- Phone VALIDACIÓN ESTRICTA -->
                         <div class="col-12">
-                            <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Teléfono (Formato Internacional)*</label>
+                            <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Teléfono*</label>
                             <div class="input-group rounded-2 overflow-hidden position-relative">
                                 <span class="input-group-text border-0" style="background-color: rgba(255,255,255,0.2); color: white;"><i class="fas fa-phone"></i></span>
                                 <!-- Agregamos ID 'inputTelefono' y maxlength -->
@@ -130,7 +130,7 @@
                             </div>
                             <!-- Mensaje de error oculto por defecto -->
                             <div id="phoneError" class="mt-1 ps-1" style="display: none; color: #ffcccc; font-size: 0.75rem; font-weight: bold;">
-                                <i class="fas fa-exclamation-circle me-1"></i> Debe iniciar con "+" y contener solo números.
+                                <i class="fas fa-exclamation-circle me-1"></i> El número debe comenzar con +58, no puede iniciar con 0 después del prefijo y debe contener 10 dígitos.
                             </div>
                         </div>
                         
@@ -185,26 +185,58 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+
     const phoneInput = document.getElementById('inputTelefono');
     const nameInput = document.getElementById('inputNombre');
     const emailInput = document.getElementById('inputCorreo');
     const submitBtn = document.getElementById('btnSubmit');
     const errorMsg = document.getElementById('phoneError');
 
-    // Función principal de validación
+    const prefix = "+58";
+
+    // Colocar automáticamente +58
+    phoneInput.value = prefix;
+
+    // Evitar borrar el +58
+    phoneInput.addEventListener("input", function () {
+        // Evitar eliminar prefijo
+        if (!phoneInput.value.startsWith(prefix)) {
+            phoneInput.value = prefix;
+        }
+
+        // Evitar que el primer número después del +58 sea 0
+        let rest = phoneInput.value.slice(prefix.length);
+
+        if (rest.length > 0 && rest[0] === "0") {
+            // Borra el 0 automáticamente
+            phoneInput.value = prefix;
+        }
+    });
+
+    // Evitar mover el cursor al inicio del prefijo
+    phoneInput.addEventListener("click", function () {
+        if (phoneInput.selectionStart < prefix.length) {
+            phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
+        }
+    });
+
+    // Permitir solo números después del prefijo
+    phoneInput.addEventListener('keypress', function(e) {
+        if (!/[0-9]/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
+
+    // VALIDACIÓN FINAL
     function validateForm() {
         const phoneValue = phoneInput.value.trim();
-        const nameValue = nameInput.value.trim();
-        const emailValue = emailInput.value.trim();
-        
-        // 1. Validar Teléfono: Debe empezar con + y tener números
-        // Regex: Empieza con +, seguido de espacios opcionales y números
-        const phoneRegex = /^\+[\d\s]+$/;
-        // Validamos también una longitud mínima (ej: + y al menos 6 digitos)
-        const isPhoneValid = phoneRegex.test(phoneValue) && phoneValue.replace(/\D/g, '').length > 6;
 
-        // 2. Control visual del error del teléfono
-        if (phoneValue.length > 0 && !isPhoneValid) {
+        // Formato exacto: +58 + (primer dígito 1–9, NO 0) + 9 dígitos más
+        const phoneRegex = /^\+58[1-9]\d{9}$/;
+
+        const isPhoneValid = phoneRegex.test(phoneValue);
+
+        if (!isPhoneValid) {
             errorMsg.style.display = 'block';
             phoneInput.classList.add('input-error');
         } else {
@@ -212,41 +244,25 @@ document.addEventListener('DOMContentLoaded', function() {
             phoneInput.classList.remove('input-error');
         }
 
-        // 3. Validar Campos Requeridos (Nombre y Correo no vacíos)
-        const isNameValid = nameValue.length > 2;
-        const isEmailValid = emailValue.includes('@') && emailValue.includes('.');
+        const isNameValid = nameInput.value.trim().length > 2;
+        const isEmailValid = emailInput.value.includes('@') && emailInput.value.includes('.');
 
-        // 4. Activar o Desactivar Botón
         if (isPhoneValid && isNameValid && isEmailValid) {
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Enviar Solicitud <i class="fas fa-paper-plane ms-2"></i>';
-            submitBtn.classList.remove('text-muted');
-            submitBtn.classList.add('text-primary');
         } else {
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Complete los datos correctamente <i class="fas fa-lock ms-2"></i>';
         }
     }
 
-    // Event listeners para validación en tiempo real ("al momento de escribir")
+    // Escuchar cambios
     phoneInput.addEventListener('input', validateForm);
     nameInput.addEventListener('input', validateForm);
     emailInput.addEventListener('input', validateForm);
 
-    // Validación extra para impedir escribir letras en el teléfono
-    phoneInput.addEventListener('keypress', function(e) {
-        // Permitir solo números, el signo +, y teclas de control
-        const allowedChars = /[0-9\+\s]/;
-        if (!allowedChars.test(e.key)) {
-            e.preventDefault();
-        }
-        
-        // Asegurar que el + sea solo el primer carácter
-        if (e.key === '+' && this.value.length > 0) {
-            e.preventDefault();
-        }
-    });
 });
 </script>
+
 
 {% endblock %}
