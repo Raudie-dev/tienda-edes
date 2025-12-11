@@ -764,7 +764,7 @@ a:hover {
   margin-bottom: 60px;
 }
 
-.reparaciones-subtitle {
+.subtitle {
   display: inline-block;
   color: var(--primary-color);
   font-weight: 700;
@@ -776,8 +776,8 @@ a:hover {
   padding: 0 20px;
 }
 
-.reparaciones-subtitle::before,
-.reparaciones-subtitle::after {
+.subtitle::before,
+.subtitle::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -786,11 +786,11 @@ a:hover {
   background: var(--primary-color);
 }
 
-.reparaciones-subtitle::before {
+.subtitle::before {
   left: -20px;
 }
 
-.reparaciones-subtitle::after {
+.subtitle::after {
   right: -20px;
 }
 
@@ -865,6 +865,16 @@ a:hover {
 
 .ba-image-container:hover img {
   transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .ba-comparison  {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .ba-arrow-divider {
+    display: none;
+  }
 }
 
 /* Labels Antes/Después */
