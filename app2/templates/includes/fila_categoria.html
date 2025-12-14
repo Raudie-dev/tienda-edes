@@ -46,6 +46,19 @@
 
     <!-- COLUMNA ACCIONES -->
     <td class="text-end">
+        <!-- BOTÓN EDITAR (MODIFICADO: Estilo limpio igual al eliminar) -->
+        <button type="button" 
+                class="btn btn-sm btn-outline-primary border-0" 
+                onclick="event.stopPropagation();"
+                data-bs-toggle="modal" 
+                data-bs-target="#modalEditarCategoria"
+                data-bs-id="{{ cat.id }}"
+                data-bs-nombre="{{ cat.nombre }}"
+                data-bs-padre="{{ cat.padre.id|default:'' }}">
+            <i class="fas fa-edit"></i>
+        </button>
+
+        <!-- BOTÓN ELIMINAR -->
         <button type="button" class="btn btn-sm btn-outline-danger border-0" 
                 onclick="event.stopPropagation();"
                 data-bs-toggle="modal" data-bs-target="#modalEliminarCategoria"

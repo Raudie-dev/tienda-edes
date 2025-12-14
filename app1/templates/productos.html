@@ -92,7 +92,9 @@
                     <!-- Descripción -->
                     <div class="mb-4 p-3 rounded-2" style="background-color: rgba(140, 198, 63, 0.08); border-left: 4px solid var(--accent-color);">
                         <h5 class="text-secondary mb-2 fw-bold" style="font-size: 0.95rem;">Descripción del Producto</h5>
-                        <p class="mb-0 text-muted" style="font-size: 0.9rem;">{{ producto.descripcion }}</p>
+                        <p class="mb-0 text-muted" style="font-size: 0.9rem;">
+                            {{ producto.descripcion|linebreaksbr }}
+                        </p>
                     </div>
 
                     <!-- Botones de Acción -->

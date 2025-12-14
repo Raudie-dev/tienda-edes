@@ -14,7 +14,7 @@ from .crud import (
     eliminar_categoria,
     actualizar_producto,
 )
-from app1.models import Product, Cotizacion, CotizacionItem, Cliente
+from app1.models import Product, Cotizacion, CotizacionItem, Cliente, Category
 
 
 def login(request):
@@ -74,6 +74,37 @@ def registro(request):
                     messages.error(request, f'Error al crear la categoría: {e}')
             else:
                 messages.error(request, 'El nombre de la categoría es obligatorio')
+        
+        if 'editar_categoria' in request.POST:
+            cat_id = request.POST.get('editar_categoria_id')
+            nuevo_nombre = request.POST.get('categoria_nombre', '').strip()
+            nuevo_padre_id = request.POST.get('categoria_padre')
+
+            if cat_id and nuevo_nombre:
+                try:
+                    categoria = Category.objects.get(id=cat_id)
+                    
+                    # Validación básica para evitar ciclos (una cat no puede ser padre de sí misma)
+                    if nuevo_padre_id and int(nuevo_padre_id) == int(cat_id):
+                        messages.error(request, 'Una categoría no puede ser su propio padre.')
+                    else:
+                        categoria.nombre = nuevo_nombre
+                        
+                        # Actualizar padre
+                        if nuevo_padre_id:
+                            categoria.padre_id = int(nuevo_padre_id)
+                        else:
+                            categoria.padre = None # Se vuelve categoría principal
+                        
+                        categoria.save()
+                        messages.success(request, 'Categoría actualizada correctamente.')
+                        
+                except Category.DoesNotExist:
+                    messages.error(request, 'La categoría no existe.')
+                except Exception as e:
+                    messages.error(request, f'Error al actualizar: {e}')
+            else:
+                messages.error(request, 'Datos incompletos para editar.')        
 
         # 2. CREAR PRODUCTO
         elif 'crear_producto' in request.POST:

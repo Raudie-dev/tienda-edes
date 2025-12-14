@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Agregar Productos y Categorías{% endblock %}
+{% block title %}Agregar Productos y Categorias{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -247,22 +247,92 @@
   </div>
 </div>
 
+<div class="modal fade" id="modalEditarCategoria" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title"><i class="fas fa-edit me-2"></i> Editar Categoría</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="modal-body p-4">
+          
+          <!-- ID Oculto para saber cuál editar -->
+          <input type="hidden" name="editar_categoria_id" id="editCatId">
+
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Nombre de la Categoría</label>
+            <input type="text" name="categoria_nombre" id="editCatNombre" class="form-control" required>
+          </div>
+
+          <!-- Selector de Padre (Nivel) -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Categoría Padre (Nivel)</label>
+              <select name="categoria_padre" id="editCatPadre" class="form-select">
+                  <option value="">-- Es una Categoría Principal (Nivel 1) --</option>
+                  {% for cat in categorias %}
+                      <!-- Usamos el include para llenar las opciones igual que en crear -->
+                      {% if not cat.padre %}
+                          {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
+                      {% endif %}
+                  {% endfor %}
+              </select>
+            <div class="form-text">Cambia el padre para mover la categoría de nivel.</div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" name="editar_categoria" class="btn btn-warning"><i class="fas fa-save me-1"></i> Actualizar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- SCRIPT (Funcionalidad para pasar datos al modal de eliminar) -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var modalEliminar = document.getElementById('modalEliminarCategoria');
         
-        modalEliminar.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var catId = button.getAttribute('data-bs-id');
-            var catNombre = button.getAttribute('data-bs-nombre');
-            
-            var modalNombre = modalEliminar.querySelector('#nombreCategoriaBorrar');
-            var modalBtn = modalEliminar.querySelector('#btnConfirmarEliminar');
-            
-            modalNombre.textContent = catNombre;
-            modalBtn.value = catId;
-        });
+        // 1. Lógica para Modal Eliminar (Tu código original)
+        var modalEliminar = document.getElementById('modalEliminarCategoria');
+        if (modalEliminar) {
+            modalEliminar.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var catId = button.getAttribute('data-bs-id');
+                var catNombre = button.getAttribute('data-bs-nombre');
+                
+                modalEliminar.querySelector('#nombreCategoriaBorrar').textContent = catNombre;
+                modalEliminar.querySelector('#btnConfirmarEliminar').value = catId;
+            });
+        }
+
+        // 2. NUEVA: Lógica para Modal Editar
+        var modalEditar = document.getElementById('modalEditarCategoria');
+        if (modalEditar) {
+            modalEditar.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                
+                // Obtener datos del botón
+                var catId = button.getAttribute('data-bs-id');
+                var catNombre = button.getAttribute('data-bs-nombre');
+                var catPadreId = button.getAttribute('data-bs-padre'); // ID del padre actual
+                
+                // Asignar valores a los inputs del modal
+                modalEditar.querySelector('#editCatId').value = catId;
+                modalEditar.querySelector('#editCatNombre').value = catNombre;
+                
+                // Asignar el select del padre
+                var selectPadre = modalEditar.querySelector('#editCatPadre');
+                if (catPadreId && catPadreId !== 'None') {
+                    selectPadre.value = catPadreId;
+                } else {
+                    selectPadre.value = ""; // Es principal
+                }
+            });
+        }
     });
 </script>
 
