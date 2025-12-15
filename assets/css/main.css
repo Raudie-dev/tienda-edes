@@ -263,6 +263,7 @@ a:hover {
   hyphens: auto;
   display: -webkit-box;
   -webkit-line-clamp: 3; /* Limit to 3 lines */
+  line-clamp: 3; 
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -287,6 +288,7 @@ a:hover {
     font-size: 0.95rem !important;
     line-height: 1.35 !important;
     -webkit-line-clamp: 2; /* Limit to 2 lines on mobile */
+    line-clamp: 2; /* Standard property for compatibility */
     max-height: 2.7rem; /* 2 lines * 1.35 line-height */
   }
 }
