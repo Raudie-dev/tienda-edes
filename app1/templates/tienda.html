@@ -3,8 +3,34 @@
 
 {% block title %}Tienda | EDES Venezuela{% endblock %}
 
+{% block content %}
+<style>
+    /* 1. Forzamos que el header se vea oscuro (estado scrolled) */
+    #mainHeader {
+        background-color: var(--footer-color) !important;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25) !important;
+        padding: 0.5rem 0 !important;
+    }
+    
+    /* 2. Forzamos que los links se vean claros */
+    #mainHeader .nav-link {
+        color: var(--footer-text) !important;
+    }
+
+    /* 3. Empujamos el contenido hacia abajo para que el header no lo tape */
+    /* En escritorio */
+    body {
+        padding-top: 100px; 
+    }
+    
+    /* En móvil ajustamos el espacio */
+    @media (max-width: 768px) {
+        body {
+            padding-top: 90px;
+        }
+    }
+</style>
 <div class="container mb-5">
-    {% block content %}
     
     <!-- Encabezado -->
     <div class="bg-light py-4 mb-5 border-bottom">
@@ -26,8 +52,8 @@
         </div>
     </div>
 
-    <div class="filtro row">
-        <!-- Sidebar Filters -->
+    <div class="row">
+        <!-- Sidebar Filters (Mantenemos col-lg-3) -->
         <div class="col-lg-3 mb-4">
             <!-- Botón toggle móvil -->
             <button class="btn btn-primary w-100 d-lg-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
@@ -35,13 +61,13 @@
             </button>
             
             <div class="collapse d-lg-block" id="filterCollapse">
-                <div class="card shadow-sm border-0 rounded-3" >
+                <div class="card shadow-sm border-0 rounded-3">
+                    <!-- Restaurado color de cabecera original -->
                     <div class="card-header text-white py-3 rounded-top-3" style="background-color: var(--primary-color);">
                         <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filtros</h5>
                     </div>
                     <div class="card-body p-4">
                         <form method="get">
-                            
                             <!-- Buscador -->
                             <div class="mb-4">
                                 <label class="form-label fw-bold text-uppercase small text-muted">Buscar</label>
@@ -51,22 +77,16 @@
                                 </div>
                             </div>
                             
-                            <!-- SELECTOR DE CATEGORÍA (JERARQUÍA INFINITA) -->
+                            <!-- Selector de Categoría -->
                             <div class="mb-4">
                                 <label class="form-label fw-bold text-uppercase small text-muted">Categoría</label>
                                 <select name="categoria" class="form-select bg-light" onchange="this.form.submit()">
                                     <option value="">Todas las categorías</option>
-                                    
                                     {% for cat in categorias %}
-                                        {# IMPORTANTE: Solo iniciamos el ciclo con las categorías RAÍZ (Padres) #}
                                         {% if not cat.padre %}
-                                            
-                                            {# Incluimos el archivo recursivo #}
                                             {% include "includes/opcion_categoria_publica.html" with cat=cat level=0 current_selected=categoria_id %}
-                                            
                                         {% endif %}
                                     {% endfor %}
-                                    
                                 </select>
                             </div>
 
@@ -96,36 +116,33 @@
             </div>
         </div>
 
-        <!-- Product Grid -->
+        <!-- Product Grid (Mantenemos col-lg-8 para el ancho que pediste) -->
         <div class="col-lg-8">
-            <div class="product-grid">
+            <!-- Esta es la parte clave: row-cols-2 asegura 2 columnas en móviles en cualquier servidor -->
+            <div class="row row-cols-2 row-cols-md-2 row-cols-lg-3 g-4">
                 {% for producto in productos %}
-                <div class="product-item mb-4">
-                    <div class="card h-100 product-card border-0 shadow-sm">
+                <div class="col">
+                    <div class="card h-100 product-card border-0 shadow-sm position-relative">
                         
                         <!-- Imagen y Badges -->
-                        <div class="position-relative overflow-hidden rounded-top-3">
+                        <div class="position-relative overflow-hidden rounded-top-3" style="aspect-ratio: 1/1;">
                             <a href="{% url 'productos' producto.id %}">
                                 {% if producto.imagen %}
-                                    <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 100%; object-fit: cover;">
+                                    <img src="{{ producto.imagen.url }}" class="card-img-top h-100 w-100" alt="{{ producto.nombre }}" style="object-fit: cover;">
                                 {% else %}
-                                    <img src="{% static 'images/default_event.jpg' %}" class="card-img-top" alt="Sin imagen" style="height: 100%; object-fit: cover;">
+                                    <img src="{% static 'images/default_event.jpg' %}" class="card-img-top h-100 w-100" alt="Sin imagen" style="object-fit: cover;">
                                 {% endif %}
                             </a>
                             
                             {% if producto.agotado %}
-                                <span class="position-absolute top-0 start-0 bg-danger text-white px-3 py-1 m-3 rounded-pill small fw-bold shadow-sm">AGOTADO</span>
+                                <span class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 m-2 rounded-pill small fw-bold shadow-sm" style="font-size: 0.75rem;">AGOTADO</span>
                             {% else %}
-                                <span class="position-absolute top-0 start-0 bg-success text-white px-3 py-1 m-3 rounded-pill small fw-bold shadow-sm">DISPONIBLE</span>
+                                <span class="position-absolute top-0 start-0 bg-success text-white px-2 py-1 m-2 rounded-pill small fw-bold shadow-sm" style="font-size: 0.75rem;">DISPONIBLE</span>
                             {% endif %}
-                            
-                            <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-dark opacity-0 hover-opacity-100 transition-opacity d-flex justify-content-center">
-                                <a href="{% url 'productos' producto.id %}" class="btn btn-light btn-sm rounded-pill shadow-sm stretched-link">Ver Detalles</a>
-                            </div>
                         </div>
 
                         <!-- Cuerpo de la Tarjeta -->
-                        <div class="card-body d-flex flex-column p-4">
+                        <div class="card-body d-flex flex-column p-3 p-md-4">
                             <!-- Categoría Principal -->
                             <div class="mb-2">
                                 {% with producto.categorias.all|first as first_cat %}
@@ -135,17 +152,19 @@
                                 {% endwith %}
                             </div>
 
-                            <h5 class="card-title mb-2 fw-bold">
+                            <h5 class="card-title mb-2 fw-bold" style="font-size: 1rem;">
                                 <a href="{% url 'productos' producto.id %}" class="text-decoration-none text-secondary stretched-link">{{ producto.nombre }}</a>
                             </h5>
                             
-                            <p class="card-text text-muted small flex-grow-1">{{ producto.descripcion|truncatechars:60 }}</p>
+                            <p class="card-text text-muted small flex-grow-1 d-none d-md-block">
+                                {{ producto.descripcion|truncatechars:60 }}
+                            </p>
                             
                             <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-light">
                                 {% if SHOW_PRICES_CLIENTES %}
-                                <span class="h4 mb-0 text-primary fw-bold">${{ producto.precio }}</span>
+                                <span class="h5 mb-0 text-primary fw-bold">${{ producto.precio }}</span>
                                 {% endif %}
-                                <span class="text-muted small"><i class="fas fa-eye me-1"></i> Ver</span>
+                                <span class="text-muted small"><i class="fas fa-eye me-1"></i></span>
                             </div>
                         </div>
                     </div>
