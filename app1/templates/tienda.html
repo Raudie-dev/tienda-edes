@@ -156,7 +156,7 @@
                                 <a href="{% url 'productos' producto.id %}" class="text-decoration-none text-secondary stretched-link">{{ producto.nombre }}</a>
                             </h5>
                             
-                            <p class="card-text text-muted small flex-grow-1 d-none d-md-block">
+                            <p class="card-text text-muted small flex-grow-1" style="white-space: pre-line;">
                                 {{ producto.descripcion|truncatechars:60 }}
                             </p>
                             

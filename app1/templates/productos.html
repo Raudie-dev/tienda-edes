@@ -4,6 +4,32 @@
 {% block title %}{{ producto.nombre }} | EDES Venezuela{% endblock %}
 
 {% block content %}
+<style>
+    /* 1. Forzamos que el header se vea oscuro (estado scrolled) */
+    #mainHeader {
+        background-color: var(--footer-color) !important;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25) !important;
+        padding: 0.5rem 0 !important;
+    }
+    
+    /* 2. Forzamos que los links se vean claros */
+    #mainHeader .nav-link {
+        color: var(--footer-text) !important;
+    }
+
+    /* 3. Empujamos el contenido hacia abajo para que el header no lo tape */
+    /* En escritorio */
+    body {
+        padding-top: 100px; 
+    }
+    
+    /* En móvil ajustamos el espacio */
+    @media (max-width: 768px) {
+        body {
+            padding-top: 90px;
+        }
+    }
+</style>
 <div class="container py-5">
     
     <!-- 1. BREADCRUMB CON JERARQUÍA (Corregido para usar hoja) -->
