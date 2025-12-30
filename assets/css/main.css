@@ -975,9 +975,12 @@ a:hover {
 
 @media (max-width: 768px) {
   .ba-comparison {
-    flex-direction: column;
-    gap: 20px;
+    height: 280px;
   }
+  .ba-image-container img {
+    height: 280px;
+  }
+  
   .ba-arrow-divider {
     display: none;
   }
