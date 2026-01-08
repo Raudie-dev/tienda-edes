@@ -91,7 +91,7 @@ a:hover {
 /* Header */
 .header {
   background: transparent; /* start transparent (e.g. over hero) */
-  padding: 0.5rem 0;
+  /* padding: 0.5rem 0; */
   box-shadow: none;
   position: fixed;
   top: 0;
@@ -226,6 +226,7 @@ img {
   border-radius: 50px;
   font-weight: 600;
   padding: 0.5rem 1.8rem;
+  font-size: 1.15rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -666,7 +667,7 @@ img {
 .hero-content {
   position: relative;
   z-index: 2;
-  padding-top: 2rem;
+  padding: 1.5rem;
 }
 
 .carousel-control-next,
