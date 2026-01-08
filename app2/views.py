@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from urllib.parse import quote
 from django.urls import reverse
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
 from django.db.models import Q
 from .models import User_admin
 from .crud import (
@@ -13,6 +13,10 @@ from .crud import (
     eliminar_producto,
     eliminar_categoria,
     actualizar_producto,
+    obtener_usuarios_admin, 
+    crear_usuario_admin, 
+    actualizar_usuario_admin, 
+    eliminar_usuario_admin
 )
 from app1.models import Product, Cotizacion, CotizacionItem, Cliente, Category
 
@@ -391,3 +395,84 @@ def procesar_y_responder_whatsapp(request, cotizacion_id):
     whatsapp_url = f"https://wa.me/{telefono}?text={mensaje_encoded}"
     
     return redirect(whatsapp_url)
+
+def gestion_usuarios(request):
+    # 1. Verificación de Seguridad: Solo usuarios logueados
+    user_id_sesion = request.session.get('user_admin_id')
+    if not user_id_sesion:
+        messages.error(request, 'Debe iniciar sesión primero')
+        return redirect('login')
+
+    # 2. Procesamiento de Acciones (POST)
+    if request.method == 'POST':
+        
+        # --- A. CREAR USUARIO ---
+        if 'crear_usuario' in request.POST:
+            nombre = request.POST.get('nombre', '').strip()
+            password = request.POST.get('password', '')
+            email = request.POST.get('email', '').strip()
+            telefono = request.POST.get('telefono', '').strip()
+
+            try:
+                crear_usuario_admin(nombre, password, email, telefono)
+                messages.success(request, f'Administrador "{nombre}" creado con éxito.')
+            except ValueError as e:
+                # Captura errores de validación (nombre duplicado, email duplicado, etc.)
+                messages.error(request, str(e))
+            except Exception as e:
+                # Captura cualquier otro error inesperado
+                messages.error(request, f"Error inesperado al crear: {e}")
+
+        # --- B. EDITAR USUARIO ---
+        elif 'editar_usuario' in request.POST:
+            uid = request.POST.get('usuario_id')
+            nombre = request.POST.get('nombre', '').strip()
+            email = request.POST.get('email', '').strip()
+            telefono = request.POST.get('telefono', '').strip()
+            password = request.POST.get('password', '') 
+            bloqueado = 'bloqueado' in request.POST
+
+            # Seguridad: No permitir que el admin actual se bloquee a sí mismo
+            if uid and int(uid) == user_id_sesion and bloqueado:
+                messages.warning(request, "Operación cancelada: No puedes bloquear tu propia cuenta mientras estás en sesión.")
+                bloqueado = False
+
+            try:
+                actualizar_usuario_admin(
+                    uid, 
+                    nombre=nombre, 
+                    email=email, 
+                    telefono=telefono, 
+                    password=password, 
+                    bloqueado=bloqueado
+                )
+                messages.success(request, f"Datos de '{nombre}' actualizados correctamente.")
+            except ValueError as e:
+                # Captura errores de validación en la edición (ej: intentar usar el email de otro admin)
+                messages.error(request, str(e))
+            except Exception as e:
+                messages.error(request, f"Error al actualizar: {e}")
+
+        # --- C. ELIMINAR USUARIO ---
+        elif 'eliminar_usuario' in request.POST:
+            uid = request.POST.get('eliminar_usuario')
+            
+            if uid and int(uid) == user_id_sesion:
+                messages.error(request, "No puedes eliminar tu propia cuenta mientras la estás usando.")
+            else:
+                try:
+                    eliminar_usuario_admin(uid)
+                    messages.success(request, "Usuario eliminado permanentemente.")
+                except Exception as e:
+                    messages.error(request, f"No se pudo eliminar el usuario: {e}")
+
+        # Redirección tras POST (Patrón PRG)
+        return redirect('usuarios')
+
+    # 3. Carga de datos para mostrar la página (GET)
+    usuarios = obtener_usuarios_admin()
+    
+    return render(request, 'gestion_usuarios.html', {
+        'usuarios': usuarios,
+        'user_id_sesion': user_id_sesion 
+    })

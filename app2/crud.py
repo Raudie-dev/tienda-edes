@@ -1,6 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from app1.models import Product, Category
-
+from django.contrib.auth.hashers import make_password
+from .models import User_admin # Importa el modelo
 
 def crear_categoria(nombre, padre_id=None):
     """
@@ -95,3 +96,83 @@ def actualizar_producto(producto_id, **kwargs):
 
     p.save()
     return p
+
+def obtener_usuarios_admin():
+    return User_admin.objects.all().order_by('nombre')
+
+def crear_usuario_admin(nombre, password, email=None, telefono=None):
+    nombre = nombre.strip()
+    email = email.strip() if email else None
+    
+    if not nombre or not password:
+        raise ValueError("El nombre y la contraseña son obligatorios.")
+
+    # Validar si el nombre ya existe
+    if User_admin.objects.filter(nombre=nombre).exists():
+        raise ValueError(f"El nombre de usuario '{nombre}' ya está en uso.")
+
+    # Validar si el email ya existe (si se proporcionó uno)
+    if email and User_admin.objects.filter(email=email).exists():
+        raise ValueError(f"El correo electrónico '{email}' ya está registrado por otro administrador.")
+
+    return User_admin.objects.create(
+        nombre=nombre,
+        password=make_password(password),
+        email=email,
+        telefono=telefono
+    )
+
+def actualizar_usuario_admin(user_id, **kwargs):
+    try:
+        user = User_admin.objects.get(id=user_id)
+        
+        # Validar nombre duplicado (excluyendo al usuario actual)
+        if 'nombre' in kwargs:
+            nuevo_nombre = kwargs['nombre'].strip()
+            if User_admin.objects.filter(nombre=nuevo_nombre).exclude(id=user_id).exists():
+                raise ValueError(f"El nombre '{nuevo_nombre}' ya lo tiene otro usuario.")
+            user.nombre = nuevo_nombre
+
+        # Validar email duplicado (excluyendo al usuario actual)
+        if 'email' in kwargs and kwargs['email']:
+            nuevo_email = kwargs['email'].strip()
+            if User_admin.objects.filter(email=nuevo_email).exclude(id=user_id).exists():
+                raise ValueError(f"El correo '{nuevo_email}' ya está en uso por otro administrador.")
+            user.email = nuevo_email
+
+        if 'telefono' in kwargs:
+            user.telefono = kwargs['telefono']
+        if 'bloqueado' in kwargs:
+            user.bloqueado = kwargs['bloqueado']
+        if 'password' in kwargs and kwargs['password']:
+            user.password = make_password(kwargs['password'])
+            
+        user.save()
+        return user
+    except User_admin.DoesNotExist:
+        raise ValueError("El usuario no existe.")
+
+def actualizar_usuario_admin(user_id, **kwargs):
+    try:
+        user = User_admin.objects.get(id=user_id)
+        
+        if 'nombre' in kwargs:
+            user.nombre = kwargs['nombre'].strip()
+        if 'email' in kwargs:
+            user.email = kwargs['email']
+        if 'telefono' in kwargs:
+            user.telefono = kwargs['telefono']
+        if 'bloqueado' in kwargs:
+            user.bloqueado = kwargs['bloqueado']
+        
+        # Si se envía una nueva contraseña, se hashea
+        if 'password' in kwargs and kwargs['password']:
+            user.password = make_password(kwargs['password'])
+            
+        user.save()
+        return user
+    except User_admin.DoesNotExist:
+        return None
+
+def eliminar_usuario_admin(user_id):
+    User_admin.objects.filter(id=user_id).delete()

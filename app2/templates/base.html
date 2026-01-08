@@ -105,6 +105,16 @@
             <i class="fas fa-file-lines"></i>
             <span>Cotización</span>
           </a>
+
+        </li>
+                <li class="nav-item">
+          <a
+            class="nav-link {% if request.resolver_match.url_name == 'usuarios' %}active{% endif %}"
+            href="{% url 'usuarios' %}"
+          >
+            <i class="fa-solid fa-user"></i>
+            <span>Usuarios</span>
+          </a>
         </li>
       </ul>
     </aside>
@@ -125,20 +135,14 @@
       <!-- Wrapper del contenido (crece para ocupar espacio) -->
       <div class="flex-grow-1">
         <!-- Mensajes -->
-        {% if messages %} {% for message in messages %}
-        <div
-          class="alert alert-{{ message.tags }} alert-dismissible fade show mt-2"
-          role="alert"
-        >
-          {{ message }}
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="alert"
-            aria-label="Close"
-          ></button>
-        </div>
-        {% endfor %} {% endif %}
+        {% if messages %} 
+          {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show mt-2" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %} 
+        {% endif %}
 
         <!-- Contenido dinámico -->
         <div class="fade-in">{% block content %}{% endblock %}</div>

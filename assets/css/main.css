@@ -99,7 +99,8 @@ a:hover {
   right: 0;
   width: 100%;
   z-index: 1040;
-  transition: background-color 0.35s ease, box-shadow 0.35s ease, padding 0.25s ease;
+  transition: background-color 0.35s ease, box-shadow 0.35s ease,
+    padding 0.25s ease;
 }
 
 .header.scrolled {
@@ -119,7 +120,7 @@ a:hover {
   font-size: 0.8rem;
   letter-spacing: 1.5px;
   font-weight: 700;
-  z-index: 1051; 
+  z-index: 1051;
   pointer-events: none;
   text-align: center;
   opacity: 0;
@@ -167,6 +168,14 @@ a:hover {
   color: var(--footer-text) !important;
 }
 
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
 .logo img {
   height: 70px;
   width: auto;
@@ -296,7 +305,9 @@ a:hover {
 }
 
 .card-title {
-  font-family: var(--font-body) !important; /* Use Poppins for better readability */
+  font-family: var(
+    --font-body
+  ) !important; /* Use Poppins for better readability */
   font-weight: 600 !important;
   font-size: 1rem !important;
   line-height: 1.4 !important;
@@ -608,7 +619,12 @@ a:hover {
   position: absolute;
   inset: 0;
   /* Match hero overlay green gradient for visual consistency */
-  background: linear-gradient(90deg, rgba(0, 77, 37, 0.92) 0%, rgba(0, 77, 37, 0.7) 50%, rgba(0, 77, 37, 0.3) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(0, 77, 37, 0.92) 0%,
+    rgba(0, 77, 37, 0.7) 50%,
+    rgba(0, 77, 37, 0.3) 100%
+  );
   z-index: 0;
 }
 
@@ -637,7 +653,12 @@ a:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, rgba(0, 77, 37, 0.92) 0%, rgba(0, 77, 37, 0.7) 50%, rgba(0, 77, 37, 0.3) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(0, 77, 37, 0.92) 0%,
+    rgba(0, 77, 37, 0.7) 50%,
+    rgba(0, 77, 37, 0.3) 100%
+  );
   display: flex;
   align-items: center;
 }
@@ -664,7 +685,7 @@ a:hover {
   background: 0 0;
   border: 0;
   opacity: 0.5;
-  transition: opacity .15s ease;
+  transition: opacity 0.15s ease;
 }
 
 .carousel-control-next-icon,
@@ -980,7 +1001,7 @@ a:hover {
   .ba-image-container img {
     height: 280px;
   }
-  
+
   .ba-arrow-divider {
     display: none;
   }
@@ -990,7 +1011,7 @@ a:hover {
 .ba-label {
   position: absolute;
   top: 20px;
-  left: 20px; 
+  left: 20px;
   z-index: 10;
   display: flex;
   align-items: center;
@@ -1014,7 +1035,11 @@ a:hover {
 }
 
 .ba-label-after {
-  background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+  background: linear-gradient(
+    135deg,
+    var(--accent-color),
+    var(--secondary-color)
+  );
   color: white;
 }
 
