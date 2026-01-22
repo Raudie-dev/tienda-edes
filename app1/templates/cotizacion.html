@@ -5,6 +5,46 @@
 
 {% block content %}
 
+<!-- Modal de Términos y Condiciones -->
+<div class="modal fade" id="terminosCondicionesModal" tabindex="-1" aria-labelledby="terminosCondicionesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: var(--primary-color);">
+                <h5 class="modal-title text-white" id="terminosCondicionesLabel">
+                    <i class="fas fa-file-contract me-2"></i>Términos y Condiciones
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                <h6 class="fw-bold mb-3">Términos y Condiciones de Solicitud de Cotización</h6>
+
+                <ol class="ps-3">
+                    <li>Toda compra será procesada única y exclusivamente cuando el pago total correspondiente sea recibido o esté disponible en la cuenta bancaria de la empresa.</li>
+                    <li>Por su seguridad, realice sus pagos exclusivamente a las cuentas oficiales de la empresa. No nos hacemos responsables por depósitos en cuentas de terceros o no autorizadas.</li>
+                    <li>El pago se puede efectuar mediante transferencia bancaria o efectivo, dependiendo de la forma de pago.</li>
+                    <li>Toda compra pagada antes de las 8:00AM será procesada el mismo día, luego de esa hora será procesada el siguiente día hábil, sin excepción.</li>
+                    <li>Productos, precios, stock y tiempos de entrega sujetos a cambios sin previo aviso.</li>
+                    <li>Algunos municipios no tienen cobertura de envíos por parte del proveedor logístico.</li>
+                    <li>Toda mercancía viaja por cuenta y riesgo del comprador. Nuestra responsabilidad cesa al momento de entregar el producto al transportista o empresa de encomiendas.</li>
+                    <li>Para equipos o repuestos de importación, los tiempos de entrega estarán sujetos a trámites aduanales y logística internacional.</li>
+                    <li>Importamos algunos de los productos, por lo que algunos procesos se realizan con proveedores internacionales. Por ende pueden haber variaciones de stock, precios y disponibilidad como parte de actualizaciones automáticas realizadas de forma diaria, en esos casos solo procedemos a la devolución del dinero.</li>
+                    <li>Todos nuestros productos y servicios cuentan con una garantía limitada, la cual puede variar de acuerdo al tipo de producto, y en todos los casos es únicamente contra defecto de fábrica. No cubre mal uso, abuso o negligencia. La empresa responderá por garantía, solo si el producto objeto de esta compra es utilizado en condiciones normales para lo cual ha sido diseñado según las especificaciones técnicas del fabricante. Para efectos de garantía otorgadas por nuestra empresa debe conservar la factura y el producto en buen estado físico. Caso contrario la garantía queda anulada automáticamente.</li>
+                    <li>Todos los gastos que se generen por devolución/reemplazo de artículos corren por cuenta del comprador.</li>
+                    <li>No se aceptan devoluciones y/o cancelaciones una vez confirmada y gestionada la compra.</li>
+                    <li>Algunas imágenes son de referencia y podría variar respecto al producto final.</li>
+                    <li>Al hacer “click” en COMPRAR usted ENTIENDE y ACEPTA todas las cláusulas anteriormente detalladas en esta sección.</li>
+                </ol>
+            </div>
+            <div class="modal-footer">
+                <button type="button" style="font-size: 0.8rem;" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Entendido</button>
+                <button type="button" style="font-size: 0.8rem;" class="btn btn-primary rounded-pill" data-bs-dismiss="modal" id="aceptarTerminos">
+                    <i class="fas fa-check me-2"></i>Aceptar y Continuar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container py-5">
     
     <div class="text-center mb-5">
@@ -17,7 +57,7 @@
         <div class="col-lg-8">
             <div class="card shadow-lg border-0 rounded-3 overflow-hidden h-100 no-tilt" style="background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);">
                 <div class="card-header text-white py-3 px-4 px-md-4" style="background-color: var(--primary-color);">
-                    <h5 class="mb-0 fw-bold" style="font-size: 1.05rem;"><i class="fas fa-list-alt me-2"></i>Productos Seleccionados</h5>
+                    <h5 class="mb-0" style="font-size: 1.05rem;"><i class="fas fa-list-alt me-2"></i>Productos Seleccionados</h5>
                 </div>
                 
                 <div class="card-body p-0">
@@ -69,15 +109,17 @@
                         </table>
                     </div>
                     {% else %}
-                    <div class="text-center py-5 px-4">
-                        <div class="mb-3">
-                            <i class="fas fa-shopping-basket fa-4x text-muted" style="opacity: 0.4;"></i>
+                    <div style="display: flex; align-items: center; justify-content: center; min-height: 400px;">
+                        <div class="text-center px-4">
+                            <div class="mb-3">
+                                <i class="fas fa-shopping-basket fa-4x text-muted" style="opacity: 0.4;"></i>
+                            </div>
+                            <h4 class="text-secondary fw-bold mb-2" style="font-size: 1.1rem;">Su lista de cotización está vacía</h4>
+                            <p class="text-muted mb-4" style="font-size: 0.9rem;">Agregue productos desde nuestro catálogo para generar una cotización.</p>
+                            <a href="{% url 'tienda' %}" class="btn btn-primary rounded-pill px-4" style="font-size: 0.9rem;">
+                                <i class="fas fa-store me-2"></i>Ir a la Tienda
+                            </a>
                         </div>
-                        <h4 class="text-secondary fw-bold mb-2" style="font-size: 1.1rem;">Su lista de cotización está vacía</h4>
-                        <p class="text-muted mb-4" style="font-size: 0.9rem;">Agregue productos desde nuestro catálogo para generar una cotización.</p>
-                        <a href="{% url 'tienda' %}" class="btn btn-primary rounded-pill px-4" style="font-size: 0.9rem;">
-                            <i class="fas fa-store me-2"></i>Ir a la Tienda
-                        </a>
                     </div>
                     {% endif %}
                 </div>
@@ -211,6 +253,26 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Mostrar Modal de Términos y Condiciones en primera visita
+    const terminosKey = 'terminosCondicionesAceptados_cotizacion';
+    
+    if (!localStorage.getItem(terminosKey)) {
+        const terminosModal = new bootstrap.Modal(document.getElementById('terminosCondicionesModal'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+        terminosModal.show();
+        
+        // Marcar como aceptados cuando el usuario hace clic en "Aceptar y Continuar"
+        document.getElementById('aceptarTerminos').addEventListener('click', function() {
+            localStorage.setItem(terminosKey, 'true');
+        });
+        
+        // También guardar si cierra el modal
+        document.getElementById('terminosCondicionesModal').addEventListener('hidden.bs.modal', function() {
+            localStorage.setItem(terminosKey, 'true');
+        });
+    }
 
     const phoneInput = document.getElementById('inputTelefono');
     const nameInput = document.getElementById('inputNombre');

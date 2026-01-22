@@ -225,7 +225,6 @@ img {
 .btn {
   border-radius: 50px;
   font-weight: 600;
-  padding: 0.5rem 1.8rem;
   font-size: 1.15rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -264,6 +263,7 @@ img {
 
 .badge {
   font-size: 0.85rem;
+  padding: 0.22rem; 
 }
 
 .btn-group {
@@ -979,11 +979,7 @@ img {
   height: 500px;
   object-fit: cover;
   display: block;
-  transition: transform 0.5s ease;
-}
-
-.ba-image-container:hover img {
-  transform: scale(1.05);
+  will-change: transform;
 }
 
 @media (max-width: 768px) {
@@ -1204,5 +1200,286 @@ img {
   }
   .ba-controls {
     gap: 15px;
+  }
+}
+
+/* ======================= NUEVA SECCIÓN: MARCAS ASOCIADAS ======================= */
+
+/* ==========================================
+   BRANDS CAROUSEL SECTION
+   ========================================== */
+
+.brands-carousel-section {
+    position: relative;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-top: 1px solid #e9ecef;
+    overflow: hidden;
+}
+
+.brands-carousel-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.brands-carousel-container {
+    position: relative;
+    overflow: hidden;
+    background: white;
+    border-radius: 0.875rem;
+    padding: 2rem 0;
+}
+
+.brands-carousel-track {
+    display: flex;
+    gap: 3rem;
+    will-change: transform;
+}
+
+.brands-carousel-ltr {
+  animation: none;
+}
+
+.brands-carousel-ltr:hover {
+  animation-play-state: initial;
+}
+
+
+.brand-carousel-item {
+    flex: 0 0 auto;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.brand-carousel-item:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+}
+
+.brand-logo-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem;
+}
+
+.brand-logo {
+    max-width: 100%;
+    max-height: 350px;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.8;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.brand-carousel-item:hover .brand-logo {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+@keyframes scrollBrandsLTR {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+
+.brands-disclaimer {
+    margin-top: 2rem;
+    padding: 1.5rem 0;
+}
+
+.brands-disclaimer p {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .brand-carousel-item {
+        min-width: 150px;
+        height: 80px;
+    }
+
+    .brands-carousel-track {
+        gap: 2rem;
+    }
+
+    .brands-carousel-ltr {
+      animation: none;
+    }
+
+
+    .brand-logo-wrapper {
+        padding: 0.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand-carousel-item {
+        min-width: 120px;
+        height: 70px;
+    }
+
+    .brands-carousel-track {
+        gap: 1rem;
+    }
+
+    .brands-carousel-ltr {
+      animation: none;
+    }
+
+}
+
+.marcas-grid {
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Grid de Marcas */
+.marcas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+
+/* Contenedor del Logo */
+.marca-logo-container {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+  padding: 0.6rem 0;
+}
+
+.marca-logo {
+  max-height: 100%;
+  width: 200px;
+  object-fit: contain;
+  filter: none;
+  transition: transform 0.60s ease, filter 0.60s ease, box-shadow 0.60s ease;
+}
+
+.marca-card:hover .marca-logo {
+  filter: grayscale(0%) drop-shadow(0 4px 12px rgba(246, 101, 15, 0.2));
+  transform: scale(1.08);
+}
+
+/* CTA: ¿No encuentra su marca? */
+.marcas-cta {
+  margin-top: 4rem;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.marcas-cta .alert {
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.95)) !important;
+  backdrop-filter: blur(10px);
+}
+
+/* Disclaimer Legal */
+.marcas-disclaimer {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.marcas-disclaimer p {
+  color: #868e96;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  line-height: 1.8;
+}
+
+/* Animación de entrada */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .marcas-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .marca-card {
+    padding: 1.5rem 1rem;
+    min-height: 240px;
+  }
+
+  .marca-logo-container {
+    height: 80px;
+    margin-bottom: 0.75rem;
+  }
+
+  .marca-nombre {
+    font-size: 1rem;
+  }
+
+  .marca-desc {
+    font-size: 0.8rem;
+  }
+
+  .marcas-cta .alert {
+    padding: 1.5rem;
+  }
+
+  .marcas-cta .col-md-3 {
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .marcas-grid {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1rem;
+  }
+
+  .marca-card {
+    padding: 1rem;
+    min-height: 200px;
+  }
+
+  .marca-logo-container {
+    height: 70px;
+    margin-bottom: 0.5rem;
+  }
+
+  .marca-nombre {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .marca-desc {
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  .marcas-disclaimer p {
+    font-size: 0.75rem;
   }
 }

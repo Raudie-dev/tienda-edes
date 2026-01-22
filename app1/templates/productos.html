@@ -125,22 +125,22 @@
 
                     <!-- Botones de Acción -->
                     <div class="mt-auto pt-3 border-top">
-                        <form method="post" action="{% url 'cotizacion_add' %}" class="row g-2 align-items-end">
+                        <form method="post" action="{% url 'cotizacion_add' %}" class="row g-2 align-items-end justify-content-around">
                             {% csrf_token %}
                             <input type="hidden" name="product_id" value="{{ producto.id }}">
                             
-                            <div class="col-sm-4">
+                            <div class="col-sm-5">
                                 <label class="form-label fw-bold small text-uppercase text-muted" style="font-size: 0.8rem;">Cantidad</label>
                                 <div class="input-group">
-                                    <button class="btn btn-outline-secondary" type="button" style="font-size: 0.9rem;" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
-                                    <input type="number" min="1" name="cantidad" value="1" class="form-control text-center border-secondary" style="font-size: 0.9rem;">
-                                    <button class="btn btn-outline-secondary" type="button" style="font-size: 0.9rem;" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
+                                    <button class="btn btn-outline-secondary" type="button" style="font-size: 0.75rem;" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
+                                    <input type="number" min="1" name="cantidad" value="1" class="form-control text-center border-secondary" style="font-size: 0.75rem;">
+                                    <button class="btn btn-outline-secondary" type="button" style="font-size: 0.75rem;" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
                                 </div>
                             </div>
                             
-                            <div class="col-sm-8">
-                                <button type="submit" class="btn btn-primary w-100 rounded-pill shadow" style="font-size: 0.95rem; padding: 0.6rem;" {% if producto.agotado %}disabled{% endif %}>
-                                    <i class="fas fa-cart-plus me-2"></i> Agregar a Cotización
+                            <div class="col-sm-5">
+                                <button type="submit" class="btn btn-primary w-100 rounded-pill shadow" style="font-size: 0.85rem; padding: 0.6rem;" {% if producto.agotado %}disabled{% endif %}>
+                                    <i class="fas fa-cart-plus me-2"></i> Agregar Producto
                                 </button>
                             </div>
                         </form>
