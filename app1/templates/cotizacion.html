@@ -36,7 +36,6 @@
                 </ol>
             </div>
             <div class="modal-footer">
-                <button type="button" style="font-size: 0.8rem;" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Entendido</button>
                 <button type="button" style="font-size: 0.8rem;" class="btn btn-primary rounded-pill" data-bs-dismiss="modal" id="aceptarTerminos">
                     <i class="fas fa-check me-2"></i>Aceptar y Continuar
                 </button>
@@ -52,6 +51,7 @@
         <p class="text-muted" style="font-size: 0.95rem; max-width: 600px; margin-left: auto; margin-right: auto;">Revise los productos seleccionados y complete sus datos para procesar su solicitud.</p>
     </div>
 
+    {% if items %}
     <div class="cotizacion row g-4">
         <!-- Order Summary (Sin cambios) -->
         <div class="col-lg-8">
@@ -61,7 +61,6 @@
                 </div>
                 
                 <div class="card-body p-0">
-                    {% if items %}
                     <div class="table-responsive">
                         <table class="table table-hover mb-0 align-middle">
                             <thead class="bg-light border-bottom" style="background-color: #f0f0f0 !important;">
@@ -108,27 +107,12 @@
                             {% endif %}
                         </table>
                     </div>
-                    {% else %}
-                    <div style="display: flex; align-items: center; justify-content: center; min-height: 400px;">
-                        <div class="text-center px-4">
-                            <div class="mb-3">
-                                <i class="fas fa-shopping-basket fa-4x text-muted" style="opacity: 0.4;"></i>
-                            </div>
-                            <h4 class="text-secondary fw-bold mb-2" style="font-size: 1.1rem;">Su lista de cotización está vacía</h4>
-                            <p class="text-muted mb-4" style="font-size: 0.9rem;">Agregue productos desde nuestro catálogo para generar una cotización.</p>
-                            <a href="{% url 'tienda' %}" class="btn btn-primary rounded-pill px-4" style="font-size: 0.9rem;">
-                                <i class="fas fa-store me-2"></i>Ir a la Tienda
-                            </a>
-                        </div>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
         </div>
 
         <!-- Contact Form -->
         <div class="col-lg-4">
-            {% if items %}
             <div class="card shadow-lg border-0 text-white rounded-3 position-relative overflow-hidden h-100 no-tilt" style="background: linear-gradient(135deg, var(--primary-color) 0%, #e85a00 100%);">
                 <!-- Decorative elements -->
                 <div class="position-absolute top-0 end-0 rounded-circle opacity-10" style="width: 200px; height: 200px; background-color: white; transform: translate(50%, -50%);"></div>
@@ -196,9 +180,26 @@
                     <i class="fas fa-arrow-left me-1"></i> Seguir agregando productos
                 </a>
             </div>
-            {% endif %}
         </div>
     </div>
+    {% else %}
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="d-flex align-items-center justify-content-center" style="min-height: 60vh;">
+                <div class="text-center px-4">
+                    <div class="mb-3">
+                        <i class="fas fa-shopping-basket fa-4x text-muted" style="opacity: 0.4;"></i>
+                    </div>
+                    <h4 class="text-secondary fw-bold mb-2" style="font-size: 1.1rem;">Su lista de cotización está vacía</h4>
+                    <p class="text-muted mb-4" style="font-size: 0.9rem;">Agregue productos desde nuestro catálogo para generar una cotización.</p>
+                    <a href="{% url 'tienda' %}" class="btn btn-primary rounded-pill px-4" style="font-size: 0.9rem;">
+                        <i class="fas fa-store me-2"></i>Ir a la Tienda
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 <style>

@@ -1222,6 +1222,15 @@ img {
     overflow: hidden;
     mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
     -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+  cursor: grab;
+}
+
+.brands-carousel-wrapper.is-dragging {
+  cursor: grabbing;
 }
 
 .brands-carousel-container {
@@ -1229,13 +1238,16 @@ img {
     overflow: hidden;
     background: white;
     border-radius: 0.875rem;
-    padding: 2rem 0;
+    padding: 8rem 0;
 }
 
 .brands-carousel-track {
     display: flex;
     gap: 3rem;
     will-change: transform;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
 }
 
 .brands-carousel-ltr {
@@ -1254,12 +1266,22 @@ img {
     align-items: center;
     justify-content: center;
     height: 100px;
-    transition: transform 0.3s ease, filter 0.3s ease;
+  transition: transform 0.35s ease, filter 0.35s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    pointer-events: auto;
 }
 
 .brand-carousel-item:hover {
     transform: scale(1.1);
     filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+}
+
+.brand-carousel-item.is-centered {
+  transform: scale(1.2);
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.2));
+  z-index: 2;
 }
 
 .brand-logo-wrapper {
@@ -1273,16 +1295,29 @@ img {
 
 .brand-logo {
     max-width: 100%;
-    max-height: 350px;
+    max-height: 250px;
     object-fit: contain;
     filter: grayscale(100%);
     opacity: 0.8;
-    transition: filter 0.3s ease, opacity 0.3s ease;
+  transition: filter 0.35s ease, opacity 0.35s ease, transform 0.35s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
 }
 
 .brand-carousel-item:hover .brand-logo {
     filter: grayscale(0%);
     opacity: 1;
+}
+
+.brand-carousel-item.is-centered .brand-logo {
+  filter: grayscale(0%) saturate(1.15);
+  opacity: 1;
 }
 
 @keyframes scrollBrandsLTR {

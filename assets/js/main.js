@@ -24,13 +24,125 @@ document.addEventListener("DOMContentLoaded", () => {
     let paused = false;
     const dir = track.classList.contains("brands-carousel-rtl") ? 1 : -1;
     let singleSetWidth = 0;
+    let autoResumeTimeout = null;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartOffset = 0;
+    let dragMoved = false;
 
-    const wrapper = track.parentElement;
+    const wrapper = track.closest(".brands-carousel-wrapper") || track.parentElement;
+    let lastCenterUpdate = 0;
+    const centerUpdateInterval = 90;
+
+    function updateCenteredItem() {
+      if (!wrapper) return;
+      const now = Date.now();
+      if (now - lastCenterUpdate < centerUpdateInterval) return;
+      lastCenterUpdate = now;
+
+      const wrapperRect = wrapper.getBoundingClientRect();
+      const centerX = wrapperRect.left + wrapperRect.width / 2;
+      const items = Array.from(track.children);
+
+      let closestItem = null;
+      let closestDistance = Infinity;
+
+      items.forEach((item) => {
+        const rect = item.getBoundingClientRect();
+        const itemCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(centerX - itemCenter);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestItem = item;
+        }
+      });
+
+      items.forEach((item) => {
+        item.classList.toggle("is-centered", item === closestItem);
+      });
+    }
+    function normalizeOffset(value) {
+      if (!singleSetWidth) return value;
+      if (dir < 0) {
+        while (value <= -singleSetWidth) value += singleSetWidth;
+        while (value > 0) value -= singleSetWidth;
+      } else {
+        while (value >= singleSetWidth) value -= singleSetWidth;
+        while (value < 0) value += singleSetWidth;
+      }
+      return value;
+    }
+
     if (wrapper) {
-      wrapper.addEventListener("mouseenter", () => (paused = true));
+      // Mouse events - pause on hover, auto-resume after 1 seconds
+      wrapper.addEventListener("mouseenter", () => {
+        paused = true;
+        clearTimeout(autoResumeTimeout);
+      });
       wrapper.addEventListener("mouseleave", () => {
-        paused = false;
-        lastTime = Date.now();
+        // Auto-resume carousel after 1 seconds on desktop
+        autoResumeTimeout = setTimeout(() => {
+          paused = false;
+          lastTime = Date.now();
+        }, 500);
+      });
+
+      // Touch events - pause on touch, auto-resume after 3 seconds
+      wrapper.addEventListener("touchstart", () => {
+        paused = true;
+        clearTimeout(autoResumeTimeout);
+      }, { passive: true });
+
+      wrapper.addEventListener("touchend", () => {
+        // Auto-resume carousel after 3 seconds on mobile
+        autoResumeTimeout = setTimeout(() => {
+          paused = false;
+          lastTime = Date.now();
+        }, 3000);
+      }, { passive: true });
+
+      // Pointer drag to control carousel
+      wrapper.addEventListener("pointerdown", (event) => {
+        if (event.button !== undefined && event.button !== 0) return;
+        if (!singleSetWidth) measure();
+        isDragging = true;
+        dragMoved = false;
+        dragStartX = event.clientX;
+        dragStartOffset = offset;
+        paused = true;
+        clearTimeout(autoResumeTimeout);
+        wrapper.classList.add("is-dragging");
+        if (wrapper.setPointerCapture) {
+          wrapper.setPointerCapture(event.pointerId);
+        }
+      });
+
+      wrapper.addEventListener("pointermove", (event) => {
+        if (!isDragging) return;
+        const delta = event.clientX - dragStartX;
+        if (Math.abs(delta) > 2) dragMoved = true;
+        offset = normalizeOffset(dragStartOffset + delta);
+        track.style.transform = `translateX(${offset}px)`;
+        updateCenteredItem();
+      });
+
+      function finishDrag(event) {
+        if (!isDragging) return;
+        isDragging = false;
+        wrapper.classList.remove("is-dragging");
+        if (event && wrapper.releasePointerCapture) {
+          wrapper.releasePointerCapture(event.pointerId);
+        }
+        autoResumeTimeout = setTimeout(() => {
+          paused = false;
+          lastTime = Date.now();
+        }, 800);
+      }
+
+      wrapper.addEventListener("pointerup", finishDrag);
+      wrapper.addEventListener("pointercancel", finishDrag);
+      wrapper.addEventListener("pointerleave", (event) => {
+        if (isDragging) finishDrag(event);
       });
     }
 
@@ -61,10 +173,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       offset += dir * (singleSetWidth / duration) * elapsed;
 
-      if (dir < 0 && offset <= -singleSetWidth) offset = 0;
-      if (dir > 0 && offset >= singleSetWidth) offset = 0;
+      offset = normalizeOffset(offset);
 
       track.style.transform = `translateX(${offset}px)`;
+      updateCenteredItem();
       requestAnimationFrame(step);
     }
 
@@ -83,6 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener("resize", () => {
       measure();
+      updateCenteredItem();
     });
   }
 
